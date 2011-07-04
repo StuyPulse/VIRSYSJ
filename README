@@ -1,0 +1,10 @@
+DEPENDENCIES
+
+1.  VIRSYS (VIrtual Robot SYStem)
+    Go to http://www.virsys.org/get_started.html, and get
+      * VIRSYS alpha download
+      * GLUT library
+    You not the LabVIEW project as this Python implementation replaces it.
+
+2.   Java
+     Go to http://www.java.com/en/download/
