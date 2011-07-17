@@ -1,0 +1,75 @@
+302 Robot configuration (Worlds - 4/17/2011)
+
+386.4 	Acceleration Due To Gravity (Length_units / Seconds ^2)
+
+128.0	Chassis Weight (Force_units)
+20.0	Chassis Inertia xx about CG (Mass Length_units^2)
+36.0	Chassis Inertia yy about CG (Mass Length_units^2)
+48.0	Chassis Inertia zz about CG (Mass Length_units^2)
+
+0.0	Chassis Center of Gravity x location (Length_units)
+0.0	Chassis Center of Gravity y location (Length_units)
+5.0	Chassis Center of Gravity z location (Length_units)
+  
+15.0	Arm Weight (Force_Units)
+1.0	Arm Inertia xx about CG (Mass Length_units^2)
+1.0	Arm Inertia yy about CG (Mass Length_units^2)
+1.0	Arm Inertia zz about CG (Mass Length_units^2)
+
+-14.5	Shoulder Pivot x Location (Length_Units)
+0.0	Shoulder Pivot y Location (Length_Units)
+56.0	Shoulder Pivot z Location (Length_Units)
+
+25.0	Arm CG location, length along arm from shoulder pivot (Length_Units)
+50.0	Arm CG length, shoulder to wrist pivot (Length_Units)
+
+
+5.0	Hand Weight (Force_Units)
+1.0	Hand Inertia xx about CG (Mass Length_units^2)
+1.0	Hand Inertia yy about CG (Mass Length_units^2)
+1.0	Hand Inertia zz about CG (Mass Length_units^2)
+
+9.0	Hand CG Location, length along hand from Wrist pivot (Length_Units)
+
+14.5	Wheel Station 1 x Position (Length_Units)
+0.0	Wheel Station 2 x Position (Length_Units)
+-14.5	Wheel Station 3 x Position (Length_Units)
+  
+10.0	Wheel Station 1 y Distance, y is assumed to be a symmetric axis (Length_Units)
+10.0	Wheel Station 2 y Distance, y is assumed to be a symmetric axis (Length_Units)
+11.0	Wheel Station 3 y Distance, y is assumed to be a symmetric axis (Length_Units)
+
+3.5	Wheel Station 1 z Position (Length_Units)
+3.0	Wheel Station 2 z Position (Length_Units)
+3.5	Wheel Station 3 z Position (Length_Units)
+
+3.0	Wheel Radius (Length_Units)
+2.5 	Wheel Inertia about Rotational Axis (Mass Length_Units^2)
+  
+120.0	Wheel/Floor Stiffness (Force_Units / Length_Units)
+24.0	Wheel/Floor Damping (Force_Units Seconds / Length_Units)
+0.9	Wheel/Floor Coefficient of Friction (Unitless Ratio)
+0.01	Wheel/Floor Slip Speed at which full friction force is developed (Length_Units / Seconds)
+
+100.0	Wheel/Driveline Internal Coulomb Friction  
+0.04	Wheel/Floor Rolling Resistance (Unitless Ratio)
+
+
+60.0	Arm Bump Stop Angle (Degrees)
+200.0	Arm Bump Stop Stiffness (Force_Units Length_Units / Degrees)
+20.0	Arm Bump Stop Damping (Force_Units Length_Units Seconds / Degrees)
+1000.0	Arm Coulomb Friction Force (Force_Units Length_Units)
+60.0	Arm Slip Speed at which full friction is developed (Degrees / Second)
+
+1000.0  Hand Coulomb Friction Force (Force_Units Length_Units)
+0.01	Hand Slip Speed at which full friction is developed (Degrees / Second)
+
+
+0.0	Initial CHASSIS X position
+0.0	Initial CHASSIS Y position
+0.0	Initial CHASSIS Z position
+45.0	Initial CHASSIS YAW angle (degrees)
+0.0	Initial CHASSIS PITCH angle (degrees)
+0.0	Initial CHASSIS ROLL angle (degrees)
+0.0	Initial ARM angle (degrees)
+-135.0	Initial HAND angle (degrees)

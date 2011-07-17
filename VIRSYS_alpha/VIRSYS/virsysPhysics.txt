@@ -1,0 +1,15 @@
+VIRSYS (VIrtual Robot SYStem) - Physics model configuration file
+
+50001			<- local receive port
+127.0.0.1		<- LabView host
+50002			<- LabView host port
+
+1			<- Number of image generators
+
+127.0.0.1		<- IG host (1)
+50003			<- IG host port (1) ...  additional hosts repeat like this
+
+robot.txt		<- robot config file
+
+0.001			<- integration time step
+0.01			<- I/O time step (data publication frequency)

@@ -1,0 +1,7 @@
+ViRSS (Virtual Robot System Simulation) - Master Configuration File
+
+true			<- Image Generator simulation window
+true			<- Physics simulation
+
+virsysIG.txt		<- Image Generator Configuration file
+virsysPhysics.txt	<- Physics Simulation configuration file

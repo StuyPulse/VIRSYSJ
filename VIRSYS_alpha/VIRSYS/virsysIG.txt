@@ -1,0 +1,11 @@
+ViRSys - image generator configuration file
+
+50003		<- Local Port Number
+
+70.0		<- view X (inches)
+58.0		<- view Y (inches)
+69.0		<- view Z (inches)
+21.0		<- view Azimuth (degrees)
+5.0		<- view Elevation (degrees)
+70.0		<- Field of View (degrees)
+
