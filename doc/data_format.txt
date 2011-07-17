@@ -1,0 +1,47 @@
+The generic specification for messages is:
+
+UDP
+host order (intel byte ordering)
+floats (intel IEEE...) <- Challenge in Java, MS .net has utilities to
+do this for you.
+
+The ip addresses and ports are identified and configurable in the text
+files included with the executable. Please look there.
+
+There are two specific messages you need to know about.
+
+Sensor feedback from Dynamics Engine to LabVIEW (your JAVA):
+100 Hz (or current I/O timestep value)
+10 floats
+
+(1) timestamp (any monotonic increasing float to act as a filter for
+UDP packets on imperfect networks)
+(2) Left wheel angle (radians... 3 inch radius)
+(3) Right wheel angle (radians... 3 inch radius)
+(4) Arm angle (radians... zero radians is straight out and positive
+values are down).
+(5) Wrist angle (radians... zero radians is straight out and positive
+values are down).
+(6) Left wheel speed (radians / sec... 3 inch radius)
+(7) Right wheel speed (radians / sec... 3 inch radius)
+(8) Arm speed (radians / sec).
+(9) Wrist speed (radians / sec).
+(10) Heading Rate (rad / sec... right hand rule about robot local z-up axis)
+
+
+Actuator applied loads from LabVIEW (your JAVA) to Dynamics Engine:
+
+You can post updates at any rate you wish. The dynamics runs faster
+than real-time at 3 kHz, and pauses for the socket interactions at 100
+Hz (or the prescribed I/O timestep value, in which it will process
+everything at once and applies only the newest value).
+
+6 floats.
+
+(1) timestamp (same idea as sensor message, but numerical values need
+not be related)
+(2) Left "track" torque (in lbs)
+(3) Right "track" torque (in lbs)
+(4) Arm torque (in lbs)
+(5) Wrist torque (in lbs)
+(6) Grip state (0.0 = nothing, 1.0,2.0,3.0,4.0 = various game pieces)
