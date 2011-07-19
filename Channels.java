@@ -1,4 +1,4 @@
-
+/*config file for all of the ports*/
 public interface Channels {
     //PWM out
     final int left = 1;
