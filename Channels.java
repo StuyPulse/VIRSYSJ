@@ -1,19 +1,19 @@
 /*config file for all of the ports*/
 public interface Channels {
     //PWM out
-    final int left = 1;
-    final int right = 2;
-    final int arm = 3;
-    final int wrist = 4;
-    final int grip = 5;
+    final int LEFT_PWM = 1;
+    final int RIGHT_PWM = 2;
+    final int ARM_PWM = 3;
+    final int WRIST_PWM = 4;
+    final int GRIP_PWM = 5;
     //InPorts
-    final int arm_angle = 1;
-    final int arm_speed = 2;
-    final int wrist_angle = 3;
-    final int wrist_speed = 4;
-    final int left_angle = 5;
-    final int left_speed = 6;
-    final int right_angle = 7;
-    final int right_speed = 8;
-    final int heading_rate = 9;
+    final int ARM_ANGLE = 1;
+    final int ARM_SPEED = 2;
+    final int WRIST_ANGLE = 3;
+    final int WRIST_SPEED = 4;
+    final int LEFT_ANGLE = 5;
+    final int LEFT_SPEED = 6;
+    final int RIGHT_ANGLE = 7;
+    final int RIGHT_SPEED = 8;
+    final int HEADING_RATE = 9;
 }
