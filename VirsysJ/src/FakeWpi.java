@@ -4,25 +4,28 @@ public class FakeWpi implements Channels{
         public RobotBase(){
 
         }
-        public void IsSystemActive(){
-
+        public boolean IsSystemActive(){
+            return true;
         }
-        public void GetWatchdog(){
-
+        public Watchdog GetWatchdog(){
+            return new Watchdog();
         }
-        public void IsEnabled(){
-
+        public boolean IsEnabled(){
+            return true;
         }
-        public void IsDisabled(){
-
+        public boolean IsDisabled(){
+            return false;
         }
-        public void IsAutonomous(){
-
+        public boolean IsAutonomous(){
+            return false;
         }
-        public void IsOperatorControlled(){
-            
+        public boolean IsOperatorControlled(){
+            return true;
         }
-        public void IsNewDataAvailable(){
+        public boolean IsNewDataAvailable(){
+            return false;
+        }
+        public void startCompetition(){
 
         }
     }
@@ -41,6 +44,11 @@ public class FakeWpi implements Channels{
         }
         public void StartCompetition(){
             
+        }
+    }
+    public class Watchdog{
+        public Watchdog(){
+
         }
     }
 }
