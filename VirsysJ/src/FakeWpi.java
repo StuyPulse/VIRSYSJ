@@ -43,12 +43,41 @@ public class FakeWpi implements Channels{
             System.out.print("Default OperatorControl method... Overload me!");
         }
         public void StartCompetition(){
-            
+            System.out.print("Default StartCompetition method... Overload me!");
         }
     }
     public class Watchdog{
+        boolean enabled;
+        long begining,interval;
         public Watchdog(){
-
+            enabled = true;
+            begining = System.currentTimeMillis();
+            interval = 5000;
+        }
+        public void feed(){
+            begining = System.currentTimeMillis();
+        }
+        public boolean getEnabled(){
+            return enabled;
+        }
+        public double getExpiration(){
+            return interval;
+        }
+        public double getTimer(){
+            return System.currentTimeMillis() - begining;
+        }
+        public boolean isAlive(){
+            return System.currentTimeMillis() < begining + interval;
+        }
+        public void kill(){
+            setEnabled(false);
+            setExpiration(1000000000);
+        }
+        public void setEnabled(boolean enables){
+            enabled = enables;
+        }
+        public void setExpiration(double expiration){
+            interval = (long)expiration;
         }
     }
 }
