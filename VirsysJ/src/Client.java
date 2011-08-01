@@ -6,8 +6,8 @@ import java.net.*;
 
 public class Client implements TorqueConfig, Networkconf {
 
-    Runnable sendThread, recieveThread;
-    Thread threadS, threadR;
+    private Runnable sendThread, recieveThread;
+    private Thread threadS, threadR;
 
     public Client() {
         sendThread = new Send();
