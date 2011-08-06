@@ -1,6 +1,6 @@
 /* this is imported if the code is not on the real robot*/
 /*TODO:make Jaguar,Victor,Encoder and Gyro class*/
-public class FakeWpi implements Channels{
+public class FakeWpi implements TorqueConfig{
     public class RobotBase{
         public RobotBase(){
 
@@ -100,6 +100,51 @@ public class FakeWpi implements Channels{
             while(isOperatorControlled()){
                 time.delay(waittime);
             }
+        }
+    }
+    public class Victor{
+        public Victor(int slot,int channel){
+            
+        }
+        public Victor(int channel){
+            
+        }
+        double get(){
+            return 0;
+        }
+        void pidWrite(double output){
+
+        }
+        void set(double speed){
+
+        }
+    }
+    public class Jaguar{
+        public Jaguar(int slot,int channel){
+
+        }   
+        public Jaguar(int channel){
+
+        }
+        double get(){
+            return 0;
+        }
+        void pidWrite(double output){
+
+        }
+        void set(double speed){
+
+        }
+    }
+    public class Encoder{
+        Encoder(int aChannel, int bChannel){
+
+        }
+        double getRate(){
+            return 0;
+        }
+        double getDistance(){
+            return 0;
         }
     }
     public class Watchdog{

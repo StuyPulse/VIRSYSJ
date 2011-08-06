@@ -4,7 +4,7 @@ refer to /doc/data_format.txt*/
 import java.io.*;
 import java.net.*;
 
-public class Client implements TorqueConfig, Networkconf {
+public class Client implements Networkconf {
 
     private Runnable sendThread, recieveThread;
     private Thread threadS, threadR;
