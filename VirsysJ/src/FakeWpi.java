@@ -20,7 +20,7 @@ public class FakeWpi implements TorqueConfig{
         public boolean isAutonomous(){
             return false;
         }
-        public boolean isOperatorControlled(){
+        public boolean isOperatorControl(){
             return true;
         }
         public boolean isNewDataAvailable(){
@@ -88,7 +88,7 @@ public class FakeWpi implements TorqueConfig{
             System.out.print("Default startCompetition()... Overload me!");
         }
         public void teleopContinuous(){
-            while(isOperatorControlled()){
+            while(isOperatorControl()){
 
             }
             System.out.print("Default teleopContinuous()... Overload me!");
@@ -97,7 +97,7 @@ public class FakeWpi implements TorqueConfig{
             System.out.print("Default teleopInit()... Overload me!");
         }
         public void teleopPeriodic(){
-            while(isOperatorControlled()){
+            while(isOperatorControl()){
                 time.delay(waittime);
             }
         }
