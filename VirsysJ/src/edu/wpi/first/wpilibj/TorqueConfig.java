@@ -1,5 +1,5 @@
 /* sets the max torque for each wheel of which a percentage will be used*/
-package edu;
+package edu.wpi.first.wpilibj;
 public interface TorqueConfig{
     //The amount of torque that each motor can output.  Make these numbers
     //match the hardware on your robot

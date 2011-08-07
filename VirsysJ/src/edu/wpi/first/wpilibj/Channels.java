@@ -1,5 +1,5 @@
 /*config file for all of the ports*/
-package edu;
+package edu.wpi.first.wpilibj;
 public interface Channels {
     //PWM out
     final int LEFT_PWM = 1;

@@ -1,5 +1,5 @@
 /* config files for the ipaddress and ports for virsys*/
-package edu;
+package edu.wpi.first.wpilibj;
 public interface Networkconf{
     //IP address of computer running VIRSYS physics simulation
     //Use 127.0.0.1 for the local machine
