@@ -6,7 +6,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 package edu;
-import src.edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.*;
 
 /**
  * The VM is configured to automatically run this class, and to call the
