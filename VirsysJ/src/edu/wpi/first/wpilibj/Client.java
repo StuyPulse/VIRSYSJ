@@ -22,7 +22,21 @@ public class Client implements Networkconf {
         threadR.start();
     }
 
-    public class SendnRecieve implements Runnable {
+    public class Send implements Runnable {
+
+        boolean done;
+
+        public void run() {
+            done = false;
+            while (true) {
+                //what the thread will do when it's still running
+                if (done) {
+                    return;
+                }
+            }
+        }
+    }
+    public class Recieve implements Runnable {
 
         boolean done;
 
