@@ -2,7 +2,7 @@ package edu.wpi.first.wpilibj;
 
 public class SimpleRobot extends RobotBase {
 
-    SimpleRobot() {
+    public SimpleRobot() {
         System.out.print("Default Constructor... Overload me!");
     }
 
