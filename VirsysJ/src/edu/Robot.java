@@ -15,14 +15,14 @@ import edu.wpi.first.wpilibj.*;
  * creating this project, you must also update the manifest file in the resource
  * directory.
  */
-public class Michael1 extends SimpleRobot {
+public class Robot extends SimpleRobot {
     Joystick lstick;
     Joystick rstick;
     RobotDrive dt;
     Victor intake;
     Victor shooter;
     Servo paddle_thingy;
-    public Michael1(){
+    public Robot(){
        lstick = new Joystick(1);
        rstick = new Joystick(2);
        dt = new RobotDrive(1,2);

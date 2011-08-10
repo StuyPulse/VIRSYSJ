@@ -5,7 +5,7 @@ public class IterativeRobot extends RobotBase {
     private int waittime;
     private Timer time;
 
-    IterativeRobot() {
+    public IterativeRobot() {
         waittime = 1;
         time = new Timer();
         System.out.print("Default Constructor... Overload me!");

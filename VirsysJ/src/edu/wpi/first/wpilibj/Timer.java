@@ -5,7 +5,7 @@ public class Timer {
     private long beggining;
     private double time;
 
-    Timer() {
+    public Timer() {
     }
 
     public void delay(double seconds) {

@@ -8,13 +8,13 @@ public class Victor {
     public Victor(int channel) {
     }
 
-    double get() {
+    public double get() {
         return 0;
     }
 
-    void pidWrite(double output) {
+    public void pidWrite(double output) {
     }
 
-    void set(double speed) {
+    public void set(double speed) {
     }
 }

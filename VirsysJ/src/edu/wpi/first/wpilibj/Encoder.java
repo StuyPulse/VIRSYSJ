@@ -2,14 +2,14 @@ package edu.wpi.first.wpilibj;
 
 public class Encoder {
 
-    Encoder(int aChannel, int bChannel) {
+    public Encoder(int aChannel, int bChannel) {
     }
 
-    double getRate() {
+    public double getRate() {
         return 0;
     }
 
-    double getDistance() {
+    public double getDistance() {
         return 0;
     }
 }
