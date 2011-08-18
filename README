@@ -2,7 +2,7 @@ DEPENDENCIES
 
 1.  VIRSYS (VIrtual Robot SYStem)
     Go to http://www.virsys.org/get_started.html, and get
-      * VIRSYS alpha download
+      * VIRSYS alpha download //in the repo
       * GLUT library (install to Windows\system ...)
 
 2.   Java
@@ -15,3 +15,14 @@ RUNNING THE PROJECT
       * virsys.exe   <-- from the VIRSYS download
     Put your robot code in Robot.java.  A sample is provided.
 
+note: Because "VIRSYS.exe" is a network intensive application 
+(localhost loopback) that nobody has ever heard of, you may 
+need to work with your antivirus software. Norton "Sonar" 
+actually deletes (quarantines) VIRSYS.exe when you run it the 
+first time. You need to tell it and simillar packages not to do 
+that! In Norton this is not exactly straight forward, but there is 
+an undo and accept button in there somewhere on the "Sonar" warning 
+window that pops up (not exactly where you'd expect to find it, so 
+keep navigating!)   
+
+-Taken directly from the virsys site
