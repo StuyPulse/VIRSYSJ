@@ -2,37 +2,47 @@ package edu.wpi.first.wpilibj;
 
 public class Timer {
 
-    private long beggining;
-    private double time;
+    private long m_startTime;
+    private double m_accumulatedTime;
+    private boolean m_running;
 
     public Timer() {
+        reset();
     }
 
-    public void delay(double seconds) {
+    public static void delay(double seconds) {
         try {
-            Thread.currentThread().sleep((int) seconds * 1000);
+            Thread.sleep((long) seconds * 1000);
         } catch (InterruptedException e) {
             System.out.print("you did sonething really bad!!");
         }
     }
 
     public double get() {
-        return time;
+        if(m_running){
+            return ((double) ((getFPGATimestamp() - m_startTime) + m_accumulatedTime)) / 1000.0;
+        } else {
+            return m_accumulatedTime;
+        }
     }
 
-    public double getFPGATimestamp() {
+    public static double getFPGATimestamp() {
         return System.currentTimeMillis() / 1000;
     }
 
     public void reset() {
-        time = 0;
+        m_accumulatedTime = 0;
+        m_startTime = (long)getFPGATimestamp();
     }
 
     public void start() {
-        beggining = System.currentTimeMillis();
+        m_startTime = (long)getFPGATimestamp();
+        m_running = true;
     }
 
     public void stop() {
-        time = (System.currentTimeMillis() - beggining) / 1000;
+        final double temp = get();
+        m_accumulatedTime += temp;
+        m_running = false;
     }
 }

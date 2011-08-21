@@ -20,7 +20,7 @@ public class Client implements Networkconf {
     }
 
     public void send(float left, float right, float arm, float wrist, float grip){
-
+        send(new float[]{(float)Timer.getFPGATimestamp(),left,right,arm,wrist,grip});
     }
 
     private void send(float[] f) {
