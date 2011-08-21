@@ -7,8 +7,23 @@ import java.net.*;
 import java.nio.*;
 
 public class Client implements Networkconf {
+    private Runnable recieveThread;
+    private Thread  threadR;
 
-    public void send(float[] f) {
+    public Client() {
+        recieveThread = new Recieve();
+        threadR = new Thread(recieveThread);
+    }
+
+    public void startRecieveing(){
+        threadR.start();
+    }
+
+    public void send(float left, float right, float arm, float wrist, float grip){
+
+    }
+
+    private void send(float[] f) {
         try {
             if (f.length != 6) {
                 System.out.print("error:need 6 floats in packet");
@@ -31,7 +46,7 @@ public class Client implements Networkconf {
         }
     }
 
-    public float[] recieve() {
+    private float[] recieve() {
         float[] ans = new float[10];
         try {
             byte[] buffer = new byte[40];
@@ -68,5 +83,20 @@ public class Client implements Networkconf {
         bytes[2] = (byte) ((bits >> 16) & 0xff);
         bytes[3] = (byte) ((bits >> 24) & 0xff);
         return bytes;
+    }
+    private class Recieve implements Runnable {
+
+        public boolean done;
+        public float[] data;
+
+        public void run() {
+            done = false;
+            while (true) {
+                recieve();
+                if (done) {
+                    return;
+                }
+            }
+        }
     }
 }
