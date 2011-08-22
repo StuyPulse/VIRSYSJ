@@ -6,8 +6,8 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 package edu;
+
 import edu.wpi.first.wpilibj.*;
-import Math.java;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -17,6 +17,7 @@ import Math.java;
  * directory.
  */
 public class Robot extends SimpleRobot {
+
     Joystick lstick;
     Joystick rstick;
     RobotDrive dt;
@@ -25,24 +26,29 @@ public class Robot extends SimpleRobot {
     Victor intake;
     Victor shooter;
     Servo paddle_thingy;
-    
-    public Robot(){
-       lstick = new Joystick(1);
-       rstick = new Joystick(2);
-       dt = new RobotDrive(1,2);
-       shooter = new Victor(3);
-       intake = new Victor(4);
-       paddle_thingy = new Servo(9);
-       eLeft = new Encoder(1, 2);
-       eRight = new Encoder(3, 4);
-       double global_xcor = 0;
-       double global_ycor = 0;
-       double global_heading = 0;
+    double global_xcor;
+    double global_ycor;
+    double global_heading;
 
-       // Invert motors or the robot will drive backwards.
-       dt.setInvertedMotor(RobotDrive.MotorType.kRearLeft, true);
-       dt.setInvertedMotor(RobotDrive.MotorType.kRearRight, true);
+    public Robot() {
+        lstick = new Joystick(1);
+        rstick = new Joystick(2);
+        dt = new RobotDrive(1, 2);
+        shooter = new Victor(3);
+        intake = new Victor(4);
+        paddle_thingy = new Servo(9);
+        eLeft = new Encoder(1, 2);
+        eRight = new Encoder(3, 4);
+        global_xcor = 0;
+        global_ycor = 0;
+        global_heading = 0;
+
+
+        // Invert motors or the robot will drive backwards.
+        dt.setInvertedMotor(RobotDrive.MotorType.kRearLeft, true);
+        dt.setInvertedMotor(RobotDrive.MotorType.kRearRight, true);
     }
+
     /**
      * This function is called once each time the robot enters autonomous mode.
      */
@@ -50,9 +56,9 @@ public class Robot extends SimpleRobot {
         getWatchdog().setEnabled(false);
 
         intake.set(1.0); // Turn on intake motor.
-        dt.drive(-0.5,0); // Drive forward at half speed
+        dt.drive(-0.5, 0); // Drive forward at half speed
         Timer.delay(2.0); // for two seconds,
-        dt.drive(0,0); // then stop driving.
+        dt.drive(0, 0); // then stop driving.
         Timer.delay(3.0); // After another three seconds,
         intake.set(0.0); // stop the intake motor.
     }
@@ -62,41 +68,38 @@ public class Robot extends SimpleRobot {
      */
     public void operatorControl() {
         getWatchdog().setEnabled(false); // Anything outside the while loop is run only once.
-        while(isOperatorControl()&&isEnabled()){ // Loop everything else while teleop enabled.
+        while (isOperatorControl() && isEnabled()) { // Loop everything else while teleop enabled.
             // Plain old tank drive.
-            dt.tankDrive(lstick,rstick);
+            dt.tankDrive(lstick, rstick);
 
             // Intake control
-            if(rstick.getRawButton(3)){
+            if (rstick.getRawButton(3)) {
                 intake.set(1.0);
-            }
-            else{ // Without the else statement, the motor will never stop after being started.
+            } else { // Without the else statement, the motor will never stop after being started.
                 intake.set(0.0);
             }
 
             // Shooter control
-            if(rstick.getTrigger()){
+            if (rstick.getTrigger()) {
                 shooter.set(-0.75); // Negative because otherwise the shooter would run in reverse.
-            }
-            else{
+            } else {
                 shooter.set(0.0);
             }
 
             // Paddle thingy control
-            if(lstick.getTrigger()){
+            if (lstick.getTrigger()) {
                 paddle_thingy.set(0.0); // Paddle forward.
-            }
-            else{
+            } else {
                 paddle_thingy.set(1.0); // Paddle backward.
             }
         }
     }
-    
+
     // Heading assumes 0 is "East," 90 is "North," and so on. TODO: Fix "cos" and "sin" if necessary...
     public void globalCoordinateEstimator(double xcor, double ycor, double heading) {
         eLeft.reset();
         eRight.reset();
-        avgRate = ( eLeft.getRate() + eRight.getRate() ) / 2;
+        avgRate = (eLeft.getRate() + eRight.getRate()) / 2;
         global_xcor = xcor + (avgRate * cos(heading));
         global_ycor = ycor + (avgRate * sin(heading));
         System.out.println("x:" + xcor + ", y:" + ycor);
