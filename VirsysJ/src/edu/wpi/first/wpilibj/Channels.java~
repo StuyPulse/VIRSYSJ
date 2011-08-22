@@ -16,5 +16,5 @@ public interface Channels {
     final int LEFT_SPEED = 6;
     final int RIGHT_ANGLE = 7;
     final int RIGHT_SPEED = 8;
-    final int HEADING_RATE = 9;    
+    final int HEADING_RATE = 9;
 }

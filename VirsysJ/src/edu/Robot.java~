@@ -7,7 +7,6 @@
 /*----------------------------------------------------------------------------*/
 package edu;
 import edu.wpi.first.wpilibj.*;
-import Math.java;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -20,12 +19,9 @@ public class Robot extends SimpleRobot {
     Joystick lstick;
     Joystick rstick;
     RobotDrive dt;
-    Encoder eLeft;
-    Encoder eRight;
     Victor intake;
     Victor shooter;
     Servo paddle_thingy;
-    
     public Robot(){
        lstick = new Joystick(1);
        rstick = new Joystick(2);
@@ -33,8 +29,6 @@ public class Robot extends SimpleRobot {
        shooter = new Victor(3);
        intake = new Victor(4);
        paddle_thingy = new Servo(9);
-       eLeft = new Encoder(1, 2);
-       eRight = new Encoder(3, 4);
        double global_xcor = 0
        double global_ycor = 0
        double global_heading = 0
@@ -92,13 +86,7 @@ public class Robot extends SimpleRobot {
         }
     }
     
-    // Heading assumes 0 is "East," 90 is "North," and so on. TODO: Fix "cos" and "sin" if necessary...
     public void globalCoordinateEstimator(double xcor, double ycor, double heading) {
-        eLeft.reset();
-        eRight.reset();
-        avgRate = ( eLeft.getRate() + eRight.getRate() ) / 2;
-        global_xcor = xcor + (avgRate * cos(heading));
-        global_ycor = ycor + (avgRate * sin(heading));
-        System.out.println("x:" + xcor + ", y:" + ycor);
+        
     }
 }

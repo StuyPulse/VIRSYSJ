@@ -12,8 +12,4 @@ public class Encoder {
     public double getDistance() {
         return 0;
     }
-    
-    public void reset() {
-      //Should do something here?
-    }
 }
