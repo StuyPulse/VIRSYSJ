@@ -35,9 +35,9 @@ public class Robot extends SimpleRobot {
        paddle_thingy = new Servo(9);
        eLeft = new Encoder(1, 2);
        eRight = new Encoder(3, 4);
-       double global_xcor = 0
-       double global_ycor = 0
-       double global_heading = 0
+       double global_xcor = 0;
+       double global_ycor = 0;
+       double global_heading = 0;
 
        // Invert motors or the robot will drive backwards.
        dt.setInvertedMotor(RobotDrive.MotorType.kRearLeft, true);
