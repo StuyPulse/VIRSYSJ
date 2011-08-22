@@ -99,9 +99,9 @@ public class Robot extends SimpleRobot {
     public void globalCoordinateEstimator(double xcor, double ycor, double heading) {
         eLeft.reset();
         eRight.reset();
-        avgRate = (eLeft.getRate() + eRight.getRate()) / 2;
-        global_xcor = xcor + (avgRate * cos(heading));
-        global_ycor = ycor + (avgRate * sin(heading));
+        double avgRate = (eLeft.getRate() + eRight.getRate()) / 2;
+        global_xcor = xcor + (avgRate * Math.cos(heading));
+        global_ycor = ycor + (avgRate * Math.sin(heading));
         System.out.println("x:" + xcor + ", y:" + ycor);
     }
 }

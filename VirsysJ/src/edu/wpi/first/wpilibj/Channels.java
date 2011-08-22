@@ -16,5 +16,14 @@ public interface Channels {
     final int LEFT_SPEED = 6;
     final int RIGHT_ANGLE = 7;
     final int RIGHT_SPEED = 8;
-    final int HEADING_RATE = 9;    
+    final int HEADING_RATE = 9;
+    //Encoder Channel
+    final int CHANNEL_FRONT_LEFT_ENC_A       = 1;
+    final int CHANNEL_FRONT_LEFT_ENC_B       = 2;
+    final int CHANNEL_REAR_LEFT_ENC_A        = 9; // 3 / 4 were bad
+    final int CHANNEL_REAR_LEFT_ENC_B        = 10;
+    final int CHANNEL_FRONT_RIGHT_ENC_A      = 5;
+    final int CHANNEL_FRONT_RIGHT_ENC_B      = 6;
+    final int CHANNEL_REAR_RIGHT_ENC_A       = 7;
+    final int CHANNEL_REAR_RIGHT_ENC_B       = 8;
 }
