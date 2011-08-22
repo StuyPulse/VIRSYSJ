@@ -9,6 +9,7 @@ import java.nio.*;
 public class Client implements Networkconf {
     private Runnable recieveThread;
     private Thread  threadR;
+    private float[] data;
 
     public Client() {
         recieveThread = new Recieve();
@@ -17,6 +18,10 @@ public class Client implements Networkconf {
 
     public void startRecieveing(){
         threadR.start();
+    }
+
+    public float[] getdata(){
+        return data;
     }
 
     public void send(float left, float right, float arm, float wrist, float grip){
@@ -53,9 +58,9 @@ public class Client implements Networkconf {
             DatagramPacket incoming = new DatagramPacket(buffer, buffer.length);
             DatagramSocket ds = new DatagramSocket(LOCAL_RECV_PORT, InetAddress.getByName(Virsys_IP));
             ds.receive(incoming);
-            byte[] data = incoming.getData();
+            byte[] datas = incoming.getData();
             for (int i = 0; i < data.length / 4; i++) {
-                ans[i] = arr2float(new byte[]{data[4 * i], data[4 * i + 1], data[4 * i + 2], data[4 * i + 3]});
+                ans[i] = arr2float(new byte[]{datas[4 * i], datas[4 * i + 1], datas[4 * i + 2], datas[4 * i + 3]});
             }
             ds.close();
         } catch (IOException e) {
@@ -87,12 +92,11 @@ public class Client implements Networkconf {
     private class Recieve implements Runnable {
 
         public boolean done;
-        public float[] data;
 
         public void run() {
             done = false;
             while (true) {
-                recieve();
+                data = recieve();
                 if (done) {
                     return;
                 }
