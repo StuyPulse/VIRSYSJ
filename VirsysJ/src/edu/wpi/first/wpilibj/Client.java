@@ -50,7 +50,7 @@ public class Client implements Networkconf {
             System.err.println(e);
         }
     }
-
+    
     private float[] recieve() {
         float[] ans = new float[10];
         try {
@@ -59,7 +59,7 @@ public class Client implements Networkconf {
             DatagramSocket ds = new DatagramSocket(LOCAL_RECV_PORT, InetAddress.getByName(Virsys_IP));
             ds.receive(incoming);
             byte[] datas = incoming.getData();
-            for (int i = 0; i < data.length / 4; i++) {
+            for (int i = 0; i < datas.length / 4; i++) {
                 ans[i] = arr2float(new byte[]{datas[4 * i], datas[4 * i + 1], datas[4 * i + 2], datas[4 * i + 3]});
             }
             ds.close();
@@ -95,11 +95,8 @@ public class Client implements Networkconf {
 
         public void run() {
             done = false;
-            while (true) {
+            while (!done) {
                 data = recieve();
-                if (done) {
-                    return;
-                }
             }
         }
     }
