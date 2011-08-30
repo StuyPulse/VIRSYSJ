@@ -20,7 +20,10 @@ public class Client implements Networkconf {
         threadR.start();
     }
 
-    public float[] getdata(){
+    public float[] getdata() throws IOException{
+        if(data == null){
+            throw new IOException("Recieve data null");
+        }            
         return data;
     }
 
