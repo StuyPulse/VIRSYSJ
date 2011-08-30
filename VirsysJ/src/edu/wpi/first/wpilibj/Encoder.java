@@ -1,12 +1,13 @@
 package edu.wpi.first.wpilibj;
 
-public class Encoder implements Channels{
+public class Encoder extends Thread implements Channels{
 
     private Client _c;
     private boolean reverse;
     private int encodernumber;
-    private double distance;
+    private double distance,lasttime,lastsenval;
     final int wheelradius = 3;
+    boolean done = false;
 
     public Encoder(final int aChannel, final int bChannel, boolean reverseDirection, final CounterBase encodingType,Client c) {
         _c = c;
@@ -56,5 +57,16 @@ public class Encoder implements Channels{
 
     public void start(){
         reset();
+        run();
+    }
+
+    public void run(){
+        while(!done){
+            double current = getRate();
+            double time = Timer.getFPGATimestamp();
+            distance += (current + lastsenval) * (time - lasttime)/2;
+            lasttime = time;
+            lastsenval = current;
+        }
     }
 }
