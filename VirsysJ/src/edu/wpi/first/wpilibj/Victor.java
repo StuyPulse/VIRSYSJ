@@ -1,8 +1,9 @@
 package edu.wpi.first.wpilibj;
 
-public class Victor {
+public class Victor implements Channels{
 
     public Victor(int slot, int channel) {
+        
     }
 
     public Victor(int channel) {

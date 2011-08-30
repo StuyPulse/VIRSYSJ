@@ -35,9 +35,14 @@ public class Encoder implements Channels{
         }
     }
 
-    //returns rate in inches/sec
+    //returns rate in inches/sec...0 if it can't connect to Virsys program
     public double getRate() {
+        try{
         return encodernumber <= 2 ? _c.getdata()[2] * wheelradius : _c.getdata()[3] * wheelradius;
+        }catch(Exception e){
+            System.err.println(e);
+        }
+        return 0.0;
     }
 
     //returns distance in inches
