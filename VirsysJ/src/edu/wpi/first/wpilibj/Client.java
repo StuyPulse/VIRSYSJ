@@ -9,22 +9,24 @@ import java.nio.*;
 public class Client implements Networkconf {
     private Runnable recieveThread;
     private Thread  threadR;
-    private float[] data;
+    private Thread  threadS;
+    private float[] receivedData;
+    private float[] toSend;
 
     public Client() {
         recieveThread = new Recieve();
         threadR = new Thread(recieveThread);
-    }
-
-    public void startRecieveing(){
+        threadS = new Thread(new Send());
+        toSend = new float[6];
+        receivedData = new float[10];
         threadR.start();
     }
 
     public float[] getdata() throws IOException{
-        if(data == null){
+        if(receivedData == null){
             throw new IOException("Recieve data null");
         }            
-        return data;
+        return receivedData;
     }
 
     public void send(float left, float right, float arm, float wrist, float grip){
@@ -59,7 +61,7 @@ public class Client implements Networkconf {
         try {
             byte[] buffer = new byte[40];
             DatagramPacket incoming = new DatagramPacket(buffer, buffer.length);
-            DatagramSocket ds = new DatagramSocket(LOCAL_RECV_PORT, InetAddress.getByName(Virsys_IP));
+            DatagramSocket ds = new DatagramSocket(LOCAL_RECV_PORT);
             ds.receive(incoming);
             byte[] datas = incoming.getData();
             for (int i = 0; i < datas.length / 4; i++) {
@@ -99,7 +101,18 @@ public class Client implements Networkconf {
         public void run() {
             done = false;
             while (!done) {
-                data = recieve();
+                receivedData = recieve();
+            }
+        }
+    }
+
+    private class Send implements Runnable {
+
+        public boolean done;
+
+        public void run() {
+            while (true) {
+                send(toSend);
             }
         }
     }
