@@ -9,7 +9,7 @@ public class Encoder extends Thread implements Channels{
     final int wheelradius = 3;
     boolean done = false;
 
-    public Encoder(final int aChannel, final int bChannel, boolean reverseDirection, final CounterBase encodingType,Client c) {
+    public Encoder(final int aChannel, final int bChannel, boolean reverseDirection, final CounterBase.EncodingType encodingType,Client c) {
         _c = c;
         reverse = reverseDirection;
         if (encodingType == null)
