@@ -7,4 +7,5 @@ public interface TorqueConfig{
     final int RIGHT_TORQUE = 250;
     final int ARM_TORQUE = 700;
     final int WRIST_TORQUE = 100;
+    final int GRIP_TORQUE = 100;
 }
