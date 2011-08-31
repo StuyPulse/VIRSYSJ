@@ -11,14 +11,14 @@ public class Client implements Networkconf {
     private Thread  threadR;
     private Thread  threadS;
     private float[] receivedData;
-    private float[] toSend;
+    public float[] toSend;
 
     public Client() {
         recieveThread = new Recieve();
         threadR = new Thread(recieveThread);
         threadS = new Thread(new Send());
         toSend = new float[5];
-        toSend[0] = toSend[1] = 600;
+        //toSend[0] = toSend[1] = 600;
         receivedData = new float[10];
         threadR.start();
         threadS.start();
@@ -104,6 +104,7 @@ public class Client implements Networkconf {
             done = false;
             while (!done) {
                 receivedData = recieve();
+                Thread.yield();
             }
         }
     }
@@ -113,6 +114,8 @@ public class Client implements Networkconf {
         public void run() {
             while (true) {
                 send(toSend[0], toSend[1], toSend[2], toSend[3], toSend[4]);
+                System.out.printf("sending: %f %f %f %f\n", toSend[0], toSend[1], toSend[2], toSend[3], toSend[4]);
+                Thread.yield();
             }
         }
     }

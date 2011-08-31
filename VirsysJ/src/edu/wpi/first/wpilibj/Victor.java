@@ -20,22 +20,24 @@ public class Victor implements Channels, TorqueConfig {
     }
 
     public void pidWrite(double output) {
-        output = prevspeed;
+        prevspeed = output;
         switch (channel) {
             case (LEFT_PWM):
-                c.send((float)(output * LEFT_TORQUE), 0, 0, 0, 0);
+                c.toSend[0] = (float)(output * LEFT_TORQUE);
+                System.out.println("set left to: " + c.toSend[0] + " = " + output + " * " + LEFT_TORQUE);
                 break;
             case (RIGHT_PWM):
-                c.send(0,(float)(output * RIGHT_TORQUE), 0, 0, 0);
+                c.toSend[1] = (float)(output * RIGHT_TORQUE);
+                System.out.println("set right to: " + c.toSend[1]);
                 break;
             case (ARM_PWM):
-                c.send(0, 0, (float)(output * ARM_TORQUE), 0, 0);
+                c.toSend[2] = (float)(output * ARM_TORQUE);
                 break;
             case (WRIST_PWM):
-                c.send(0, 0, 0, (float)(output * WRIST_TORQUE), 0);
+                c.toSend[3] = (float)(output * WRIST_TORQUE);
                 break;
             case (GRIP_PWM):
-                c.send(0, 0, 0, 0, (float)(output * GRIP_TORQUE));
+                c.toSend[4] = (float)(output * GRIP_TORQUE);
                 break;
             default:
                 System.out.println("channel does not match any PWM values... try again");

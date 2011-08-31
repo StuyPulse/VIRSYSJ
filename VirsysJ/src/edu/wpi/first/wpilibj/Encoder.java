@@ -1,20 +1,21 @@
 package edu.wpi.first.wpilibj;
 
-public class Encoder extends Thread implements Channels{
+public class Encoder extends Thread implements Channels {
 
     private Client _c;
     private boolean reverse;
     private int encodernumber;
-    private double distance,lasttime,lastsenval;
+    private double distance, lasttime, lastsenval;
     final int wheelradius = 3;
     boolean done = false;
 
-    public Encoder(final int aChannel, final int bChannel, boolean reverseDirection, final CounterBase.EncodingType encodingType,Client c) {
+    public Encoder(final int aChannel, final int bChannel, boolean reverseDirection, final CounterBase.EncodingType encodingType, Client c) {
         _c = c;
         reverse = reverseDirection;
-        if (encodingType == null)
+        if (encodingType == null) {
             throw new NullPointerException("Given encoding type was null");
-        switch(aChannel){
+        }
+        switch (aChannel) {
             case (CHANNEL_FRONT_LEFT_ENC_A):
             case (CHANNEL_FRONT_LEFT_ENC_B):
                 encodernumber = 1;
@@ -38,9 +39,9 @@ public class Encoder extends Thread implements Channels{
 
     //returns rate in inches/sec...0 if it can't connect to Virsys program
     public double getRate() {
-        try{
-        return encodernumber <= 2 ? _c.getdata()[2] * wheelradius : _c.getdata()[3] * wheelradius;
-        }catch(Exception e){
+        try {
+            return encodernumber <= 2 ? _c.getdata()[2] * wheelradius : _c.getdata()[3] * wheelradius;
+        } catch (Exception e) {
             System.err.println(e);
         }
         return 0.0;
@@ -48,26 +49,27 @@ public class Encoder extends Thread implements Channels{
 
     //returns distance in inches
     public double getDistance() {
-       return distance * wheelradius;
+        return distance * wheelradius;
     }
-    
+
     public void reset() {
         distance = 0;
     }
 
-    public void start(){
+    public void start() {
         reset();
         //run();
         super.start();
     }
 
-    public void run(){
-        while(!done){
+    public void run() {
+        while (!done) {
             double current = getRate();
             double time = Timer.getFPGATimestamp();
-            distance += (current + lastsenval) * (time - lasttime)/2;
+            distance += (current + lastsenval) * (time - lasttime) / 2;
             lasttime = time;
             lastsenval = current;
+            Thread.yield();
         }
     }
 }
