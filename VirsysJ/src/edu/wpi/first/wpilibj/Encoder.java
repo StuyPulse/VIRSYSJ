@@ -57,7 +57,8 @@ public class Encoder extends Thread implements Channels{
 
     public void start(){
         reset();
-        run();
+        //run();
+        super.start();
     }
 
     public void run(){

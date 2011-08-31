@@ -17,9 +17,11 @@ public class Client implements Networkconf {
         recieveThread = new Recieve();
         threadR = new Thread(recieveThread);
         threadS = new Thread(new Send());
-        toSend = new float[6];
+        toSend = new float[5];
+        toSend[0] = toSend[1] = 600;
         receivedData = new float[10];
         threadR.start();
+        threadS.start();
     }
 
     public float[] getdata() throws IOException{
@@ -108,11 +110,9 @@ public class Client implements Networkconf {
 
     private class Send implements Runnable {
 
-        public boolean done;
-
         public void run() {
             while (true) {
-                send(toSend);
+                send(toSend[0], toSend[1], toSend[2], toSend[3], toSend[4]);
             }
         }
     }
