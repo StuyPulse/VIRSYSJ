@@ -9,15 +9,14 @@ import java.nio.*;
 public class Client implements Networkconf {
     private Runnable recieveThread;
     private Thread  threadR;
-    private Thread  threadS;
+    public Send  threadS;
     private float[] receivedData;
-    public float[] toSend;
+   
 
     public Client() {
         recieveThread = new Recieve();
         threadR = new Thread(recieveThread);
-        threadS = new Thread(new Send());
-        toSend = new float[5];
+        threadS = new Send();
         //toSend[0] = toSend[1] = 600;
         receivedData = new float[10];
         threadR.start();
@@ -109,8 +108,14 @@ public class Client implements Networkconf {
         }
     }
 
-    private class Send implements Runnable {
+    public class Send extends Thread {
 
+        public float[] toSend;
+
+        public Send() {
+            toSend = new float[5];
+        }
+        
         public void run() {
             while (true) {
                 send(toSend[0], toSend[1], toSend[2], toSend[3], toSend[4]);
