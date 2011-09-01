@@ -4,6 +4,7 @@
  */
 
 package edu.wpi.first.wpilibj;
+import edu.*;
 
 /**
  *
@@ -12,7 +13,7 @@ package edu.wpi.first.wpilibj;
 public class CRIO {
 
     public static void main(String[] arg){
-        SimpleRobot YourBot = new SimpleRobot();
+        Test YourBot = new Test();
         //please Replace SimpleRobot with the name of your class
         if(YourBot.getClass().getName() == "SimpleRobot"){
             System.out.println("please modify CRIO.java to comstruct your bot");

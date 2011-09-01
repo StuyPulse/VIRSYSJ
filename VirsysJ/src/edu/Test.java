@@ -2,7 +2,7 @@ package edu;
 
 import edu.wpi.first.wpilibj.*;
 
-public class Test {
+public class Test extends SimpleRobot{
 
     Client c;
     Victor rv,lv;
@@ -24,10 +24,5 @@ public class Test {
         re.start();
         le.start();
         System.out.println("distances (right, left): " + re.getDistance() + " " + le.getDistance());
-
-    }
-
-    public static void main(String[] arg) {
-        Test bah = new Test();
     }
 }
