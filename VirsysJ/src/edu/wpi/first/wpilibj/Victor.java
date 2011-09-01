@@ -4,15 +4,15 @@ public class Victor implements Channels, TorqueConfig {
 
     double prevspeed;
     int channel;
-    Client c;
 
-    public Victor(int _channel, Client _c) {
-        c = _c;
+    Client c = CRIO.client;
+
+    public Victor(int _channel) {
        channel = _channel;
     }
 
-    public Victor(int slot, int channel, Client _c) {
-        this(channel,_c);
+    public Victor(int slot, int channel) {
+        this(channel);
     }
 
     public double get() {

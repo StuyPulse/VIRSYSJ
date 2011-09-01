@@ -11,8 +11,11 @@ import edu.*;
  * @author Q
  */
 public class CRIO {
+    public static Client client;
 
     public static void main(String[] arg){
+        client = new Client();
+
         Test YourBot = new Test();
         //please Replace SimpleRobot with the name of your class
         if(YourBot.getClass().getName() == "SimpleRobot"){

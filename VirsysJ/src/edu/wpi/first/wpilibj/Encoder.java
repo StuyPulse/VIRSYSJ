@@ -2,15 +2,15 @@ package edu.wpi.first.wpilibj;
 
 public class Encoder extends Thread implements Channels {
 
-    private Client _c;
     private boolean reverse;
     private int encodernumber;
     private double distance, lasttime, lastsenval;
     final int wheelradius = 3;
     boolean done = false;
 
-    public Encoder(final int aChannel, final int bChannel, boolean reverseDirection, final CounterBase.EncodingType encodingType, Client c) {
-        _c = c;
+    Client _c = CRIO.client;
+
+    public Encoder(final int aChannel, final int bChannel, boolean reverseDirection, final CounterBase.EncodingType encodingType) {
         reverse = reverseDirection;
         if (encodingType == null) {
             throw new NullPointerException("Given encoding type was null");
