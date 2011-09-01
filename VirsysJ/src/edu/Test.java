@@ -13,13 +13,13 @@ public class Test extends SimpleRobot{
         System.out.println("starting");
         c = new Client();
         System.out.println("finised consntructing Client");
-        rv = new Victor(1,c);
-        lv = new Victor(2,c);
+        rv = new Victor(1);
+        lv = new Victor(2);
         rv.pidWrite(1);
         lv.pidWrite(1);
         System.out.println("done making victors");
-        re = new Encoder(1,1,true,CounterBase.EncodingType.k2X,c);
-        le = new Encoder(5,6,true,CounterBase.EncodingType.k2X,c);
+        re = new Encoder(1,1,true,CounterBase.EncodingType.k2X);
+        le = new Encoder(5,6,true,CounterBase.EncodingType.k2X);
         System.out.println("done making Encoders");
         re.start();
         le.start();
