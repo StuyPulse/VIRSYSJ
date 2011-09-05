@@ -20,8 +20,8 @@ public class Test extends SimpleRobot{
         re = new Encoder(1,1,true,CounterBase.EncodingType.k2X);
         le = new Encoder(5,6,true,CounterBase.EncodingType.k2X);
         System.out.println("done making Encoders");
-        g = new Gyro(1);
-        System.out.println("done making Gyros");
+        //g = new Gyro(1);
+        //System.out.println("done making Gyros");
         rv.pidWrite(-1);
         lv.pidWrite(1);
         re.start();
