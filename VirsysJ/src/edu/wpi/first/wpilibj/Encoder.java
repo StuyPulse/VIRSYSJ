@@ -1,10 +1,10 @@
 package edu.wpi.first.wpilibj;
 
-public class Encoder extends Thread implements Channels {
+public class Encoder implements Channels {
 
     private boolean reverse;
     private int encodernumber;
-    private double distance, lasttime, lastsenval;
+    private double lastdis = 0;
     final int wheelradius = 3;
     boolean done = false;
 
@@ -40,7 +40,7 @@ public class Encoder extends Thread implements Channels {
     //returns rate in inches/sec...0 if it can't connect to Virsys program
     public double getRate() {
         try {
-            return encodernumber <= 2 ? _c.getdata()[2] * wheelradius : _c.getdata()[3] * wheelradius;
+            return encodernumber <= 2 ? _c.getdata()[6] * wheelradius : _c.getdata()[7] * wheelradius;
         } catch (Exception e) {
             System.err.println(e);
         }
@@ -49,27 +49,23 @@ public class Encoder extends Thread implements Channels {
 
     //returns distance in inches
     public double getDistance() {
-        return distance * wheelradius;
+         try {
+            return (encodernumber <= 2 ? _c.getdata()[2] * wheelradius : _c.getdata()[3] * wheelradius) - lastdis;
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+        return 0.0;
     }
 
     public void reset() {
-        distance = 0;
+        try {
+            lastdis = encodernumber <= 2 ? _c.getdata()[2] * wheelradius : _c.getdata()[3] * wheelradius;
+        } catch (Exception e) {
+            System.err.println(e);
+        }
     }
 
     public void start() {
         reset();
-        //run();
-        super.start();
-    }
-
-    public void run() {
-        while (!done) {
-            double current = getRate();
-            double time = Timer.getFPGATimestamp();
-            distance += (current + lastsenval) * (time - lasttime) / 2;
-            lasttime = time;
-            lastsenval = current;
-            Thread.yield();
-        }
     }
 }
