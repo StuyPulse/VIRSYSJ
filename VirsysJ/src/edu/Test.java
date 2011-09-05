@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj.*;
 
 public class Test extends SimpleRobot{
 
-    Client c;
     Victor rv,lv;
     Encoder re,le;
     final int wheelradius = 3;
@@ -12,7 +11,6 @@ public class Test extends SimpleRobot{
 
     public Test() {
         System.out.println("starting");
-        c = new Client();
         System.out.println("finised consntructing Client");
         rv = new Victor(1);
         lv = new Victor(2);
@@ -27,6 +25,6 @@ public class Test extends SimpleRobot{
         re.start();
         le.start();
         System.out.println("distances (right, left): " + re.getDistance() + " " + le.getDistance());
-        System.out.println("angle = " + g.getAngle());
+        //System.out.println("angle = " + g.getAngle());
     }
 }
