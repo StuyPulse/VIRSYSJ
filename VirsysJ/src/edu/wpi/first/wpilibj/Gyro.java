@@ -4,13 +4,14 @@ package edu.wpi.first.wpilibj;
  *
  * @author Q
  */
-public class Gyro extends Thread implements Channels {
+public class Gyro implements Channels {
 
+    private Runnable gyroThread;
+    private Thread threadg;
     private int encodernumber;
     final int wheelradius = 3;
     final int width = 20;
     private double dist;
-    public boolean done;
     Client _c = CRIO.client;
 
     public Gyro(int slot, int channel) {
@@ -18,6 +19,9 @@ public class Gyro extends Thread implements Channels {
     }
 
     public Gyro(int channel) {
+        gyroThread = new GyroThread();
+        threadg = new Thread(gyroThread);
+        threadg.start();
         switch (channel) {
             case (CHANNEL_FRONT_LEFT_ENC_A):
             case (CHANNEL_FRONT_LEFT_ENC_B):
@@ -38,7 +42,6 @@ public class Gyro extends Thread implements Channels {
             default:
                 encodernumber = 0;
         }
-        this.start();
     }
 
     public void reset() {
@@ -53,17 +56,18 @@ public class Gyro extends Thread implements Channels {
         return dist;
     }
 
-    public void start() {
-        while (!done) {
-            this.run();
-        }
-    }
+    private class GyroThread implements Runnable {
 
-    public void run() {
-        try {
-            dist += (_c.getdata()[7] - _c.getdata()[6]) * wheelradius / width;
-        } catch (Exception e) {
-            System.err.println(e);
+        public boolean done;
+
+        public void run() {
+            while (!done) {
+                try {
+                    dist += (_c.getdata()[7] - _c.getdata()[6]) * wheelradius / width;
+                } catch (Exception e) {
+                    System.err.println(e);
+                }
+            }
         }
     }
 }
