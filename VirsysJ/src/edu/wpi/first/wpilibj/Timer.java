@@ -20,7 +20,7 @@ public class Timer {
 
     public double get() {
         if(m_running){
-            return ((double) ((getFPGATimestamp() - m_startTime) + m_accumulatedTime)) / 1000.0;
+            return ((double) ((getFPGATimestamp() - m_startTime) + m_accumulatedTime));
         } else {
             return m_accumulatedTime;
         }
