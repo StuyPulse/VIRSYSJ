@@ -13,9 +13,12 @@ public class Gyro implements Channels {
     final int width = 20;
     private double dist;
     Client _c = CRIO.client;
+    Timer time;
+    double prev;
 
     public Gyro(int slot, int channel) {
         this(channel);
+        prev = time.getFPGATimestamp();
     }
 
     public Gyro(int channel) {
@@ -63,7 +66,9 @@ public class Gyro implements Channels {
         public void run() {
             while (!done) {
                 try {
-                    dist += (_c.getdata()[7] - _c.getdata()[6]) * wheelradius / width;
+                    double change = time.getFPGATimestamp() - prev;
+                    prev = time.getFPGATimestamp();
+                    dist += (_c.getdata()[7] - _c.getdata()[6]) * wheelradius / width * change;
                 } catch (Exception e) {
                     System.err.println(e);
                 }
