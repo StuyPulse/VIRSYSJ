@@ -12,7 +12,7 @@ public class Timer {
 
     public static void delay(double seconds) {
         try {
-            Thread.sleep((long) seconds * 1000);
+            Thread.sleep((long) (seconds * 1000));
         } catch (InterruptedException e) {
             System.out.print("you did sonething really bad!!");
         }
