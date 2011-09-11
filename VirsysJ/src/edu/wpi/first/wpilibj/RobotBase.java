@@ -26,11 +26,12 @@ public class RobotBase {
     }
 
     public boolean isAutonomous() {
-        return _gametimer.get() < 60;
+        System.out.println(_gametimer.get());
+        return _gametimer.get() < 15;
     }
 
     public boolean isOperatorControl() {
-        return _gametimer.get() > 60;
+        return _gametimer.get() > 15;
     }
 
     public boolean isNewDataAvailable() {
