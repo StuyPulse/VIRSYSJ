@@ -5,6 +5,7 @@ public class RobotBase {
     private Timer _gametimer;
 
     public RobotBase() {
+        _gametimer = new Timer();
         _gametimer.start();
     }
 
