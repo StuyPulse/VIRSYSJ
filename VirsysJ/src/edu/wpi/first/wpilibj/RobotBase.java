@@ -2,7 +2,10 @@ package edu.wpi.first.wpilibj;
 
 public class RobotBase {
 
+    private Timer _gametimer;
+
     public RobotBase() {
+        _gametimer.start();
     }
 
     public boolean isSystemActive() {
@@ -22,11 +25,11 @@ public class RobotBase {
     }
 
     public boolean isAutonomous() {
-        return false;
+        return _gametimer.get() < 60;
     }
 
     public boolean isOperatorControl() {
-        return true;
+        return _gametimer.get() > 60;
     }
 
     public boolean isNewDataAvailable() {
