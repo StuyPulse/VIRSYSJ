@@ -20,11 +20,20 @@ public class Test extends SimpleRobot{
         System.out.println("done making Encoders");
         g = new Gyro(1);
         System.out.println("done making Gyros");
-        rv.pidWrite(-1);
-        lv.pidWrite(1);
+        
         re.start();
         le.start();
         System.out.println("distances (right, left): " + re.getDistance() + " " + le.getDistance());
         System.out.println("angle = " + g.getAngle());
+    }
+
+    public void operatorControl() {
+
+        rv.pidWrite(-1);
+        lv.pidWrite(1);
+        while (isOperatorControl() && isEnabled()) {
+            System.out.println("angle = " + g.getAngle());
+            Timer.delay(0.1);
+        }
     }
 }

@@ -119,7 +119,7 @@ public class Client implements Networkconf {
         public void run() {
             while (!done) {
                 send(toSend[0], toSend[1], toSend[2], toSend[3], toSend[4]);
-                System.out.printf("sending: %f %f %f %f %f\n", toSend[0], toSend[1], toSend[2], toSend[3], toSend[4]);
+                //System.out.printf("sending: %f %f %f %f %f\n", toSend[0], toSend[1], toSend[2], toSend[3], toSend[4]);
                 Thread.yield();
             }
         }
