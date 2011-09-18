@@ -3,12 +3,12 @@ package edu.wpi.first.wpilibj;
 public abstract class RobotBase {
 
     private Timer _gametimer;
-    private Watchdog watch;
+    private final Watchdog m_watchdog = Watchdog.getInstance();
 
     public RobotBase() {
         _gametimer = new Timer();
         _gametimer.start();
-        watch = new Watchdog();
+        m_watchdog.setEnabled(false);
     }
 
     public boolean isSystemActive() {
@@ -16,7 +16,7 @@ public abstract class RobotBase {
     }
 
     public Watchdog getWatchdog() {
-        return watch;
+        return m_watchdog;
     }
 
     public boolean isEnabled() {
