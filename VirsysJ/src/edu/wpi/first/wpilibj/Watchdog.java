@@ -1,6 +1,7 @@
 package edu.wpi.first.wpilibj;
 
 public class Watchdog {
+    private static Watchdog m_instance;
     private boolean enabled;
     private double begining, interval;
     private Timer time;
@@ -9,7 +10,8 @@ public class Watchdog {
         time = new Timer();
         enabled = true;
         begining = time.getFPGATimestamp();
-        interval = 5;
+        setExpiration(5);
+        setEnabled(true);
     }
 
     public void feed() {
@@ -43,5 +45,16 @@ public class Watchdog {
 
     public void setExpiration(double expiration) {
         interval = (long) expiration;
+    }
+
+    /**
+     *  Get an instance of the watchdog
+     * @return an instance of the watchdog
+     */
+    public static synchronized Watchdog getInstance() {
+        if (m_instance == null) {
+            m_instance = new Watchdog();
+        }
+        return m_instance;
     }
 }

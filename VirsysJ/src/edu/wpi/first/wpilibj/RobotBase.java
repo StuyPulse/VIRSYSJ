@@ -1,6 +1,6 @@
 package edu.wpi.first.wpilibj;
 
-public class RobotBase {
+public abstract class RobotBase {
 
     private Timer _gametimer;
     private Watchdog watch;
