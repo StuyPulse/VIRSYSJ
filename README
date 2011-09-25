@@ -2,11 +2,15 @@ DEPENDENCIES
 
 1.  VIRSYS (VIrtual Robot SYStem)
     Go to http://www.virsys.org/get_started.html, and get
-      * VIRSYS alpha download //in the repo
       * GLUT library (install to Windows\system ...)
 
-2.   Java
-     Go to http://www.java.com/en/download/
+2.  Java
+    Go to http://www.java.com/en/download/
+    Netbeans
+    GO to http://netbeans.org/downloads/    
+
+3.  LWJGL (Light Weight Java Graphics library)
+    Go to LWJGL Dir and read README
 
 RUNNING THE PROJECT
 
