@@ -16,12 +16,12 @@ public class CRIO {
     public static void main(String[] arg){
         client = new Client();
 
-        Test YourBot = new Test();
+        MyBot bot = new MyBot();
         //please Replace SimpleRobot with the name of your class
-        if(YourBot.getClass().getName() == "SimpleRobot"){
+        if(bot.getClass().getName() == "SimpleRobot"){
             System.out.println("please modify CRIO.java to comstruct your bot");
         }else{
-            YourBot.startCompetition();
+            bot.startCompetition();
         }
     }
 
