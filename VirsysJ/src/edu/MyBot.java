@@ -27,12 +27,12 @@ public class MyBot extends SimpleRobot{
         System.out.println("angle = " + g.getAngle());
     }
 
-    public void operatorControl() {
+    public void robotMain() {
 
-        rv.pidWrite(-1);
-        lv.pidWrite(1);
-        while (isOperatorControl() && isEnabled()) {
-            System.out.println("angle = " + g.getAngle());
+        rv.set(-1);
+        lv.set(1);
+        while (true /*isOperatorControl() && isEnabled()*/ ) {
+            //System.out.println("angle = " + g.getAngle());
             Timer.delay(0.1);
         }
     }

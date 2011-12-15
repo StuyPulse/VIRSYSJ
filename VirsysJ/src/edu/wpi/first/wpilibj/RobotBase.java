@@ -33,7 +33,7 @@ public abstract class RobotBase {
     }
 
     public boolean isOperatorControl() {
-        return _gametimer.get() > 15;
+        return _gametimer.get() >= 15;
     }
 
     public boolean isNewDataAvailable() {

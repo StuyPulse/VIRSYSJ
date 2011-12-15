@@ -19,7 +19,7 @@ public class CRIO {
         MyBot bot = new MyBot();
         //please Replace SimpleRobot with the name of your class
         if(bot.getClass().getName() == "SimpleRobot"){
-            System.out.println("please modify CRIO.java to comstruct your bot");
+            System.out.println("please modify CRIO.java to construct your bot");
         }else{
             bot.startCompetition();
         }

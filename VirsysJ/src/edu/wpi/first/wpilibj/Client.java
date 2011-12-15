@@ -11,14 +11,23 @@ public class Client implements Networkconf {
     private Thread  threadR;
     public Send  threadS;
     private float[] receivedData;
-   
+    DatagramSocket sender;
+    DatagramSocket receiver;
 
     public Client() {
         recieveThread = new Recieve();
         threadR = new Thread(recieveThread);
         threadS = new Send();
         receivedData = new float[10];
-        threadR.start();
+	try {
+	    sender = new DatagramSocket();
+	    receiver = new DatagramSocket(LOCAL_RECV_PORT);
+	}
+	catch (IOException e) {
+	    e.printStackTrace();
+	    //System.exit();
+	}
+	threadR.start();
         threadS.start();
     }
 
@@ -47,9 +56,7 @@ public class Client implements Networkconf {
                     b[i * 4 + 3] = test[3];
                 }
                 DatagramPacket dp = new DatagramPacket(b, b.length, InetAddress.getByName(Virsys_IP), VIRSYS_RECV_PORT);
-                DatagramSocket sender = new DatagramSocket();
                 sender.send(dp);
-                sender.close();
             }
         } catch (IOException e) {
             System.err.println(e);
@@ -61,13 +68,12 @@ public class Client implements Networkconf {
         try {
             byte[] buffer = new byte[40];
             DatagramPacket incoming = new DatagramPacket(buffer, buffer.length);
-            DatagramSocket ds = new DatagramSocket(LOCAL_RECV_PORT);
-            ds.receive(incoming);
+	    //System.out.println(receiver);
+	    receiver.receive(incoming);
             byte[] datas = incoming.getData();
             for (int i = 0; i < datas.length / 4; i++) {
                 ans[i] = arr2float(new byte[]{datas[4 * i], datas[4 * i + 1], datas[4 * i + 2], datas[4 * i + 3]});
             }
-            ds.close();
         } catch (IOException e) {
             System.err.println(e);
         }
@@ -114,6 +120,7 @@ public class Client implements Networkconf {
 
         public Send() {
             toSend = new float[5];
+	    toSend[4] = 2;
         }
         
         public void run() {
