@@ -23,6 +23,9 @@ public class CRIO {
         }else{
             bot.startCompetition();
         }
+
+	client.end();
+	System.out.println("ended client");
     }
 
 }

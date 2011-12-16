@@ -5,6 +5,9 @@ public abstract class RobotBase {
     private Timer _gametimer;
     private final Watchdog m_watchdog = Watchdog.getInstance();
 
+    public final double TOTAL_MATCH_TIME_SECONDS = 6;
+    public final double AUTON_TIME_SECONDS = 3;
+
     public RobotBase() {
         _gametimer = new Timer();
         _gametimer.start();
@@ -20,20 +23,21 @@ public abstract class RobotBase {
     }
 
     public boolean isEnabled() {
-        return true;
+        return _gametimer.get() < TOTAL_MATCH_TIME_SECONDS;
     }
 
     public boolean isDisabled() {
-        return false;
+        return !isEnabled();
     }
 
     public boolean isAutonomous() {
         System.out.println(_gametimer.get());
-        return _gametimer.get() < 15;
+        return _gametimer.get() < AUTON_TIME_SECONDS;
     }
 
     public boolean isOperatorControl() {
-        return _gametimer.get() >= 15;
+        return (_gametimer.get() >= AUTON_TIME_SECONDS) &&
+	    (_gametimer.get() < TOTAL_MATCH_TIME_SECONDS);
     }
 
     public boolean isNewDataAvailable() {

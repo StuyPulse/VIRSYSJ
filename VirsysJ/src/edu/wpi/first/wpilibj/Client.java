@@ -13,6 +13,7 @@ public class Client implements Networkconf {
     private float[] receivedData;
     DatagramSocket sender;
     DatagramSocket receiver;
+    private boolean done = false; // threads exit when this is true
 
     public Client() {
         recieveThread = new Recieve();
@@ -25,10 +26,17 @@ public class Client implements Networkconf {
 	}
 	catch (IOException e) {
 	    e.printStackTrace();
-	    //System.exit();
+	    System.out.println("can't bind port; aborting");
+	    System.exit(1);
 	}
 	threadR.start();
         threadS.start();
+    }
+
+    public void end() {
+	done = true;
+	sender.close();
+	receiver.close();
     }
 
     public float[] getdata() throws IOException{
@@ -59,7 +67,7 @@ public class Client implements Networkconf {
                 sender.send(dp);
             }
         } catch (IOException e) {
-            System.err.println(e);
+            e.printStackTrace();
         }
     }
     
@@ -75,7 +83,7 @@ public class Client implements Networkconf {
                 ans[i] = arr2float(new byte[]{datas[4 * i], datas[4 * i + 1], datas[4 * i + 2], datas[4 * i + 3]});
             }
         } catch (IOException e) {
-            System.err.println(e);
+            e.printStackTrace();
         }
         return ans;
     }
@@ -101,9 +109,6 @@ public class Client implements Networkconf {
         return bytes;
     }
     private class Recieve implements Runnable {
-
-        public boolean done;
-
         public void run() {
             done = false;
             while (!done) {
@@ -116,7 +121,6 @@ public class Client implements Networkconf {
     public class Send extends Thread {
 
         public float[] toSend;
-        public boolean done;
 
         public Send() {
             toSend = new float[5];

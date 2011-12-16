@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.*;
 
 public class MyBot extends SimpleRobot{
 
-    Victor rv,lv;
+    Victor rv,lv, arm;
     Encoder re,le;
     final int wheelradius = 3;
     Gyro g;
@@ -14,6 +14,7 @@ public class MyBot extends SimpleRobot{
         System.out.println("finised consntructing Client");
         rv = new Victor(1);
         lv = new Victor(2);
+	arm = new Victor(3);
         System.out.println("done making victors");
         re = new Encoder(1,1,true,CounterBase.EncodingType.k2X);
         le = new Encoder(5,6,true,CounterBase.EncodingType.k2X);
@@ -29,9 +30,10 @@ public class MyBot extends SimpleRobot{
 
     public void robotMain() {
 
-        rv.set(-1);
-        lv.set(1);
-        while (true /*isOperatorControl() && isEnabled()*/ ) {
+        rv.set(-.5);
+        lv.set(.5);
+	arm.set(-1);
+        while (isEnabled()) {
             //System.out.println("angle = " + g.getAngle());
             Timer.delay(0.1);
         }

@@ -103,24 +103,22 @@ public class SimpleRobot extends RobotBase {
             // first and one-time initialization
             robotInit();
 
-            while (true) {
-                if (isDisabled()) {
-                    disabled();
-                    while (isDisabled()) {
-                        Timer.delay(0.01);
-                    }
-                } else if (isAutonomous()) {
-                    autonomous();
-                    while (isAutonomous() && !isDisabled()) {
-                        Timer.delay(0.01);
-                    }
-                } else {
-                    operatorControl();
-                    while (isOperatorControl() && !isDisabled()) {
-                        Timer.delay(0.01);
-                    }
-                }
-            } /* while loop */
+	    if (isDisabled()) {
+		disabled();
+		while (isDisabled()) {
+		    Timer.delay(0.01);
+		}
+	    } else if (isAutonomous()) {
+		autonomous();
+		while (isAutonomous() && !isDisabled()) {
+		    Timer.delay(0.01);
+		}
+	    } else {
+		operatorControl();
+		while (isOperatorControl() && !isDisabled()) {
+		    Timer.delay(0.01);
+		}
+	    }
         }
     }
 }
