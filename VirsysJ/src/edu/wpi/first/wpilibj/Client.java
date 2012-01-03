@@ -93,14 +93,14 @@ public class Client implements Networkconf {
     public class Send extends Thread {
 
         public float[] toSend;
-	DatagramSocket sender;
+	DatagramSocket sendSock;
 
         public Send() {
             toSend = new float[5];
 	    toSend[4] = 2;
 	    
 	    try {
-		sender = new DatagramSocket();
+		sendSock = new DatagramSocket();
 	    }
 	    catch (IOException e) {
 		e.printStackTrace();
@@ -114,7 +114,7 @@ public class Client implements Networkconf {
                 send(toSend);
                 Thread.yield();
             }
-	    sender.close();
+	    sendSock.close();
         }
 
         private void send(float[] f) {
@@ -141,7 +141,7 @@ public class Client implements Networkconf {
                         b[i * 4 + 3] = test[3];
                     }
                     DatagramPacket dp = new DatagramPacket(b, b.length, InetAddress.getByName(Virsys_IP), VIRSYS_RECV_PORT);
-                    sender.send(dp);
+                    sendSock.send(dp);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
