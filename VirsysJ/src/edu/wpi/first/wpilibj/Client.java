@@ -92,10 +92,11 @@ public class Client implements Networkconf {
 
         public float[] toSend;
 	DatagramSocket sendSock;
+	public static final int NUM_SEND_ELEMENTS = 5; // not including time stamp
 
         public Send() {
-            toSend = new float[5];
-	    toSend[4] = 2;
+            toSend = new float[NUM_SEND_ELEMENTS];
+	    toSend[4] = 2; // set last element: hold a red tube
 	    
 	    try {
 		sendSock = new DatagramSocket();
@@ -117,8 +118,8 @@ public class Client implements Networkconf {
 
         private void send(float[] f) {
             try {
-                if (f.length != 5) {
-                    System.out.print("error:need 6 floats in packet");
+                if (f.length != NUM_SEND_ELEMENTS) {
+                    System.out.print("Error: wrong number of floats in packet.  Need " + NUM_SEND_ELEMENTS + ", got " + f.length);
                 } else {
                     // add timestamp to beginning.
                     float[] withTimestamp = new float[f.length + 1];
