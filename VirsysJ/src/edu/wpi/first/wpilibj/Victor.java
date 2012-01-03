@@ -1,6 +1,6 @@
 package edu.wpi.first.wpilibj;
 
-public class Victor implements Channels, TorqueConfig {
+public class Victor implements Channels {
 
     double prevspeed;
     int channel;
@@ -21,26 +21,15 @@ public class Victor implements Channels, TorqueConfig {
 
     public void pidWrite(double output) {
         prevspeed = output;
-        switch (channel) {
-            case (LEFT_PWM):
-                c.threadS.toSend[0] = (float)(output * LEFT_TORQUE);
-                break;
-            case (RIGHT_PWM):
-                c.threadS.toSend[1] = (float)(output * RIGHT_TORQUE);
-                break;
-            case (ARM_PWM):
-                c.threadS.toSend[2] = (float)(output * ARM_TORQUE);
-                break;
-            case (WRIST_PWM):
-                c.threadS.toSend[3] = (float)(output * WRIST_TORQUE);
-                break;
-            case (GRIP_PWM):
-                c.threadS.toSend[4] = (float)(output * GRIP_TORQUE);
-                break;
-            default:
-                System.out.println("channel does not match any PWM values... try again");
-                break;
-        }
+
+	double[] motor_stall_torques = new double[5];
+	motor_stall_torques[0] = 250.0;
+	motor_stall_torques[1] = 250.0;
+	motor_stall_torques[2] = 700.0;
+	motor_stall_torques[3] = 100.0;
+	motor_stall_torques[4] = 100.0;
+	
+	c.threadS.toSend[channel-1] = (float)(output * motor_stall_torques[channel-1]);
     }
 
     public void set(double speed) {
