@@ -28,7 +28,7 @@ public class MyBot extends SimpleRobot{
         System.out.println("angle = " + g.getAngle());
     }
 
-    public void operatorControl() {
+    public void autonomous() {
 
         rv.set(-.5);
         lv.set(.5);
