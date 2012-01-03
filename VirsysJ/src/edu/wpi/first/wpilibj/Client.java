@@ -43,9 +43,10 @@ public class Client implements Networkconf {
     private class Receive extends Thread {
         DatagramSocket recvSock;
 	public float[] receivedData;
+	public final static int NUM_RECV_ELEMENTS = 10;
 
         public void run() {
-            receivedData = new float[10];
+            receivedData = new float[NUM_RECV_ELEMENTS];
             try {
                 recvSock = new DatagramSocket(LOCAL_RECV_PORT);
             } catch (IOException e) {
@@ -62,7 +63,7 @@ public class Client implements Networkconf {
 
         private void receive() {
             try {
-                byte[] buffer = new byte[40];
+                byte[] buffer = new byte[4 * NUM_RECV_ELEMENTS];
                 DatagramPacket incoming = new DatagramPacket(buffer, buffer.length);
                 //System.out.println(receiver);
                 recvSock.receive(incoming);
