@@ -5,6 +5,21 @@ public class Victor implements Channels {
     double prevspeed;
     int channel;
 
+    double[] motor_stall_torques = {
+            346.9, // OZ*in
+            346.9,
+            700.0,
+            100.0,
+            100.0,
+    };
+    double[] motor_free_speeds = {
+            5342 * 2 * Math.PI / 60.0, // rad / sec
+            5342 * 2 * Math.PI / 60.0,
+            700.0,
+            100.0,
+            100.0
+    };
+
     Client c = CRIO.client;
 
     public Victor(int _channel) {
@@ -22,17 +37,18 @@ public class Victor implements Channels {
     public void pidWrite(double output) {
         prevspeed = output;
 
-	double[] motor_stall_torques = new double[5];
-	motor_stall_torques[0] = 250.0;
-	motor_stall_torques[1] = 250.0;
-	motor_stall_torques[2] = 700.0;
-	motor_stall_torques[3] = 100.0;
-	motor_stall_torques[4] = 100.0;
-	
-	c.threadS.toSend[channel-1] = (float)(output * motor_stall_torques[channel-1]);
+
+
+	c.threadS.toSend[channel-1] = (float)(output * maxcurrenttorque());
     }
 
     public void set(double speed) {
         pidWrite(speed);
+    }
+
+    double maxcurrenttorque() {
+        double slope = -1 * motor_stall_torques[channel - 1] / motor_free_speeds[channel - 1];
+        double currentspeed = Math.abs(c.getdata()[channel + 5]); // +5 to convert the channel number to the correct index of the receive data array
+        return motor_stall_torques[channel - 1] + currentspeed * slope;
     }
 }

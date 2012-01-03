@@ -1,18 +1,33 @@
 package edu.wpi.first.wpilibj;
 
-public class Jaguar implements Channels, TorqueConfig{
+public class Jaguar implements Channels {
 
     double prevspeed;
     int channel;
 
+    double[] motor_stall_torques = {
+            346.9, // OZ*in
+            346.9,
+            700.0,
+            100.0,
+            100.0,
+    };
+    double[] motor_free_speeds = {
+            5342 * 2 * Math.PI / 60.0, // rad / sec
+            5342 * 2 * Math.PI / 60.0,
+            700.0,
+            100.0,
+            100.0
+    };
+
     Client c = CRIO.client;
+
+    public Jaguar(int _channel) {
+       channel = _channel;
+    }
 
     public Jaguar(int slot, int channel) {
         this(channel);
-    }
-
-    public Jaguar(int _channel) {
-        channel = _channel;
     }
 
     public double get() {
@@ -21,29 +36,19 @@ public class Jaguar implements Channels, TorqueConfig{
 
     public void pidWrite(double output) {
         prevspeed = output;
-        switch (channel) {
-            case (LEFT_PWM):
-                c.threadS.toSend[0] = (float)(output * LEFT_TORQUE);
-                break;
-            case (RIGHT_PWM):
-                c.threadS.toSend[1] = (float)(output * RIGHT_TORQUE);
-                break;
-            case (ARM_PWM):
-                c.threadS.toSend[2] = (float)(output * ARM_TORQUE);
-                break;
-            case (WRIST_PWM):
-                c.threadS.toSend[3] = (float)(output * WRIST_TORQUE);
-                break;
-            case (GRIP_PWM):
-                c.threadS.toSend[4] = (float)(output * GRIP_TORQUE);
-                break;
-            default:
-                System.out.println("channel does not match any PWM values... try again");
-                break;
-        }
+
+
+
+	c.threadS.toSend[channel-1] = (float)(output * maxcurrenttorque());
     }
 
     public void set(double speed) {
         pidWrite(speed);
+    }
+
+    double maxcurrenttorque() {
+        double slope = -1 * motor_stall_torques[channel - 1] / motor_free_speeds[channel - 1];
+        double currentspeed = Math.abs(c.getdata()[channel + 5]); // +5 to convert the channel number to the correct index of the receive data array
+        return motor_stall_torques[channel - 1] + currentspeed * slope;
     }
 }
