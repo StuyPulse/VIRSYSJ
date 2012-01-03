@@ -43,7 +43,7 @@ public class Client implements Networkconf {
 	for (int i = 0; i < threadS.toSend.length; i++) {
 	    threadS.toSend[i] = 0;
 	}
-	send(threadS.toSend);
+	threadS.send(threadS.toSend);
     }
 
     public float[] getdata() throws IOException{
@@ -51,37 +51,6 @@ public class Client implements Networkconf {
             throw new IOException("Recieve data null");
         }            
         return receivedData;
-    }
-
-    private void send(float[] f) {
-        try {
-            if (f.length != 5) {
-                System.out.print("error:need 6 floats in packet");
-            } else {
-		// add timestamp to beginning.
-		float[] withTimestamp = new float[f.length+1];
-		withTimestamp[0] = timestamp;
-                timestamp++;
-                System.out.print("sending packet:    " + withTimestamp[0] + ", ");
-		for (int i = 0; i < f.length; i++) {
-		    withTimestamp[i+1] = f[i];
-                    System.out.print(withTimestamp[i+1] + ", ");
-		}
-                System.out.println();
-                byte[] b = new byte[withTimestamp.length * 4];
-                for (int i = 0; i < withTimestamp.length; i++) {
-                    byte[] test = float2arr(withTimestamp[i]);
-                    b[i * 4] = test[0];
-                    b[i * 4 + 1] = test[1];
-                    b[i * 4 + 2] = test[2];
-                    b[i * 4 + 3] = test[3];
-                }
-                DatagramPacket dp = new DatagramPacket(b, b.length, InetAddress.getByName(Virsys_IP), VIRSYS_RECV_PORT);
-                sender.send(dp);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
     
     private float[] receive() {
@@ -144,6 +113,37 @@ public class Client implements Networkconf {
             while (!done) {
                 send(toSend);
                 Thread.yield();
+            }
+        }
+
+        private void send(float[] f) {
+            try {
+                if (f.length != 5) {
+                    System.out.print("error:need 6 floats in packet");
+                } else {
+                    // add timestamp to beginning.
+                    float[] withTimestamp = new float[f.length + 1];
+                    withTimestamp[0] = timestamp;
+                    timestamp++;
+                    System.out.print("sending packet:    " + withTimestamp[0] + ", ");
+                    for (int i = 0; i < f.length; i++) {
+                        withTimestamp[i + 1] = f[i];
+                        System.out.print(withTimestamp[i + 1] + ", ");
+                    }
+                    System.out.println();
+                    byte[] b = new byte[withTimestamp.length * 4];
+                    for (int i = 0; i < withTimestamp.length; i++) {
+                        byte[] test = float2arr(withTimestamp[i]);
+                        b[i * 4] = test[0];
+                        b[i * 4 + 1] = test[1];
+                        b[i * 4 + 2] = test[2];
+                        b[i * 4 + 3] = test[3];
+                    }
+                    DatagramPacket dp = new DatagramPacket(b, b.length, InetAddress.getByName(Virsys_IP), VIRSYS_RECV_PORT);
+                    sender.send(dp);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
