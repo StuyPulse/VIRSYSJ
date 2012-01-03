@@ -28,4 +28,9 @@ public class CRIO {
 	System.out.println("ended client");
     }
 
+
+    public static class DigitalSidecar {
+        public static double[][] INPUTS;
+        public static double[][] OUTPUTS;
+    }
 }
