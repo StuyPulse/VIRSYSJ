@@ -54,14 +54,13 @@ public class Client implements Networkconf {
                 System.exit(1);
             }
             while (!done) {
-                receivedData = receive();
+                receive();
                 Thread.yield();
             }
             recvSock.close(); // finished
         }
 
-        private float[] receive() {
-            float[] ans = new float[10];
+        private void receive() {
             try {
                 byte[] buffer = new byte[40];
                 DatagramPacket incoming = new DatagramPacket(buffer, buffer.length);
@@ -69,12 +68,11 @@ public class Client implements Networkconf {
                 recvSock.receive(incoming);
                 byte[] datas = incoming.getData();
                 for (int i = 0; i < datas.length / 4; i++) {
-                    ans[i] = arr2float(new byte[]{datas[4 * i], datas[4 * i + 1], datas[4 * i + 2], datas[4 * i + 3]});
+                    receivedData[i] = arr2float(new byte[]{datas[4 * i], datas[4 * i + 1], datas[4 * i + 2], datas[4 * i + 3]});
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return ans;
         }
 
         private float arr2float(byte[] buf) {
