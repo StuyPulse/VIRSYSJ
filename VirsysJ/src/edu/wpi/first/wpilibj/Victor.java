@@ -23,11 +23,11 @@ public class Victor implements Channels {
         prevspeed = output;
 
 	double[] motor_stall_torques = new double[5];
-	motor_stall_torques[0] = 250.0;
-	motor_stall_torques[1] = 250.0;
-	motor_stall_torques[2] = 700.0;
-	motor_stall_torques[3] = 100.0;
-	motor_stall_torques[4] = 100.0;
+	motor_stall_torques[0] = 250.0; // left
+	motor_stall_torques[1] = 250.0; // right
+	motor_stall_torques[2] = 700.0; // arm
+	motor_stall_torques[3] = 100.0; // wrist
+	motor_stall_torques[4] = 100.0; // grip
 	
 	c.threadS.toSend[channel-1] = (float)(output * motor_stall_torques[channel-1]);
     }
