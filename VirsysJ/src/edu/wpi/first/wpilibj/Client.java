@@ -86,7 +86,7 @@ public class Client implements Networkconf {
         }
     }
     
-    private float[] recieve() {
+    private float[] receive() {
         float[] ans = new float[10];
         try {
             byte[] buffer = new byte[40];
@@ -127,7 +127,7 @@ public class Client implements Networkconf {
         public void run() {
             done = false;
             while (!done) {
-                receivedData = recieve();
+                receivedData = receive();
                 Thread.yield();
             }
         }
