@@ -35,8 +35,15 @@ public class Client implements Networkconf {
 
     public void end() {
 	done = true;
+	Timer.delay(0.1);
 	sender.close();
 	receiver.close();
+	// set all motor values to 0
+	// except for the last value, the tube grip -- the robot can still hold a tube after it's disabled
+	for (int i = 0; i < threadS.toSend.length; i++) {
+	    threadS.toSend[i] = 0;
+	}
+	send(threadS.toSend);
     }
 
     public float[] getdata() throws IOException{
@@ -46,18 +53,20 @@ public class Client implements Networkconf {
         return receivedData;
     }
 
-    public void send(float left, float right, float arm, float wrist, float grip){
-        send(new float[]{(float)Timer.getFPGATimestamp(),left,right,arm,wrist,grip});
-    }
-
     private void send(float[] f) {
         try {
-            if (f.length != 6) {
+            if (f.length != 5) {
                 System.out.print("error:need 6 floats in packet");
             } else {
-                byte[] b = new byte[24];
-                for (int i = 0; i < f.length; i++) {
-                    byte[] test = float2arr(f[i]);
+		// add timestamp to beginning.
+		float[] withTimestamp = new float[f.length+1];
+		withTimestamp[0] = (float)(Timer.getFPGATimestamp());
+		for (int i = 0; i < f.length; i++) {
+		    withTimestamp[i+1] = f[i];
+		}
+                byte[] b = new byte[withTimestamp.length * 4];
+                for (int i = 0; i < withTimestamp.length; i++) {
+                    byte[] test = float2arr(withTimestamp[i]);
                     b[i * 4] = test[0];
                     b[i * 4 + 1] = test[1];
                     b[i * 4 + 2] = test[2];
@@ -129,8 +138,7 @@ public class Client implements Networkconf {
         
         public void run() {
             while (!done) {
-                send(toSend[0], toSend[1], toSend[2], toSend[3], toSend[4]);
-                //System.out.printf("sending: %f %f %f %f %f\n", toSend[0], toSend[1], toSend[2], toSend[3], toSend[4]);
+                send(toSend);
                 Thread.yield();
             }
         }

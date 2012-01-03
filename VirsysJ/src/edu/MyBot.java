@@ -28,10 +28,10 @@ public class MyBot extends SimpleRobot{
         System.out.println("angle = " + g.getAngle());
     }
 
-    public void robotMain() {
+    public void autonomous() {
 
-        rv.set(-.5);
-        lv.set(.5);
+        rv.set(-1);
+        lv.set(1);
 	arm.set(-1);
         while (isEnabled()) {
             //System.out.println("angle = " + g.getAngle());
