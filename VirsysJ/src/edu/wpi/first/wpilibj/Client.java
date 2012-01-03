@@ -53,28 +53,6 @@ public class Client implements Networkconf {
         return receivedData;
     }
     
-
-
-    private float arr2float(byte[] buf) {
-        byte[] asdf = new byte[4];
-        for (int i = 0; i < 4; i++) {
-            asdf[i] = buf[3 - i];
-        }
-        ByteBuffer bb = ByteBuffer.allocate(4);
-        bb.put(asdf);
-        float value = bb.getFloat(0);
-        return value;
-    }
-
-    private byte[] float2arr(float f) {
-        int bits = Float.floatToIntBits(f);
-        byte[] bytes = new byte[4];
-        bytes[0] = (byte) (bits & 0xff);
-        bytes[1] = (byte) ((bits >> 8) & 0xff);
-        bytes[2] = (byte) ((bits >> 16) & 0xff);
-        bytes[3] = (byte) ((bits >> 24) & 0xff);
-        return bytes;
-    }
     private class Receive extends Thread {
         public void run() {
             done = false;
@@ -99,6 +77,17 @@ public class Client implements Networkconf {
                 e.printStackTrace();
             }
             return ans;
+        }
+
+        private float arr2float(byte[] buf) {
+            byte[] asdf = new byte[4];
+            for (int i = 0; i < 4; i++) {
+                asdf[i] = buf[3 - i];
+            }
+            ByteBuffer bb = ByteBuffer.allocate(4);
+            bb.put(asdf);
+            float value = bb.getFloat(0);
+            return value;
         }
     }
 
@@ -147,6 +136,16 @@ public class Client implements Networkconf {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+
+        private byte[] float2arr(float f) {
+            int bits = Float.floatToIntBits(f);
+            byte[] bytes = new byte[4];
+            bytes[0] = (byte) (bits & 0xff);
+            bytes[1] = (byte) ((bits >> 8) & 0xff);
+            bytes[2] = (byte) ((bits >> 16) & 0xff);
+            bytes[3] = (byte) ((bits >> 24) & 0xff);
+            return bytes;
         }
     }
 }
