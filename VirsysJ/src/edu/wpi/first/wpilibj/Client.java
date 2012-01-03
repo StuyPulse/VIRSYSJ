@@ -53,12 +53,12 @@ public class Client implements Networkconf {
     }
     
     private class Receive extends Thread {
-        DatagramSocket receiver;
+        DatagramSocket recvSock;
 
         public void run() {
             done = false;
             try {
-                receiver = new DatagramSocket(LOCAL_RECV_PORT);
+                recvSock = new DatagramSocket(LOCAL_RECV_PORT);
             } catch (IOException e) {
                 e.printStackTrace();
                 System.out.println("can't bind receive port; aborting");
@@ -68,7 +68,7 @@ public class Client implements Networkconf {
                 receivedData = receive();
                 Thread.yield();
             }
-            receiver.close(); // finished
+            recvSock.close(); // finished
         }
 
         private float[] receive() {
@@ -77,7 +77,7 @@ public class Client implements Networkconf {
                 byte[] buffer = new byte[40];
                 DatagramPacket incoming = new DatagramPacket(buffer, buffer.length);
                 //System.out.println(receiver);
-                receiver.receive(incoming);
+                recvSock.receive(incoming);
                 byte[] datas = incoming.getData();
                 for (int i = 0; i < datas.length / 4; i++) {
                     ans[i] = arr2float(new byte[]{datas[4 * i], datas[4 * i + 1], datas[4 * i + 2], datas[4 * i + 3]});
