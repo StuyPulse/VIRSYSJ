@@ -9,7 +9,6 @@ import java.nio.*;
 public class Client implements Networkconf {
     private Receive threadR;
     public Send  threadS;
-    private float[] receivedData;
 
     private boolean done = false; // threads exit when this is true
     float timestamp; // send with each packet
@@ -17,7 +16,6 @@ public class Client implements Networkconf {
     public Client() {
         threadR = new Receive();
         threadS = new Send();
-        receivedData = new float[10];
         timestamp = (float)0.0;
 	
 	threadR.start();
@@ -36,17 +34,19 @@ public class Client implements Networkconf {
     }
 
     public float[] getdata() throws IOException{
-        if(receivedData == null){
+        if(threadR.receivedData == null){
             throw new IOException("Recieve data null");
         }            
-        return receivedData;
+        return threadR.receivedData;
     }
     
     private class Receive extends Thread {
         DatagramSocket recvSock;
+	public float[] receivedData;
 
         public void run() {
             done = false;
+	    receivedData = new float[10];
             try {
                 recvSock = new DatagramSocket(LOCAL_RECV_PORT);
             } catch (IOException e) {
