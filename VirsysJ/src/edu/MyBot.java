@@ -28,14 +28,16 @@ public class MyBot extends SimpleRobot{
         System.out.println("angle = " + g.getAngle());
     }
 
-    public void autonomous() {
+    public void operatorControl() {
 
-        rv.set(-1);
-        lv.set(1);
+        rv.set(-.5);
+        lv.set(.5);
 	arm.set(-1);
+        System.out.println("in teleop");
         while (isEnabled()) {
             //System.out.println("angle = " + g.getAngle());
             Timer.delay(0.1);
+            //System.out.println("time: " + System.currentTimeMillis());
         }
     }
 }

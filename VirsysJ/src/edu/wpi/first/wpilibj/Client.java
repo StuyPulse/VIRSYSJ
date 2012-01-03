@@ -14,12 +14,14 @@ public class Client implements Networkconf {
     DatagramSocket sender;
     DatagramSocket receiver;
     private boolean done = false; // threads exit when this is true
+    float timestamp; // send with each packet
 
     public Client() {
         recieveThread = new Recieve();
         threadR = new Thread(recieveThread);
         threadS = new Send();
         receivedData = new float[10];
+        timestamp = (float)0.0;
 	try {
 	    sender = new DatagramSocket();
 	    receiver = new DatagramSocket(LOCAL_RECV_PORT);
@@ -60,10 +62,14 @@ public class Client implements Networkconf {
             } else {
 		// add timestamp to beginning.
 		float[] withTimestamp = new float[f.length+1];
-		withTimestamp[0] = (float)(Timer.getFPGATimestamp());
+		withTimestamp[0] = timestamp;
+                timestamp++;
+                System.out.print("sending packet:    " + withTimestamp[0] + ", ");
 		for (int i = 0; i < f.length; i++) {
 		    withTimestamp[i+1] = f[i];
+                    System.out.print(withTimestamp[i+1] + ", ");
 		}
+                System.out.println();
                 byte[] b = new byte[withTimestamp.length * 4];
                 for (int i = 0; i < withTimestamp.length; i++) {
                     byte[] test = float2arr(withTimestamp[i]);

@@ -27,7 +27,7 @@ public class Timer {
     }
 
     public static double getFPGATimestamp() {
-        return System.currentTimeMillis() / 1000;
+        return System.currentTimeMillis() / 1000.0;
     }
 
     public void reset() {
