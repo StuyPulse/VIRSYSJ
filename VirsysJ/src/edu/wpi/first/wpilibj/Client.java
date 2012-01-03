@@ -7,8 +7,7 @@ import java.net.*;
 import java.nio.*;
 
 public class Client implements Networkconf {
-    private Runnable recieveThread;
-    private Thread  threadR;
+    private Receive threadR;
     public Send  threadS;
     private float[] receivedData;
     DatagramSocket sender;
@@ -17,8 +16,7 @@ public class Client implements Networkconf {
     float timestamp; // send with each packet
 
     public Client() {
-        recieveThread = new Receive();
-        threadR = new Thread(recieveThread);
+        threadR = new Receive();
         threadS = new Send();
         receivedData = new float[10];
         timestamp = (float)0.0;
@@ -123,7 +121,7 @@ public class Client implements Networkconf {
         bytes[3] = (byte) ((bits >> 24) & 0xff);
         return bytes;
     }
-    private class Receive implements Runnable {
+    private class Receive extends Thread {
         public void run() {
             done = false;
             while (!done) {
