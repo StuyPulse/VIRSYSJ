@@ -11,7 +11,7 @@ public class Client implements Networkconf {
     public Send  threadS;
     private float[] receivedData;
     DatagramSocket sender;
-    DatagramSocket receiver;
+
     private boolean done = false; // threads exit when this is true
     float timestamp; // send with each packet
 
@@ -22,7 +22,7 @@ public class Client implements Networkconf {
         timestamp = (float)0.0;
 	try {
 	    sender = new DatagramSocket();
-	    receiver = new DatagramSocket(LOCAL_RECV_PORT);
+	    
 	}
 	catch (IOException e) {
 	    e.printStackTrace();
@@ -37,7 +37,6 @@ public class Client implements Networkconf {
 	done = true;
 	Timer.delay(0.1);
 	sender.close();
-	receiver.close();
 	// set all motor values to 0
 	// except for the last value, the tube grip -- the robot can still hold a tube after it's disabled
 	for (int i = 0; i < threadS.toSend.length; i++) {
@@ -54,12 +53,22 @@ public class Client implements Networkconf {
     }
     
     private class Receive extends Thread {
+        DatagramSocket receiver;
+
         public void run() {
             done = false;
+            try {
+                receiver = new DatagramSocket(LOCAL_RECV_PORT);
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("can't bind receive port; aborting");
+                System.exit(1);
+            }
             while (!done) {
                 receivedData = receive();
                 Thread.yield();
             }
+            receiver.close(); // finished
         }
 
         private float[] receive() {
