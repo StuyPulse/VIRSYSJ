@@ -125,12 +125,12 @@ public class Client implements Networkconf {
                     float[] withTimestamp = new float[f.length + 1];
                     withTimestamp[0] = timestamp;
                     timestamp++;
-                    System.out.print("sending packet:    " + withTimestamp[0] + ", ");
+                    //System.out.print("sending packet:    " + withTimestamp[0] + ", ");
                     for (int i = 0; i < f.length; i++) {
                         withTimestamp[i + 1] = f[i];
-                        System.out.print(withTimestamp[i + 1] + ", ");
+                        //System.out.print(withTimestamp[i + 1] + ", ");
                     }
-                    System.out.println();
+                    //System.out.println();
                     byte[] b = new byte[withTimestamp.length * 4];
                     for (int i = 0; i < withTimestamp.length; i++) {
                         byte[] test = float2arr(withTimestamp[i]);

@@ -5,8 +5,8 @@ public abstract class RobotBase {
     private Timer _gametimer;
     private final Watchdog m_watchdog = Watchdog.getInstance();
 
-    public final double TOTAL_MATCH_TIME_SECONDS = 20;
-    public final double AUTON_TIME_SECONDS = 10;
+    public final double TOTAL_MATCH_TIME_SECONDS = 10;
+    public final double AUTON_TIME_SECONDS = 5;
 
     public RobotBase() {
         _gametimer = new Timer();

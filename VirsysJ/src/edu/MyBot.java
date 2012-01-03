@@ -29,15 +29,21 @@ public class MyBot extends SimpleRobot{
     }
 
     public void autonomous() {
-
-        rv.set(-.5);
-        lv.set(.5);
-	arm.set(-1);
-        System.out.println("in teleop");
-        while (isEnabled()) {
+        rv.set(-0.5);
+        lv.set(0.5);
+	arm.set(1);
+        System.out.println("in auton");
+        while (isEnabled() && isAutonomous()) {
             //System.out.println("angle = " + g.getAngle());
             Timer.delay(0.1);
             //System.out.println("time: " + System.currentTimeMillis());
         }
+    }
+
+    public void operatorControl() {
+	System.out.println("lower the arm");
+	rv.set(0.5);
+	lv.set(-0.5);
+	arm.set(-1);
     }
 }
