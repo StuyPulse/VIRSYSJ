@@ -45,8 +45,7 @@ public class Client implements Networkconf {
 	public float[] receivedData;
 
         public void run() {
-            done = false;
-	    receivedData = new float[10];
+            receivedData = new float[10];
             try {
                 recvSock = new DatagramSocket(LOCAL_RECV_PORT);
             } catch (IOException e) {
