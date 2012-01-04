@@ -2,7 +2,7 @@ package edu;
 
 import edu.wpi.first.wpilibj.*;
 
-public class MyBot extends SimpleRobot{
+public class MyBot extends SimpleRobot implements Channels {
 
     Victor rv,lv, arm;
     Encoder re,le;
@@ -12,9 +12,9 @@ public class MyBot extends SimpleRobot{
     public MyBot() {
         System.out.println("starting");
         System.out.println("finised consntructing Client");
-        rv = new Victor(1);
-        lv = new Victor(2);
-	arm = new Victor(3);
+        lv = new Victor(LEFT_PWM);
+        rv = new Victor(RIGHT_PWM);
+	arm = new Victor(ARM_PWM);
         System.out.println("done making victors");
         re = new Encoder(1,1,true,CounterBase.EncodingType.k2X);
         le = new Encoder(5,6,true,CounterBase.EncodingType.k2X);
@@ -29,8 +29,8 @@ public class MyBot extends SimpleRobot{
     }
 
     public void autonomous() {
-        rv.set(-0.5);
-        lv.set(0.5);
+        rv.set(-1);
+        lv.set(1);
 	arm.set(1);
         System.out.println("in auton");
         while (isEnabled() && isAutonomous()) {

@@ -7,7 +7,7 @@ import java.net.*;
 import java.nio.*;
 
 public class Client implements Networkconf {
-    private Receive threadR;
+    public Receive threadR;
     public Send  threadS;
 
     private boolean done = false; // threads exit when this is true
@@ -33,10 +33,7 @@ public class Client implements Networkconf {
 	threadS.send(threadS.toSend);
     }
 
-    public float[] getdata() throws IOException{
-        if(threadR.receivedData == null){
-            throw new IOException("Recieve data null");
-        }            
+    public float[] getdata() {
         return threadR.receivedData;
     }
     
@@ -61,7 +58,7 @@ public class Client implements Networkconf {
             recvSock.close(); // finished
         }
 
-        private void receive() {
+        public void receive() {
             try {
                 byte[] buffer = new byte[4 * NUM_RECV_ELEMENTS];
                 DatagramPacket incoming = new DatagramPacket(buffer, buffer.length);
