@@ -1,2 +1,2 @@
-javac -classpath ../junit-4.10.jar Test.java 
-java Test
+javac -classpath ../junit-4.10.jar RunTests.java 
+java RunTests
