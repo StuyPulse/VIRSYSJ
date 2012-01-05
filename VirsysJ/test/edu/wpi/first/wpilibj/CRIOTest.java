@@ -39,19 +39,6 @@ public class CRIOTest {
     public void tearDown() {
     }
 
-    /**
-     * Test of main method, of class CRIO.
-     *
-    @Test
-    public void testMain() {
-        System.out.println("main");
-        String[] arg = null;
-        CRIO.main(arg);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-    */
-
     /*
      * Test the ability to write a digital output
      */
