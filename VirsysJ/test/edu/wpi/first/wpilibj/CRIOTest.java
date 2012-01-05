@@ -23,10 +23,12 @@ public class CRIOTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        CRIO.DigitalSidecar.register[0] = true;
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        CRIO.DigitalSidecar.register[0] = false;
     }
 
     @Before
@@ -55,7 +57,6 @@ public class CRIOTest {
      */
     @Test
     public void testWriteDigital() {
-        CRIO.DigitalSidecar.register[0] = true;
         assertEquals(CRIO.DigitalSidecar.register[0], true);
     }
 }
