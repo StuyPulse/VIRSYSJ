@@ -50,6 +50,9 @@ public class CRIOTest {
     }
     */
 
+    /*
+     * Test the ability to write a digital output
+     */
     @Test
     public void testWriteDigital() {
         CRIO.DigitalSidecar.register[0] = true;
