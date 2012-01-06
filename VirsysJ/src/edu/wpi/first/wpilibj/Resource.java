@@ -15,6 +15,9 @@ package edu.wpi.first.wpilibj;
  */
 public class Resource {
 
+    private final boolean m_numAllocated[];
+    private final int m_size;
+
     /**
      * Allocate storage for a new instance of Resource.
      * Allocate a bool array of values that will get initialized to indicate that no resources
@@ -23,7 +26,11 @@ public class Resource {
      * @param size The number of blocks to allocate
      */
     public Resource(final int size) {
-
+        m_size = size;
+        m_numAllocated = new boolean[m_size];
+        for (int i = 0; i < m_size; i++) {
+            m_numAllocated[i] = false;
+        }
     }
 
     /**
@@ -36,6 +43,13 @@ public class Resource {
      * @throws CheckedAllocationException If there are no resources available to be allocated.
      */
     public int allocate(final int index) throws CheckedAllocationException {
+        if (index >= m_size || index < 0) {
+            throw new CheckedAllocationException("Index " + index + " out of range");
+        }
+        if (m_numAllocated[index] == true) {
+            throw new CheckedAllocationException("Resource at index " + index + " already allocated");
+        }
+        m_numAllocated[index] = true;
         return index;
     }
 
