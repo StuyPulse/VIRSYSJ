@@ -9,12 +9,15 @@ package edu.wpi.first.wpilibj;
  */
 public class DigitalInput {
 
+    private int m_channel;
+
     /**
      * Create an instance of a Digital Input class.
      * Creates a digital input given a channel and uses the default module.
      * @param channel the port for the digital input
      */
     public DigitalInput(int channel) {
+        m_channel = channel;
     }
 
     /**
@@ -23,6 +26,6 @@ public class DigitalInput {
      * @return the stats of the digital input
      */
     public boolean get() {
-        return false;
+        return CRIO.DigitalSidecar.inputBits[m_channel];
     }
 }
