@@ -96,7 +96,7 @@ final class MacOSXDisplay implements DisplayImplementation {
 		}
 	}
 
-	public void createWindow(DisplayMode mode, Canvas parent, int x, int y) throws LWJGLException {
+	public void createWindow(final DrawableLWJGL drawable, DisplayMode mode, Canvas parent, int x, int y) throws LWJGLException {
 		boolean fullscreen = Display.isFullscreen();
 		hideUI(fullscreen);
 		close_requested = false;
@@ -240,11 +240,11 @@ final class MacOSXDisplay implements DisplayImplementation {
 		return frame != null && frame.getCanvas().syncIsDirty();
 	}
 
-	public PeerInfo createPeerInfo(PixelFormat pixel_format) throws LWJGLException {
+	public PeerInfo createPeerInfo(PixelFormat pixel_format, ContextAttribs attribs) throws LWJGLException {
 		try {
-			return new MacOSXDisplayPeerInfo(pixel_format, true);
+			return new MacOSXDisplayPeerInfo(pixel_format, attribs, true);
 		} catch (LWJGLException e) {
-			return new MacOSXDisplayPeerInfo(pixel_format, false);
+			return new MacOSXDisplayPeerInfo(pixel_format, attribs, false);
 		}
 	}
 
@@ -272,7 +272,7 @@ final class MacOSXDisplay implements DisplayImplementation {
 		 *
 		 * - elias
 		 */
-		AbstractDrawable drawable = (AbstractDrawable)Display.getDrawable();
+		DrawableGL drawable = (DrawableGL)Display.getDrawable();
 		if (Display.isFullscreen() && (frame != null && frame.getCanvas().syncCanvasPainted() || should_update)) {
 			try {
 				MacOSXContextImplementation.resetView(drawable.peer_info, drawable.context);
@@ -434,10 +434,10 @@ final class MacOSXDisplay implements DisplayImplementation {
 		return false;
 	}
 
-	public PeerInfo createPbuffer(int width, int height, PixelFormat pixel_format,
+	public PeerInfo createPbuffer(int width, int height, PixelFormat pixel_format, ContextAttribs attribs,
 			IntBuffer pixelFormatCaps,
 			IntBuffer pBufferAttribs) throws LWJGLException {
-		return new MacOSXPbufferPeerInfo(width, height, pixel_format);
+		return new MacOSXPbufferPeerInfo(width, height, pixel_format, attribs);
 	}
 
 	public void setPbufferAttrib(PeerInfo handle, int attrib, int value) {
@@ -497,14 +497,23 @@ final class MacOSXDisplay implements DisplayImplementation {
 	}
 
 	public int getWidth() {
-		return Display.getDisplayMode().getWidth();
+		return frame.getWidth();
 	}
 
 	public int getHeight() {
-		return Display.getDisplayMode().getHeight();
+		return frame.getHeight();
 	}
 
-        public boolean isInsideWindow() {
-            return true;
-        }
+    public boolean isInsideWindow() {
+    		return true;
+    }
+
+    public void setResizable(boolean resizable) {
+		frame.setResizable(resizable);
+	}
+
+	public boolean wasResized() {
+		return canvas_listener.wasResized();
+	}
+
 }

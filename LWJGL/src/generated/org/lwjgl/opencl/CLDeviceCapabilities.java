@@ -12,14 +12,21 @@ public class CLDeviceCapabilities {
 	public final boolean OpenCL11;
 
 	public final boolean CL_AMD_device_attribute_query;
+	public final boolean CL_AMD_device_memory_flags;
 	public final boolean CL_AMD_fp64;
 	public final boolean CL_AMD_media_ops;
+	public final boolean CL_AMD_offline_devices;
+	public final boolean CL_AMD_popcnt;
 	public final boolean CL_AMD_printf;
+	public final boolean CL_AMD_vec3;
 	final boolean CL_APPLE_ContextLoggingFunctions;
 	public final boolean CL_APPLE_SetMemObjectDestructor;
 	public final boolean CL_APPLE_gl_sharing;
+	public final boolean CL_EXT_atomic_counters_32;
+	public final boolean CL_EXT_atomic_counters_64;
 	public final boolean CL_EXT_device_fission;
 	public final boolean CL_EXT_migrate_memobject;
+	public final boolean CL_INTEL_immediate_execution;
 	public final boolean CL_KHR_3d_image_writes;
 	public final boolean CL_KHR_byte_addressable_store;
 	public final boolean CL_KHR_fp16;
@@ -56,14 +63,21 @@ public class CLDeviceCapabilities {
 
 		final Set<String> extensions = APIUtil.getExtensions(extensionList);
 		CL_AMD_device_attribute_query = extensions.contains("cl_amd_device_attribute_query");
+		CL_AMD_device_memory_flags = extensions.contains("cl_amd_device_memory_flags");
 		CL_AMD_fp64 = extensions.contains("cl_amd_fp64");
 		CL_AMD_media_ops = extensions.contains("cl_amd_media_ops");
+		CL_AMD_offline_devices = extensions.contains("cl_amd_offline_devices");
+		CL_AMD_popcnt = extensions.contains("cl_amd_popcnt");
 		CL_AMD_printf = extensions.contains("cl_amd_printf");
+		CL_AMD_vec3 = extensions.contains("cl_amd_vec3");
 		CL_APPLE_ContextLoggingFunctions = extensions.contains("cl_apple_contextloggingfunctions") && CLCapabilities.CL_APPLE_ContextLoggingFunctions;
 		CL_APPLE_SetMemObjectDestructor = extensions.contains("cl_apple_setmemobjectdestructor") && CLCapabilities.CL_APPLE_SetMemObjectDestructor;
 		CL_APPLE_gl_sharing = extensions.contains("cl_apple_gl_sharing") && CLCapabilities.CL_APPLE_gl_sharing;
+		CL_EXT_atomic_counters_32 = extensions.contains("cl_ext_atomic_counters_32");
+		CL_EXT_atomic_counters_64 = extensions.contains("cl_ext_atomic_counters_64");
 		CL_EXT_device_fission = extensions.contains("cl_ext_device_fission") && CLCapabilities.CL_EXT_device_fission;
 		CL_EXT_migrate_memobject = extensions.contains("cl_ext_migrate_memobject") && CLCapabilities.CL_EXT_migrate_memobject;
+		CL_INTEL_immediate_execution = extensions.contains("cl_intel_immediate_execution");
 		CL_KHR_3d_image_writes = extensions.contains("cl_khr_3d_image_writes");
 		CL_KHR_byte_addressable_store = extensions.contains("cl_khr_byte_addressable_store");
 		CL_KHR_fp16 = extensions.contains("cl_khr_fp16");
@@ -97,14 +111,21 @@ public class CLDeviceCapabilities {
 
 		buf.append(" - Extensions: ");
 		if ( CL_AMD_device_attribute_query ) buf.append("cl_amd_device_attribute_query ");
+		if ( CL_AMD_device_memory_flags ) buf.append("cl_amd_device_memory_flags ");
 		if ( CL_AMD_fp64 ) buf.append("cl_amd_fp64 ");
 		if ( CL_AMD_media_ops ) buf.append("cl_amd_media_ops ");
+		if ( CL_AMD_offline_devices ) buf.append("cl_amd_offline_devices ");
+		if ( CL_AMD_popcnt ) buf.append("cl_amd_popcnt ");
 		if ( CL_AMD_printf ) buf.append("cl_amd_printf ");
+		if ( CL_AMD_vec3 ) buf.append("cl_amd_vec3 ");
 		if ( CL_APPLE_ContextLoggingFunctions ) buf.append("cl_apple_contextloggingfunctions ");
 		if ( CL_APPLE_SetMemObjectDestructor ) buf.append("cl_apple_setmemobjectdestructor ");
 		if ( CL_APPLE_gl_sharing ) buf.append("cl_apple_gl_sharing ");
+		if ( CL_EXT_atomic_counters_32 ) buf.append("cl_ext_atomic_counters_32 ");
+		if ( CL_EXT_atomic_counters_64 ) buf.append("cl_ext_atomic_counters_64 ");
 		if ( CL_EXT_device_fission ) buf.append("cl_ext_device_fission ");
 		if ( CL_EXT_migrate_memobject ) buf.append("cl_ext_migrate_memobject ");
+		if ( CL_INTEL_immediate_execution ) buf.append("cl_intel_immediate_execution ");
 		if ( CL_KHR_3d_image_writes ) buf.append("cl_khr_3d_image_writes ");
 		if ( CL_KHR_byte_addressable_store ) buf.append("cl_khr_byte_addressable_store ");
 		if ( CL_KHR_fp16 ) buf.append("cl_khr_fp16 ");

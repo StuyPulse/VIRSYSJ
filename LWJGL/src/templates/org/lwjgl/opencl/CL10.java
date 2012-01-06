@@ -423,7 +423,7 @@ public interface CL10 {
 	@PointerWrapper(value = "cl_context", params = "APIUtil.getCLPlatform(properties)")
 	CLContext clCreateContext(@NullTerminated @Check("3") @Const @NativeType("cl_context_properties") PointerBuffer properties,
 	                          @Constant("1") @cl_uint int num_devices,
-	                          @Constant(value = "APIUtil.getBufferPointer().put(0, device).getBuffer(), 0", keepParam = true) CLDevice device,
+	                          @Constant(value = "APIUtil.getPointer(device)", keepParam = true) CLDevice device,
 	                          @PointerWrapper(value = "cl_create_context_callback", canBeNull = true) CLContextCallback pfn_notify,
 	                          @Constant("user_data") @PointerWrapper("void *") long user_data,
 	                          @OutParameter @Check(value = "1", canBeNull = true) @cl_int IntBuffer errcode_ret);
@@ -432,7 +432,7 @@ public interface CL10 {
 	@Code(
 		tryBlock = true,
 		// Create a GlobalRef to the callback object.
-		javaBeforeNative = "\t\tlong user_data = CallbackUtil.createGlobalRef(pfn_notify);",
+		javaBeforeNative = "\t\tlong user_data = pfn_notify == null || pfn_notify.isCustom() ? 0 : CallbackUtil.createGlobalRef(pfn_notify);",
 		// Associate context with the GlobalRef, so we can delete it later.
 		javaFinally = "\t\t\tCallbackUtil.registerCallback(__result, user_data);"
 	)
@@ -683,7 +683,7 @@ public interface CL10 {
 	@Code(javaAfterNative = "\t\tif ( __result != null ) command_queue.registerCLEvent(event);")
 	@Check(value = "errcode_ret", canBeNull = true)
 	@cl_void
-	@AutoSize(value = "extcl_CalculateImageSize(region_address, *image_row_pitch_address, image_slice_pitch == NULL ? 0 : *image_slice_pitch_address)", isNative = true)
+	@AutoSize(value = "extcl_CalculateImageSize(region_address, *image_row_pitch_address, image_slice_pitch_address == NULL ? 0 : *image_slice_pitch_address)", isNative = true)
 	ByteBuffer clEnqueueMapImage(@PointerWrapper("cl_command_queue") CLCommandQueue command_queue,
 	                             @PointerWrapper("cl_mem") CLMem image,
 	                             @cl_bool int blocking_map,
@@ -776,7 +776,7 @@ public interface CL10 {
 	CLProgram clCreateProgramWithSource3(@PointerWrapper("cl_context") CLContext context,
 	                                     @Constant("strings.length") @cl_uint int count,
 	                                     @Check("1") @PointerArray(value = "count") @Const @NativeType("cl_char") ByteBuffer[] strings,
-	                                     @Constant("APIUtil.getLengths(strings).getBuffer(), 0") @Const @NativeType("size_t") PointerBuffer lengths,
+	                                     @Constant("APIUtil.getLengths(strings)") @Const @NativeType("size_t") PointerBuffer lengths,
 	                                     @OutParameter @Check(value = "1", canBeNull = true) @cl_int IntBuffer errcode_ret);
 
 	@Alternate("clCreateProgramWithSource")
@@ -794,7 +794,7 @@ public interface CL10 {
 	CLProgram clCreateProgramWithSource4(@PointerWrapper("cl_context") CLContext context,
 	                                     @Constant("strings.length") @cl_uint int count,
 	                                     @Const @PointerArray(value = "count", lengths = "lengths") CharSequence[] strings,
-	                                     @Constant("APIUtil.getLengths(strings).getBuffer(), 0") @Const @NativeType("size_t") PointerBuffer lengths,
+	                                     @Constant("APIUtil.getLengths(strings)") @Const @NativeType("size_t") PointerBuffer lengths,
 	                                     @OutParameter @Check(value = "1", canBeNull = true) @cl_int IntBuffer errcode_ret);
 
 	// ------[ clCreateProgramWithBinary ]------
@@ -826,7 +826,7 @@ public interface CL10 {
 	CLProgram clCreateProgramWithBinary3(@PointerWrapper("cl_context") CLContext context,
 	                                     @Constant("binaries.length") @cl_uint int num_devices,
 	                                     @Check("binaries.length") @Const @NativeType("cl_device_id") PointerBuffer device_list,
-	                                     @Constant("APIUtil.getLengths(binaries).getBuffer(), 0") @Const @NativeType("size_t") PointerBuffer lengths,
+	                                     @Constant("APIUtil.getLengths(binaries)") @Const @NativeType("size_t") PointerBuffer lengths,
 	                                     @Check("1") @PointerArray("num_devices") @Const @NativeType("cl_uchar") ByteBuffer[] binaries,
 	                                     @OutParameter @Check("binaries.length") @cl_int IntBuffer binary_status,
 	                                     @OutParameter @Check(value = "1", canBeNull = true) @cl_int IntBuffer errcode_ret);
@@ -845,7 +845,8 @@ public interface CL10 {
 	@Code(
 		tryBlock = true,
 		// Create a GlobalRef to the callback object.
-		javaBeforeNative = "\t\tlong user_data = CallbackUtil.createGlobalRef(pfn_notify);",
+		javaBeforeNative = "\t\tlong user_data = CallbackUtil.createGlobalRef(pfn_notify);\n" +
+		                   "\t\tif ( pfn_notify != null ) pfn_notify.setContext(program.getParent());",
 		// Check if we need to delete the GlobalRef.
 		javaFinally = "\t\t\tCallbackUtil.checkCallback(__result, user_data);"
 	)
@@ -861,7 +862,8 @@ public interface CL10 {
 	@Code(
 		tryBlock = true,
 		// Create a GlobalRef to the callback object.
-		javaBeforeNative = "\t\tlong user_data = CallbackUtil.createGlobalRef(pfn_notify);",
+		javaBeforeNative = "\t\tlong user_data = CallbackUtil.createGlobalRef(pfn_notify);\n" +
+		                   "\t\tif ( pfn_notify != null ) pfn_notify.setContext(program.getParent());",
 		// Check if we need to delete the GlobalRef.
 		javaFinally = "\t\t\tCallbackUtil.checkCallback(__result, user_data);"
 	)
@@ -877,14 +879,15 @@ public interface CL10 {
 	@Code(
 		tryBlock = true,
 		// Create a GlobalRef to the callback object.
-		javaBeforeNative = "\t\tlong user_data = CallbackUtil.createGlobalRef(pfn_notify);",
+		javaBeforeNative = "\t\tlong user_data = CallbackUtil.createGlobalRef(pfn_notify);\n" +
+		                   "\t\tif ( pfn_notify != null ) pfn_notify.setContext(program.getParent());",
 		// Check if we need to delete the GlobalRef.
 		javaFinally = "\t\t\tCallbackUtil.checkCallback(__result, user_data);"
 	)
 	@cl_int
 	int clBuildProgram(@PointerWrapper("cl_program") CLProgram program,
 	                   @Constant("1") @cl_uint int num_devices,
-	                   @Constant(value = "APIUtil.getBufferPointer().put(0, device).getBuffer(), 0", keepParam = true) CLDevice device,
+	                   @Constant(value = "APIUtil.getPointer(device)", keepParam = true) CLDevice device,
 	                   @NullTerminated @Const CharSequence options,
 	                   @PointerWrapper(value = "cl_build_program_callback", canBeNull = true) CLBuildProgramCallback pfn_notify,
 	                   @Constant("user_data") @PointerWrapper("void *") long user_data);
@@ -976,6 +979,7 @@ public interface CL10 {
 	@cl_int
 	int clReleaseKernel(@PointerWrapper("cl_kernel") CLKernel kernel);
 
+	@GenerateAutos
 	@cl_int
 	int clSetKernelArg(@PointerWrapper("cl_kernel") CLKernel kernel,
 	                   @cl_uint int arg_index,
@@ -994,15 +998,7 @@ public interface CL10 {
 	                   @cl_uint int arg_index,
 	                   @Constant("PointerBuffer.getPointerSize()") @size_t long arg_size,
 	                   @Check(canBeNull = true) @Const
-	                   @Constant(value = "APIUtil.getBufferPointer().put(0, arg_value == null ? 0 : arg_value.getPointer()).getBuffer(), 0", keepParam = true) CLObject arg_value);
-
-	/** Sets the size of a __local kernel argument at the specified index. */
-	@Alternate("clSetKernelArg")
-	@cl_int
-	int clSetKernelArg2(@PointerWrapper("cl_kernel") CLKernel kernel,
-	                    @cl_uint int arg_index,
-	                    @size_t long arg_size,
-	                    @Constant("null, 0") Buffer arg_value);
+	                   @Constant(value = "APIUtil.getPointerSafe(arg_value)", keepParam = true) CLObject arg_value);
 
 	// This is used by CLKernelUtil. Assumes arg_value.position() == 0.
 
@@ -1012,7 +1008,7 @@ public interface CL10 {
 	int clSetKernelArg3(@PointerWrapper("cl_kernel") CLKernel kernel,
 	                    @cl_uint int arg_index,
 	                    @size_t long arg_size,
-	                    @Constant(value = "arg_value, 0", keepParam = true) Buffer arg_value);
+	                    @Constant(value = "MemoryUtil.getAddress0(arg_value)", keepParam = true) Buffer arg_value);
 
 	@cl_int
 	int clGetKernelInfo(@PointerWrapper("cl_kernel") CLKernel kernel,
@@ -1085,7 +1081,7 @@ public interface CL10 {
 	@cl_int
 	int clEnqueueNativeKernel(@PointerWrapper("cl_command_queue") CLCommandQueue command_queue,
 	                          @PointerWrapper("cl_native_kernel_func") CLNativeKernel user_func,
-	                          @Constant("args, 0") @cl_void ByteBuffer args,
+	                          @Constant("MemoryUtil.getAddress0(args)") @cl_void ByteBuffer args,
 	                          @AutoSize("args") @size_t long cb_args,
 	                          @Constant("mem_list == null ? 0 : mem_list.length") @cl_uint int num_mem_objects,
 	                          @Check(value = "1", canBeNull = true) @PointerArray("num_mem_objects") @Const @NativeType("cl_mem") CLMem[] mem_list,
@@ -1102,7 +1098,7 @@ public interface CL10 {
 	@Alternate("clWaitForEvents")
 	@cl_int
 	int clWaitForEvents(@Constant("1") @cl_uint int num_events,
-	                    @Constant(value = "APIUtil.getBufferPointer().put(0, event).getBuffer(), 0", keepParam = true) CLEvent event);
+	                    @Constant(value = "APIUtil.getPointer(event)", keepParam = true) CLEvent event);
 
 	@cl_int
 	int clGetEventInfo(@PointerWrapper("cl_event") CLEvent event,
@@ -1136,7 +1132,7 @@ public interface CL10 {
 	@cl_int
 	int clEnqueueWaitForEvents(@PointerWrapper("cl_command_queue") CLCommandQueue command_queue,
 	                           @Constant("1") @cl_uint int num_events,
-	                           @Constant(value = "APIUtil.getBufferPointer().put(0, event).getBuffer(), 0", keepParam = true) CLEvent event);
+	                           @Constant(value = "APIUtil.getPointer(event)", keepParam = true) CLEvent event);
 
 	@cl_int
 	int clGetEventProfilingInfo(@PointerWrapper("cl_event") CLEvent event,

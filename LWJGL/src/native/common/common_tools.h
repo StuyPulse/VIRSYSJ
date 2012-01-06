@@ -31,10 +31,10 @@
  */
 
 /**
- * $Id: common_tools.h 3412 2010-09-26 23:43:24Z spasi $
+ * $Id: common_tools.h 3662 2011-10-12 17:58:04Z spasi $
  *
  * @author elias_naur <elias_naur@users.sourceforge.net>
- * @version $Revision: 3412 $
+ * @version $Revision: 3662 $
  */
 
 #ifndef _COMMON_TOOLS_H
@@ -109,6 +109,7 @@ typedef struct {
 
 	char *ext_function_name;
 	void **ext_function_pointer;
+	bool optional;
 } JavaMethodAndExtFunction;
 
 typedef struct {

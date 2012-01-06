@@ -38,17 +38,16 @@ package org.lwjgl.opengl;
  * @author elias_naur
  */
 
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
+import java.nio.*;
 import java.awt.Canvas;
 
 import org.lwjgl.LWJGLException;
 import org.lwjgl.LWJGLUtil;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.MemoryUtil;
 import org.lwjgl.input.Cursor;
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.opengles.EGL;
 
 final class WindowsDisplay implements DisplayImplementation {
 	private static final int GAMMA_LENGTH = 256;
@@ -66,7 +65,10 @@ final class WindowsDisplay implements DisplayImplementation {
 	private static final int WM_MBUTTONDBLCLK                 = 0x0209;
 	private static final int WM_MOUSEWHEEL                    = 0x020A;
 	private static final int WM_CAPTURECHANGED                = 0x0215;
-        private static final int WM_MOUSELEAVE                    = 0x02A3;
+	private static final int WM_MOUSELEAVE                    = 0x02A3;
+	private static final int WM_ENTERSIZEMOVE                 = 0x0231;
+	private static final int WM_EXITSIZEMOVE                  = 0x0232;
+	private static final int WM_SIZING                        = 0x0214;
 	private static final int WM_KEYDOWN						  = 256;
 	private static final int WM_KEYUP						  = 257;
 	private static final int WM_SYSKEYUP					  = 261;
@@ -115,6 +117,7 @@ final class WindowsDisplay implements DisplayImplementation {
 	private static final int     WA_INACTIVE      = 0;
 	private static final int     WA_ACTIVE        = 1;
 	private static final int     WA_CLICKACTIVE   = 2;
+	private static final int SW_NORMAL			  = 1;
 	private static final int SW_SHOWMINNOACTIVE   = 7;
 	private static final int SW_SHOWDEFAULT       = 10;
 	private static final int SW_RESTORE           = 9;
@@ -124,7 +127,23 @@ final class WindowsDisplay implements DisplayImplementation {
 
 	private static final IntBuffer rect_buffer = BufferUtils.createIntBuffer(4);
 	private static final Rect rect = new Rect();
-	private static final Rect rect2 = new Rect();
+
+	private static final long HWND_TOP 			= 0;
+	private static final long HWND_BOTTOM 		= 1;
+	private static final long HWND_TOPMOST 		= -1;
+	private static final long HWND_NOTOPMOST 	= -2;
+
+	private static final int SWP_NOSIZE 		= 0x0001;
+	private static final int SWP_NOMOVE 		= 0x0002;
+	private static final int SWP_NOZORDER 		= 0x0004;
+	private static final int SWP_FRAMECHANGED 	= 0x0020;
+
+	private static final int GWL_STYLE = -16;
+	private static final int GWL_EXSTYLE = -20;
+
+	private static final int WS_THICKFRAME 		= 0x00040000;
+
+
 	private static WindowsDisplay current_display;
 
 	private static boolean cursor_clipped;
@@ -148,6 +167,10 @@ final class WindowsDisplay implements DisplayImplementation {
 	private boolean isFocused;
 	private boolean did_maximize;
 	private boolean inAppActivate;
+	private boolean resized;
+	private boolean resizable;
+	private int width;
+	private int height;
 
 	private long hwnd;
 	private long hdc;
@@ -163,7 +186,7 @@ final class WindowsDisplay implements DisplayImplementation {
 		current_display = this;
 	}
 
-	public void createWindow(DisplayMode mode, Canvas parent, int x, int y) throws LWJGLException {
+	public void createWindow(DrawableLWJGL drawable, DisplayMode mode, Canvas parent, int x, int y) throws LWJGLException {
 		close_requested = false;
 		is_dirty = false;
 		isMinimized = false;
@@ -181,12 +204,24 @@ final class WindowsDisplay implements DisplayImplementation {
 			nDestroyWindow(hwnd);
 			throw new LWJGLException("Failed to get dc");
 		}
+
 		try {
-			int format = WindowsPeerInfo.choosePixelFormat(getHdc(), 0, 0, peer_info.getPixelFormat(), null, true, true, false, true);
-			WindowsPeerInfo.setPixelFormat(getHdc(), format);
+			if ( drawable instanceof DrawableGL ) {
+				int format = WindowsPeerInfo.choosePixelFormat(getHdc(), 0, 0, (PixelFormat)drawable.getPixelFormat(), null, true, true, false, true);
+				WindowsPeerInfo.setPixelFormat(getHdc(), format);
+			} else {
+				peer_info = new WindowsDisplayPeerInfo(true);
+				((DrawableGLES)drawable).initialize(hwnd, hdc, EGL.EGL_WINDOW_BIT, (org.lwjgl.opengles.PixelFormat)drawable.getPixelFormat());
+			}
 			peer_info.initDC(getHwnd(), getHdc());
 			showWindow(getHwnd(), SW_SHOWDEFAULT);
-			if (parent == null) {
+
+			updateWidthAndHeight();
+
+			if ( parent == null ) {
+				if(Display.isResizable()) {
+					setResizable(true);
+				}
 				setForegroundWindow(getHwnd());
 				setFocus(getHwnd());
 			}
@@ -196,6 +231,14 @@ final class WindowsDisplay implements DisplayImplementation {
 			throw e;
 		}
 	}
+
+	private void updateWidthAndHeight() {
+		getClientRect(hwnd, rect_buffer);
+		rect.copyFromBuffer(rect_buffer);
+		width = rect.right - rect.left;
+		height = rect.bottom - rect.top;
+	}
+
 	private static native long nCreateWindow(int x, int y, int width, int height, boolean undecorated, boolean child_window, long parent_hwnd) throws LWJGLException;
 
 	private static boolean isUndecorated() {
@@ -204,7 +247,7 @@ final class WindowsDisplay implements DisplayImplementation {
 
 	private static long getHwnd(Canvas parent) throws LWJGLException {
 		AWTCanvasImplementation awt_impl = AWTGLCanvas.createImplementation();
-		WindowsPeerInfo parent_peer_info = (WindowsPeerInfo)awt_impl.createPeerInfo(parent, null);
+		WindowsPeerInfo parent_peer_info = (WindowsPeerInfo)awt_impl.createPeerInfo(parent, null, null);
 		ByteBuffer parent_peer_info_handle = parent_peer_info.lockAndGetHandle();
 		try {
 			return parent_peer_info.getHwnd();
@@ -395,9 +438,10 @@ final class WindowsDisplay implements DisplayImplementation {
 	private static native DisplayMode getCurrentDisplayMode() throws LWJGLException;
 
 	public void setTitle(String title) {
-		nSetTitle(hwnd, title);
+		ByteBuffer buffer = MemoryUtil.encodeUTF16(title);
+		nSetTitle(hwnd, MemoryUtil.getAddress0(buffer));
 	}
-	private static native void nSetTitle(long hwnd, String title);
+	private static native void nSetTitle(long hwnd, long title);
 
 	public boolean isCloseRequested() {
 		boolean saved = close_requested;
@@ -419,8 +463,8 @@ final class WindowsDisplay implements DisplayImplementation {
 		return saved;
 	}
 
-	public PeerInfo createPeerInfo(PixelFormat pixel_format) throws LWJGLException {
-		peer_info = new WindowsDisplayPeerInfo(pixel_format);
+	public PeerInfo createPeerInfo(PixelFormat pixel_format, ContextAttribs attribs) throws LWJGLException {
+		peer_info = new WindowsDisplayPeerInfo(false);
 		return peer_info;
 	}
 
@@ -613,7 +657,7 @@ final class WindowsDisplay implements DisplayImplementation {
 		return ((WindowsPbufferPeerInfo)handle).isBufferLost();
 	}
 
-	public PeerInfo createPbuffer(int width, int height, PixelFormat pixel_format,
+	public PeerInfo createPbuffer(int width, int height, PixelFormat pixel_format, ContextAttribs attribs,
 			IntBuffer pixelFormatCaps,
 			IntBuffer pBufferAttribs) throws LWJGLException {
 		return new WindowsPbufferPeerInfo(width, height, pixel_format, pixelFormatCaps, pBufferAttribs);
@@ -668,16 +712,18 @@ final class WindowsDisplay implements DisplayImplementation {
 			int size = icon.limit() / 4;
 
 			if ( (((int)Math.sqrt(size)) == small_icon_size) && (!done_small) ) {
+				long small_new_icon = createIcon(small_icon_size, small_icon_size, icon.asIntBuffer());
+				sendMessage(hwnd, WM_SETICON, ICON_SMALL, small_new_icon);
 				freeSmallIcon();
-				small_icon = createIcon(small_icon_size, small_icon_size, icon.asIntBuffer());
-				sendMessage(hwnd, WM_SETICON, ICON_SMALL, small_icon);
+				small_icon = small_new_icon;
 				used++;
 				done_small = true;
 			}
 			if ( (((int)Math.sqrt(size)) == large_icon_size) && (!done_large) ) {
+				long large_new_icon = createIcon(large_icon_size, large_icon_size, icon.asIntBuffer());
+				sendMessage(hwnd, WM_SETICON, ICON_BIG, large_new_icon);
 				freeLargeIcon();
-				large_icon = createIcon(large_icon_size, large_icon_size, icon.asIntBuffer());
-				sendMessage(hwnd, WM_SETICON, ICON_BIG, large_icon);
+				large_icon = large_new_icon;
 				used++;
 				done_large = true;
 			}
@@ -688,6 +734,9 @@ final class WindowsDisplay implements DisplayImplementation {
 	private static native long createIcon(int width, int height, IntBuffer icon);
 	private static native void destroyIcon(long handle);
 	private static native long sendMessage(long hwnd, long msg, long wparam, long lparam);
+	private static native long setWindowLongPtr(long hwnd, int nindex, long longPtr);
+	private static native long getWindowLongPtr(long hwnd, int nindex);
+	private static native boolean setWindowPos(long hwnd, long hwnd_after, int x, int y, int cx, int cy, long uflags);
 
 	private void handleMouseButton(int button, int state, long millis) {
 		if (mouse != null) {
@@ -736,7 +785,7 @@ final class WindowsDisplay implements DisplayImplementation {
 		byte state = (byte)(1 - ((lParam >>> 31) & 0x1));
 		boolean repeat = state == previous_state;
 		if (keyboard != null)
-			keyboard.handleChar((int)(wParam & 0xFF), millis, repeat);
+			keyboard.handleChar((int)(wParam & 0xFFFF), millis, repeat);
 	}
 
 	private void handleKeyButton(long wParam, long lParam, long millis) {
@@ -812,6 +861,14 @@ final class WindowsDisplay implements DisplayImplementation {
 						setMinimized(true);
 						break;
 				}
+				return defWindowProc(hwnd, msg, wParam, lParam);
+			case WM_ENTERSIZEMOVE:
+				return defWindowProc(hwnd, msg, wParam, lParam);
+			case WM_EXITSIZEMOVE:
+				return defWindowProc(hwnd, msg, wParam, lParam);
+			case WM_SIZING:
+				resized = true;
+				updateWidthAndHeight();
 				return defWindowProc(hwnd, msg, wParam, lParam);
 			case WM_KILLFOCUS:
 				appActivate(false);
@@ -893,10 +950,10 @@ final class WindowsDisplay implements DisplayImplementation {
 			case WM_PAINT:
 				is_dirty = true;
 				return defWindowProc(hwnd, msg, wParam, lParam);
-                        case WM_MOUSELEAVE:
-                            mouseInside = false;
-                            trackingMouse = false;
-                            return defWindowProc(hwnd, msg, wParam, lParam);
+            case WM_MOUSELEAVE:
+            	mouseInside = false;
+                trackingMouse = false;
+                return defWindowProc(hwnd, msg, wParam, lParam);
 			case WM_CANCELMODE:
 				nReleaseCapture();
 				/* fall through */
@@ -912,11 +969,11 @@ final class WindowsDisplay implements DisplayImplementation {
 	}
 
 	public int getWidth() {
-		return Display.getDisplayMode().getWidth();
+		return width;
 	}
 
 	public int getHeight() {
-		return Display.getDisplayMode().getHeight();
+		return height;
 	}
 
 	private int firstMouseButtonDown() {
@@ -928,11 +985,49 @@ final class WindowsDisplay implements DisplayImplementation {
 		return -1;
 	}
 
-        private native boolean nTrackMouseEvent(long hwnd);
+	private native boolean nTrackMouseEvent(long hwnd);
 
-        public boolean isInsideWindow() {
-            return mouseInside;
-        }
+	public boolean isInsideWindow() {
+		return mouseInside;
+	}
+
+	public void setResizable(boolean resizable) {
+		if(this.resizable != resizable) {
+			long style = getWindowLongPtr(hwnd, GWL_STYLE);
+			long styleex = getWindowLongPtr(hwnd, GWL_EXSTYLE);
+
+			// update frame style
+			if(resizable) {
+				setWindowLongPtr(hwnd, GWL_STYLE, style |= WS_THICKFRAME);
+			} else {
+				setWindowLongPtr(hwnd, GWL_STYLE, style &= ~WS_THICKFRAME);
+			}
+
+			// from the existing client rect, determine the new window rect
+			// based on the style changes - using AdjustWindowRectEx.
+			getClientRect(hwnd, rect_buffer);
+			rect.copyFromBuffer(rect_buffer);
+			adjustWindowRectEx(rect_buffer, style, false, styleex);
+			rect.copyFromBuffer(rect_buffer);
+
+			// force a frame update and resize accordingly
+			setWindowPos(hwnd, HWND_TOP, 0, 0, rect.right - rect.left, rect.bottom - rect.top, SWP_NOMOVE | SWP_NOZORDER | SWP_FRAMECHANGED);
+
+			updateWidthAndHeight();
+			resized = false;
+		}
+		this.resizable = resizable;
+	}
+
+	private native boolean adjustWindowRectEx(IntBuffer rectBuffer, long style, boolean menu, long styleex);
+
+	public boolean wasResized() {
+		if(resized) {
+			resized = false;
+			return true;
+		}
+		return false;
+	}
 
 	private static final class Rect {
 		public int top;
@@ -966,7 +1061,7 @@ final class WindowsDisplay implements DisplayImplementation {
 		}
 
 		public String toString() {
-			return "Rect: top = " + top + " bottom = " + bottom + " left = " + left + " right = " + right;
+			return "Rect: top = " + top + " bottom = " + bottom + " left = " + left + " right = " + right + ", width: " + (right - left) + ", height: " + (bottom - top);
 		}
 	}
 }

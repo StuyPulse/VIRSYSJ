@@ -39,20 +39,23 @@ import org.lwjgl.LWJGLException;
 /**
  *
  * @author elias_naur <elias_naur@users.sourceforge.net>
- * @version $Revision: 3116 $
- * $Id: MacOSXCanvasPeerInfo.java 3116 2008-08-19 16:46:03Z spasi $
+ * @version $Revision: 3692 $
+ * $Id: MacOSXCanvasPeerInfo.java 3692 2011-11-12 20:45:35Z kappa1 $
  */
 abstract class MacOSXCanvasPeerInfo extends MacOSXPeerInfo {
 	private final AWTSurfaceLock awt_surface = new AWTSurfaceLock();
 
-	protected MacOSXCanvasPeerInfo(PixelFormat pixel_format, boolean support_pbuffer) throws LWJGLException {
-		super(pixel_format, true, true, support_pbuffer, true);
+	protected MacOSXCanvasPeerInfo(PixelFormat pixel_format, ContextAttribs attribs, boolean support_pbuffer) throws LWJGLException {
+		super(pixel_format, attribs, true, true, support_pbuffer, true);
 	}
 
 	protected void initHandle(Canvas component) throws LWJGLException {
-		nInitHandle(awt_surface.lockAndGetHandle(component), getHandle());
+		// Allow the use of a Core Animation Layer only when using non fullscreen Display.setParent() or AWTGLCanvas
+		final boolean allowCALayer = ((Display.getParent() != null && !Display.isFullscreen()) || component instanceof AWTGLCanvas) && awt_surface.isApplet(component);
+		
+		nInitHandle(awt_surface.lockAndGetHandle(component), getHandle(), allowCALayer);
 	}
-	private static native void nInitHandle(ByteBuffer surface_buffer, ByteBuffer peer_info_handle) throws LWJGLException;
+	private static native void nInitHandle(ByteBuffer surface_buffer, ByteBuffer peer_info_handle, boolean allowCALayer) throws LWJGLException;
 
 	protected void doUnlock() throws LWJGLException {
 		awt_surface.unlock();

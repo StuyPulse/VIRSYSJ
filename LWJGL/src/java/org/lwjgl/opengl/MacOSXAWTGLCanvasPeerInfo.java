@@ -38,14 +38,14 @@ import java.awt.Canvas;
 /**
  *
  * @author elias_naur <elias_naur@users.sourceforge.net>
- * @version $Revision: 3116 $
- * $Id: MacOSXAWTGLCanvasPeerInfo.java 3116 2008-08-19 16:46:03Z spasi $
+ * @version $Revision: 3632 $
+ * $Id: MacOSXAWTGLCanvasPeerInfo.java 3632 2011-09-03 18:52:45Z spasi $
  */
 final class MacOSXAWTGLCanvasPeerInfo extends MacOSXCanvasPeerInfo {
 	private final Canvas component;
 
-	MacOSXAWTGLCanvasPeerInfo(Canvas component, PixelFormat pixel_format, boolean support_pbuffer) throws LWJGLException {
-		super(pixel_format, support_pbuffer);
+	MacOSXAWTGLCanvasPeerInfo(Canvas component, PixelFormat pixel_format, ContextAttribs attribs, boolean support_pbuffer) throws LWJGLException {
+		super(pixel_format, attribs, support_pbuffer);
 		this.component = component;
 	}
 

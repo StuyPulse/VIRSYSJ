@@ -1,49 +1,49 @@
-/* 
+/*
  * Copyright (c) 2002-2008 LWJGL Project
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are 
+ * modification, are permitted provided that the following conditions are
  * met:
- * 
- * * Redistributions of source code must retain the above copyright 
+ *
+ * * Redistributions of source code must retain the above copyright
  *   notice, this list of conditions and the following disclaimer.
  *
  * * Redistributions in binary form must reproduce the above copyright
  *   notice, this list of conditions and the following disclaimer in the
  *   documentation and/or other materials provided with the distribution.
  *
- * * Neither the name of 'LWJGL' nor the names of 
- *   its contributors may be used to endorse or promote products derived 
+ * * Neither the name of 'LWJGL' nor the names of
+ *   its contributors may be used to endorse or promote products derived
  *   from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
  * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
  * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
- 
+
 /**
- * $Id: org_lwjgl_opengl_Display.c 3302 2010-03-31 23:56:24Z spasi $
+ * $Id: org_lwjgl_opengl_Display.c 3616 2011-08-16 22:17:32Z spasi $
  *
  * Base Windows display
  *
  * @author cix_foo <cix_foo@users.sourceforge.net>
- * @version $Revision: 3302 $
+ * @version $Revision: 3616 $
  */
 
 #define _PRIVATE_WINDOW_H_
-#include <windowsx.h>
 #include <malloc.h>
 #include "Window.h"
-#include "extgl_wgl.h"
+#include <windowsx.h>
+/*#include "extgl_wgl.h"*/
 #include "common_tools.h"
 #include "display.h"
 #include "org_lwjgl_opengl_WindowsDisplay.h"
@@ -51,7 +51,7 @@
 #include "context.h"
 #include <commctrl.h>
 
-#define WINDOWCLASSNAME "LWJGL"
+#define WINDOWCLASSNAME _T("LWJGL")
 
 /*
  *	WindowProc for the GL window.
@@ -121,8 +121,8 @@ static void handleMessages(JNIEnv *env) {
 				PM_REMOVE      // removal options
 				))
 	{
-		if (msg.message == WM_QUIT) 
-			break; 
+		if (msg.message == WM_QUIT)
+			break;
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
@@ -134,11 +134,9 @@ JNIEXPORT jlong JNICALL Java_org_lwjgl_opengl_WindowsDisplay_getDC(JNIEnv *env, 
 }
 
 JNIEXPORT void JNICALL Java_org_lwjgl_opengl_WindowsDisplay_nSetTitle
-  (JNIEnv * env, jclass unused, jlong hwnd_ptr, jstring title_obj) {
+  (JNIEnv * env, jclass unused, jlong hwnd_ptr, jlong title) {
     HWND hwnd = (HWND)(INT_PTR)hwnd_ptr;
-	char * title = GetStringNativeChars(env, title_obj);
-	SetWindowText(hwnd, title);
-	free(title);
+	SetWindowText(hwnd, (LPCTSTR)(intptr_t)title);
 }
 
 JNIEXPORT void JNICALL Java_org_lwjgl_opengl_WindowsDisplay_nUpdate(JNIEnv * env, jclass class) {
@@ -303,14 +301,14 @@ JNIEXPORT void JNICALL Java_org_lwjgl_opengl_WindowsDisplay_nReshape(JNIEnv *env
 	RECT clientSize;
 
 	getWindowFlags(&windowflags, &exstyle, undecorated, child);
-	
+
 	// If we're not a fullscreen window, adjust the height to account for the
 	// height of the title bar:
 	clientSize.bottom = height;
 	clientSize.left = 0;
 	clientSize.right = width;
 	clientSize.top = 0;
-	
+
 	AdjustWindowRectEx(
 	  &clientSize,    // client-rectangle structure
 	  windowflags,    // window styles
@@ -339,7 +337,7 @@ static HICON createWindowIcon(JNIEnv *env, jint *pixels, jint width, jint height
 	int maskPixelsOff;
 	int scanlineWidth;
 	HBITMAP colorDIB;
-	
+
 	memset(&bitmapInfo, 0, sizeof(BITMAPV5HEADER));
 	bitmapInfo.bV5Size              = sizeof(BITMAPV5HEADER);
 	bitmapInfo.bV5Width             = width;
@@ -380,7 +378,7 @@ static HICON createWindowIcon(JNIEnv *env, jint *pixels, jint width, jint height
 	DeleteObject(colorDIB);
 
 	// Convert alpha map to pixel packed mask
-	
+
 	// number of bytes it takes to fit a bit packed scan line.
 	widthInBytes = (width & 0x7) != 0 ? (width >> 3) + 1 : (width >> 3);
 
@@ -392,9 +390,9 @@ static HICON createWindowIcon(JNIEnv *env, jint *pixels, jint width, jint height
 	imageSize = scanlineWidth*height;
 	maskPixels = (unsigned char*)malloc(sizeof(unsigned char)*imageSize);
 	memset(maskPixels, 0xFF, sizeof(unsigned char)*imageSize);
-	
+
 	cursorMask = CreateBitmap(width, height, 1, 1, maskPixels);
-	
+
 	memset(&iconInfo, 0, sizeof(ICONINFO));
 	iconInfo.hbmMask = cursorMask;
 	iconInfo.hbmColor = colorBitmap;
@@ -427,6 +425,29 @@ JNIEXPORT jlong JNICALL Java_org_lwjgl_opengl_WindowsDisplay_sendMessage
 	return SendMessage(hwnd, (UINT)msg, (WPARAM)wparam, (LPARAM)lparam);
 }
 
+JNIEXPORT jlong JNICALL Java_org_lwjgl_opengl_WindowsDisplay_setWindowLongPtr
+  (JNIEnv *env, jclass clazz, jlong hwnd_ptr, jint nindex, jlong longPtr) {
+	HWND hwnd		= (HWND)(INT_PTR)hwnd_ptr;
+	return SetWindowLongPtr(hwnd, nindex, (LONG_PTR) longPtr);
+}
+
+JNIEXPORT jlong JNICALL Java_org_lwjgl_opengl_WindowsDisplay_getWindowLongPtr
+  (JNIEnv *env, jclass clazz, jlong hwnd_ptr, jint nindex) {
+	HWND hwnd		= (HWND)(INT_PTR)hwnd_ptr;
+	jlong result = GetWindowLongPtr(hwnd, nindex);
+	return result;
+}
+
+JNIEXPORT jboolean JNICALL Java_org_lwjgl_opengl_WindowsDisplay_setWindowPos
+  (JNIEnv *env, jclass clazz, jlong hwnd_ptr, jlong hwnd_after_ptr, jint x, jint y, jint width, jint height, jlong uflags) {
+	jboolean result;
+	HWND hwnd		= (HWND)(INT_PTR)hwnd_ptr;
+	HWND hwnd_after	= (HWND)(INT_PTR)hwnd_after_ptr;
+
+	result = SetWindowPos(hwnd, hwnd_after, x, y, width, height, (UINT) uflags);
+	return result;
+}
+
 JNIEXPORT void JNICALL Java_org_lwjgl_opengl_WindowsDisplay_nSetCursorPosition
 (JNIEnv * env, jclass unused, jint x, jint y) {
 	if (!SetCursorPos(x, y))
@@ -439,6 +460,16 @@ JNIEXPORT void JNICALL Java_org_lwjgl_opengl_WindowsDisplay_getClientRect
 	RECT clientRect;
 	GetClientRect(hwnd, &clientRect);
 	copyRectToBuffer(env, &clientRect, rect_buffer);
+}
+
+JNIEXPORT jboolean JNICALL Java_org_lwjgl_opengl_WindowsDisplay_adjustWindowRectEx
+	(JNIEnv *env, jclass unused, jobject rect_buffer, jlong style, jboolean menu, jlong styleex) {
+	jboolean result;
+	RECT clientRect;
+	copyBufferToRect(env, rect_buffer, &clientRect);
+	result = AdjustWindowRectEx(&clientRect, style, menu, styleex);
+	copyRectToBuffer(env, &clientRect, rect_buffer);
+	return result;
 }
 
 JNIEXPORT void JNICALL Java_org_lwjgl_opengl_WindowsDisplay_nSetNativeCursor

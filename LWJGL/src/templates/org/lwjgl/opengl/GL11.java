@@ -41,8 +41,8 @@ import java.nio.*;
  * The core OpenGL1.1 API.
  *
  * @author cix_foo <cix_foo@users.sourceforge.net>
- * @version $Revision: 3460 $
- *          $Id: GL11.java 3460 2010-11-29 18:25:28Z spasi $
+ * @version $Revision: 3618 $
+ *          $Id: GL11.java 3618 2011-08-18 23:17:17Z spasi $
  */
 @DeprecatedGL
 public interface GL11 {
@@ -784,7 +784,7 @@ public interface GL11 {
 	void glDeleteTextures(@AutoSize("textures") @GLsizei int n, @Const @GLuint IntBuffer textures);
 
 	@Alternate("glDeleteTextures")
-	void glDeleteTextures(@Constant("1") @GLsizei int n, @Constant(value = "APIUtil.getBufferInt().put(0, texture), 0", keepParam = true) int texture);
+	void glDeleteTextures(@Constant("1") @GLsizei int n, @Constant(value = "APIUtil.getInt(caps, texture)", keepParam = true) int texture);
 
 	void glCullFace(@GLenum int mode);
 
@@ -1349,6 +1349,9 @@ public interface GL11 {
 
 	@DeprecatedGL
 	void glRotatef(float angle, float x, float y, float z);
+
+	@DeprecatedGL
+	void glRotated(double angle, double x, double y, double z);
 
 	@DeprecatedGL
 	int glRenderMode(@GLenum int mode);

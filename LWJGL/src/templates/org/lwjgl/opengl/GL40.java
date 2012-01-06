@@ -184,7 +184,6 @@ public interface GL40 {
 	 */
 	int GL_MIN_SAMPLE_SHADING_VALUE = 0x8C37;
 
-	@Optional(reason = "AMD does not expose this (last driver checked: 10.9)")
 	void glMinSampleShading(@GLclampf float value);
 
 	// ---------------------------------------------------------------------
@@ -233,7 +232,7 @@ public interface GL40 {
 	@Alternate("glGetActiveSubroutineUniformName")
 	@GLreturn(value = "name", maxLength = "bufsize")
 	void glGetActiveSubroutineUniformName2(@GLuint int program, @GLenum int shadertype, @GLuint int index, @GLsizei int bufsize,
-	                                       @OutParameter @Constant("name_length, 0") @GLsizei IntBuffer length,
+	                                       @OutParameter @Constant("MemoryUtil.getAddress0(name_length)") @GLsizei IntBuffer length,
 	                                       @OutParameter @GLchar ByteBuffer name);
 
 	void glGetActiveSubroutineName(@GLuint int program, @GLenum int shadertype, @GLuint int index, @AutoSize("name") @GLsizei int bufsize,
@@ -243,7 +242,7 @@ public interface GL40 {
 	@Alternate("glGetActiveSubroutineName")
 	@GLreturn(value = "name", maxLength = "bufsize")
 	void glGetActiveSubroutineName2(@GLuint int program, @GLenum int shadertype, @GLuint int index, @GLsizei int bufsize,
-	                                @OutParameter @Constant("name_length, 0") @GLsizei IntBuffer length,
+	                                @OutParameter @Constant("MemoryUtil.getAddress0(name_length)") @GLsizei IntBuffer length,
 	                                @OutParameter @GLchar ByteBuffer name);
 
 	@StripPostfix("indices")
@@ -404,7 +403,7 @@ public interface GL40 {
 	void glDeleteTransformFeedbacks(@AutoSize("ids") @GLsizei int n, @Const @GLuint IntBuffer ids);
 
 	@Alternate("glDeleteTransformFeedbacks")
-	void glDeleteTransformFeedbacks(@Constant("1") @GLsizei int n, @Constant(value = "APIUtil.getBufferInt().put(0, id), 0", keepParam = true) int id);
+	void glDeleteTransformFeedbacks(@Constant("1") @GLsizei int n, @Constant(value = "APIUtil.getInt(caps, id)", keepParam = true) int id);
 
 	void glGenTransformFeedbacks(@AutoSize("ids") @GLsizei int n, @OutParameter @GLuint IntBuffer ids);
 
