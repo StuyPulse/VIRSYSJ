@@ -61,7 +61,7 @@ public class Resource {
      * @param index The index of the resource to free.
      */
     public void free(final int index) {
-
+        m_numAllocated[index] = false;
     }
 
     class CheckedAllocationException extends RuntimeException {
