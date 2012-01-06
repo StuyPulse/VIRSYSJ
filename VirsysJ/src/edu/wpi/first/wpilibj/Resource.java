@@ -61,6 +61,8 @@ public class Resource {
      * @param index The index of the resource to free.
      */
     public void free(final int index) {
+        if (m_numAllocated[index] == false)
+            throw new AllocationException("No resource available to be freed");
         m_numAllocated[index] = false;
     }
 
