@@ -5,7 +5,6 @@
 
 package cRIOhardware;
 
-import cRIOhardware.CRIO;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -24,12 +23,12 @@ public class CRIOTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        CRIO.DigitalSidecar.register[0] = true;
+        DigitalSidecar.register[0] = true;
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        CRIO.DigitalSidecar.register[0] = false;
+        DigitalSidecar.register[0] = false;
     }
 
     @Before
@@ -45,6 +44,6 @@ public class CRIOTest {
      */
     @Test
     public void testWriteDigital() {
-        assertEquals(CRIO.DigitalSidecar.register[0], true);
+        assertEquals(DigitalSidecar.register[0], true);
     }
 }

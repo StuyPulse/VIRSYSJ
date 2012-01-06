@@ -5,7 +5,7 @@
 
 package edu.wpi.first.wpilibj;
 
-import cRIOhardware.CRIO;
+import cRIOhardware.*;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -32,12 +32,12 @@ public class DigitalInputTest {
 
     @Before
     public void setUp() {
-        CRIO.DigitalSidecar.inputBits[1] = true;
+        DigitalSidecar.inputBits[1] = true;
     }
 
     @After
     public void tearDown() {
-        CRIO.DigitalSidecar.inputBits[1] = false;
+        DigitalSidecar.inputBits[1] = false;
     }
 
     /**

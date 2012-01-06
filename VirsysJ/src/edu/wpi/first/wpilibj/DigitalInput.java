@@ -1,6 +1,6 @@
 package edu.wpi.first.wpilibj;
 
-import cRIOhardware.CRIO;
+import cRIOhardware.*;
 
 /**
  * Class to read a digital input.
@@ -28,6 +28,6 @@ public class DigitalInput {
      * @return the stats of the digital input
      */
     public boolean get() {
-        return CRIO.DigitalSidecar.inputBits[m_channel];
+        return DigitalSidecar.inputBits[m_channel];
     }
 }
