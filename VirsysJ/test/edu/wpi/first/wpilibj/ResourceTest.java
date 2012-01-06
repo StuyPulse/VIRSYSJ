@@ -69,10 +69,10 @@ public class ResourceTest {
     public void testFree() {
         System.out.println("free");
         int index = 0;
-        Resource instance = null;
-        instance.free(index);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        Resource instance = new Resource(5);
+        instance.allocate(index);
+        instance.free(index); // should allow `index' to be allocated again
+        instance.allocate(index);
     }
 
 }
