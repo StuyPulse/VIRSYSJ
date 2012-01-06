@@ -51,6 +51,18 @@ public class ResourceTest {
     }
 
     /**
+     * Test of allocate method, of class Resource.
+     */
+    @Test(expected = Resource.CheckedAllocationException.class)
+    public void testFailAllocate() {
+        System.out.println("fail allocate");
+        Resource instance = new Resource(5);
+        int result = instance.allocate(0);
+        int result2 = instance.allocate(0); // shouldn't be allowed, since 0
+                                            // was already allocated
+    }
+
+    /**
      * Test of free method, of class Resource.
      */
     @Test

@@ -49,9 +49,8 @@ public class Resource {
     public void free(final int index) {
 
     }
-}
 
-class CheckedAllocationException extends RuntimeException {
+    class CheckedAllocationException extends RuntimeException {
 
     /**
      * Create a new AllocationException
@@ -60,4 +59,5 @@ class CheckedAllocationException extends RuntimeException {
     public CheckedAllocationException(String msg) {
         super(msg);
     }
+}
 }
