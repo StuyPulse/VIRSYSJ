@@ -31,10 +31,12 @@ public class DigitalInputTest {
 
     @Before
     public void setUp() {
+        CRIO.DigitalSidecar.inputBits[1] = true;
     }
 
     @After
     public void tearDown() {
+        CRIO.DigitalSidecar.inputBits[1] = false;
     }
 
     /**
@@ -43,12 +45,10 @@ public class DigitalInputTest {
     @Test
     public void testGet() {
         System.out.println("get");
-        DigitalInput instance = null;
-        boolean expResult = false;
+        DigitalInput instance = new DigitalInput(1);
+        boolean expResult = true;
         boolean result = instance.get();
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
 }
