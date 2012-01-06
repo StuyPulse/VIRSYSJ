@@ -1,5 +1,7 @@
 package edu.wpi.first.wpilibj;
 
+import cRIOhardware.CRIO;
+
 /**
  *
  * @author Q

@@ -1,5 +1,7 @@
 package edu.wpi.first.wpilibj;
 
+import cRIOhardware.CRIO;
+
 public class Encoder implements Channels {
 
     private boolean reverse;

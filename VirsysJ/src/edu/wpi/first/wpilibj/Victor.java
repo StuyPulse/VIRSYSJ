@@ -1,5 +1,7 @@
 package edu.wpi.first.wpilibj;
 
+import cRIOhardware.CRIO;
+
 public class Victor implements Channels {
 
     double prevspeed;

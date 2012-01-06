@@ -3,8 +3,9 @@
  * and open the template in the editor.
  */
 
-package edu.wpi.first.wpilibj;
+package cRIOhardware;
 import edu.*;
+import edu.wpi.first.wpilibj.Client;
 
 /**
  *

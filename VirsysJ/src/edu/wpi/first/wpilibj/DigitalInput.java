@@ -1,5 +1,7 @@
 package edu.wpi.first.wpilibj;
 
+import cRIOhardware.CRIO;
+
 /**
  * Class to read a digital input.
  * This class will read digital inputs and return the current value on the channel. Other devices

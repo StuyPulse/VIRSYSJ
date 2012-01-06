@@ -3,8 +3,9 @@
  * and open the template in the editor.
  */
 
-package edu.wpi.first.wpilibj;
+package cRIOhardware;
 
+import cRIOhardware.CRIO;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
