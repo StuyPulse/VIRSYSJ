@@ -95,4 +95,15 @@ public class ResourceTest {
         instance.allocate(index);
     }
 
+    /**
+     * Test of free method, of class Resource.
+     */
+    @Test(expected = Resource.AllocationException.class)
+    public void testFailFree() {
+        System.out.println("free");
+        int index = 0;
+        Resource instance = new Resource(5);
+        instance.free(index); // should fail; index not allocated
+    }
+
 }

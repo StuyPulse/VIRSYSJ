@@ -66,12 +66,23 @@ public class Resource {
 
     class CheckedAllocationException extends RuntimeException {
 
-    /**
-     * Create a new AllocationException
-     * @param msg the message to attach to the exception
-     */
-    public CheckedAllocationException(String msg) {
-        super(msg);
+        /**
+         * Create a new AllocationException
+         * @param msg the message to attach to the exception
+         */
+        public CheckedAllocationException(String msg) {
+            super(msg);
+        }
     }
-}
+
+    class AllocationException extends RuntimeException {
+
+        /**
+         * Create a new AllocationException
+         * @param msg the message to attach to the exception
+         */
+        public AllocationException(String msg) {
+            super(msg);
+        }
+    }
 }
