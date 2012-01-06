@@ -63,6 +63,26 @@ public class ResourceTest {
     }
 
     /**
+     * Test of allocate method, of class Resource.
+     */
+    @Test(expected = Resource.CheckedAllocationException.class)
+    public void testFailAllocateAboveBounds() {
+        System.out.println("fail allocate");
+        Resource instance = new Resource(5);
+        instance.allocate(5); // above bound
+    }
+
+     /**
+     * Test of allocate method, of class Resource.
+     */
+    @Test(expected = Resource.CheckedAllocationException.class)
+    public void testFailAllocateBelowBounds() {
+        System.out.println("fail allocate");
+        Resource instance = new Resource(5);
+        instance.allocate(-1); // below bound
+    }
+
+    /**
      * Test of free method, of class Resource.
      */
     @Test
