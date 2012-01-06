@@ -244,7 +244,6 @@ public interface GL32 {
 
 	/** Returned by CheckFramebufferStatusEXT: */
 	int GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS = 0x8DA8;
-	int GL_FRAMEBUFFER_INCOMPLETE_LAYER_COUNT = 0x8DA9;
 
 	/**
 	 * Accepted by the &lt;pname&gt; parameter of GetFramebufferAttachment-
@@ -335,6 +334,6 @@ public interface GL32 {
 	@GLreturn("values")
 	@StripPostfix("values")
 	void glGetSynciv2(@PointerWrapper("GLsync") GLSync sync, @GLenum int pname, @Constant("1") @GLsizei int bufSize,
-	                  @OutParameter @GLsizei @Constant("null, 0") IntBuffer length,
+	                  @OutParameter @GLsizei @Constant("0L") IntBuffer length,
 	                  @OutParameter IntBuffer values);
 }

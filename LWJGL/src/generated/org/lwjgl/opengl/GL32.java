@@ -147,8 +147,7 @@ public final class GL32 {
 	/**
 	 * Returned by CheckFramebufferStatusEXT: 
 	 */
-	public static final int GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS = 0x8DA8,
-		GL_FRAMEBUFFER_INCOMPLETE_LAYER_COUNT = 0x8DA9;
+	public static final int GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS = 0x8DA8;
 
 	/**
 	 *  Accepted by the &lt;pname&gt; parameter of GetFramebufferAttachment-
@@ -219,7 +218,7 @@ public final class GL32 {
 		BufferChecks.checkFunctionAddress(function_pointer);
 		GLChecks.ensureElementVBOdisabled(caps);
 		BufferChecks.checkDirect(indices);
-		nglDrawElementsBaseVertex(mode, indices.remaining(), GL11.GL_UNSIGNED_BYTE, indices, indices.position(), basevertex, function_pointer);
+		nglDrawElementsBaseVertex(mode, indices.remaining(), GL11.GL_UNSIGNED_BYTE, MemoryUtil.getAddress(indices), basevertex, function_pointer);
 	}
 	public static void glDrawElementsBaseVertex(int mode, IntBuffer indices, int basevertex) {
 		ContextCapabilities caps = GLContext.getCapabilities();
@@ -227,7 +226,7 @@ public final class GL32 {
 		BufferChecks.checkFunctionAddress(function_pointer);
 		GLChecks.ensureElementVBOdisabled(caps);
 		BufferChecks.checkDirect(indices);
-		nglDrawElementsBaseVertex(mode, indices.remaining(), GL11.GL_UNSIGNED_INT, indices, indices.position() << 2, basevertex, function_pointer);
+		nglDrawElementsBaseVertex(mode, indices.remaining(), GL11.GL_UNSIGNED_INT, MemoryUtil.getAddress(indices), basevertex, function_pointer);
 	}
 	public static void glDrawElementsBaseVertex(int mode, ShortBuffer indices, int basevertex) {
 		ContextCapabilities caps = GLContext.getCapabilities();
@@ -235,9 +234,9 @@ public final class GL32 {
 		BufferChecks.checkFunctionAddress(function_pointer);
 		GLChecks.ensureElementVBOdisabled(caps);
 		BufferChecks.checkDirect(indices);
-		nglDrawElementsBaseVertex(mode, indices.remaining(), GL11.GL_UNSIGNED_SHORT, indices, indices.position() << 1, basevertex, function_pointer);
+		nglDrawElementsBaseVertex(mode, indices.remaining(), GL11.GL_UNSIGNED_SHORT, MemoryUtil.getAddress(indices), basevertex, function_pointer);
 	}
-	static native void nglDrawElementsBaseVertex(int mode, int indices_count, int type, Buffer indices, int indices_position, int basevertex, long function_pointer);
+	static native void nglDrawElementsBaseVertex(int mode, int indices_count, int type, long indices, int basevertex, long function_pointer);
 	public static void glDrawElementsBaseVertex(int mode, int indices_count, int type, long indices_buffer_offset, int basevertex) {
 		ContextCapabilities caps = GLContext.getCapabilities();
 		long function_pointer = caps.glDrawElementsBaseVertex;
@@ -253,7 +252,7 @@ public final class GL32 {
 		BufferChecks.checkFunctionAddress(function_pointer);
 		GLChecks.ensureElementVBOdisabled(caps);
 		BufferChecks.checkDirect(indices);
-		nglDrawRangeElementsBaseVertex(mode, start, end, indices.remaining(), GL11.GL_UNSIGNED_BYTE, indices, indices.position(), basevertex, function_pointer);
+		nglDrawRangeElementsBaseVertex(mode, start, end, indices.remaining(), GL11.GL_UNSIGNED_BYTE, MemoryUtil.getAddress(indices), basevertex, function_pointer);
 	}
 	public static void glDrawRangeElementsBaseVertex(int mode, int start, int end, IntBuffer indices, int basevertex) {
 		ContextCapabilities caps = GLContext.getCapabilities();
@@ -261,7 +260,7 @@ public final class GL32 {
 		BufferChecks.checkFunctionAddress(function_pointer);
 		GLChecks.ensureElementVBOdisabled(caps);
 		BufferChecks.checkDirect(indices);
-		nglDrawRangeElementsBaseVertex(mode, start, end, indices.remaining(), GL11.GL_UNSIGNED_INT, indices, indices.position() << 2, basevertex, function_pointer);
+		nglDrawRangeElementsBaseVertex(mode, start, end, indices.remaining(), GL11.GL_UNSIGNED_INT, MemoryUtil.getAddress(indices), basevertex, function_pointer);
 	}
 	public static void glDrawRangeElementsBaseVertex(int mode, int start, int end, ShortBuffer indices, int basevertex) {
 		ContextCapabilities caps = GLContext.getCapabilities();
@@ -269,9 +268,9 @@ public final class GL32 {
 		BufferChecks.checkFunctionAddress(function_pointer);
 		GLChecks.ensureElementVBOdisabled(caps);
 		BufferChecks.checkDirect(indices);
-		nglDrawRangeElementsBaseVertex(mode, start, end, indices.remaining(), GL11.GL_UNSIGNED_SHORT, indices, indices.position() << 1, basevertex, function_pointer);
+		nglDrawRangeElementsBaseVertex(mode, start, end, indices.remaining(), GL11.GL_UNSIGNED_SHORT, MemoryUtil.getAddress(indices), basevertex, function_pointer);
 	}
-	static native void nglDrawRangeElementsBaseVertex(int mode, int start, int end, int indices_count, int type, Buffer indices, int indices_position, int basevertex, long function_pointer);
+	static native void nglDrawRangeElementsBaseVertex(int mode, int start, int end, int indices_count, int type, long indices, int basevertex, long function_pointer);
 	public static void glDrawRangeElementsBaseVertex(int mode, int start, int end, int indices_count, int type, long indices_buffer_offset, int basevertex) {
 		ContextCapabilities caps = GLContext.getCapabilities();
 		long function_pointer = caps.glDrawRangeElementsBaseVertex;
@@ -287,7 +286,7 @@ public final class GL32 {
 		BufferChecks.checkFunctionAddress(function_pointer);
 		GLChecks.ensureElementVBOdisabled(caps);
 		BufferChecks.checkDirect(indices);
-		nglDrawElementsInstancedBaseVertex(mode, indices.remaining(), GL11.GL_UNSIGNED_BYTE, indices, indices.position(), primcount, basevertex, function_pointer);
+		nglDrawElementsInstancedBaseVertex(mode, indices.remaining(), GL11.GL_UNSIGNED_BYTE, MemoryUtil.getAddress(indices), primcount, basevertex, function_pointer);
 	}
 	public static void glDrawElementsInstancedBaseVertex(int mode, IntBuffer indices, int primcount, int basevertex) {
 		ContextCapabilities caps = GLContext.getCapabilities();
@@ -295,7 +294,7 @@ public final class GL32 {
 		BufferChecks.checkFunctionAddress(function_pointer);
 		GLChecks.ensureElementVBOdisabled(caps);
 		BufferChecks.checkDirect(indices);
-		nglDrawElementsInstancedBaseVertex(mode, indices.remaining(), GL11.GL_UNSIGNED_INT, indices, indices.position() << 2, primcount, basevertex, function_pointer);
+		nglDrawElementsInstancedBaseVertex(mode, indices.remaining(), GL11.GL_UNSIGNED_INT, MemoryUtil.getAddress(indices), primcount, basevertex, function_pointer);
 	}
 	public static void glDrawElementsInstancedBaseVertex(int mode, ShortBuffer indices, int primcount, int basevertex) {
 		ContextCapabilities caps = GLContext.getCapabilities();
@@ -303,9 +302,9 @@ public final class GL32 {
 		BufferChecks.checkFunctionAddress(function_pointer);
 		GLChecks.ensureElementVBOdisabled(caps);
 		BufferChecks.checkDirect(indices);
-		nglDrawElementsInstancedBaseVertex(mode, indices.remaining(), GL11.GL_UNSIGNED_SHORT, indices, indices.position() << 1, primcount, basevertex, function_pointer);
+		nglDrawElementsInstancedBaseVertex(mode, indices.remaining(), GL11.GL_UNSIGNED_SHORT, MemoryUtil.getAddress(indices), primcount, basevertex, function_pointer);
 	}
-	static native void nglDrawElementsInstancedBaseVertex(int mode, int indices_count, int type, Buffer indices, int indices_position, int primcount, int basevertex, long function_pointer);
+	static native void nglDrawElementsInstancedBaseVertex(int mode, int indices_count, int type, long indices, int primcount, int basevertex, long function_pointer);
 	public static void glDrawElementsInstancedBaseVertex(int mode, int indices_count, int type, long indices_buffer_offset, int primcount, int basevertex) {
 		ContextCapabilities caps = GLContext.getCapabilities();
 		long function_pointer = caps.glDrawElementsInstancedBaseVertex;
@@ -344,9 +343,9 @@ public final class GL32 {
 		long function_pointer = caps.glGetMultisamplefv;
 		BufferChecks.checkFunctionAddress(function_pointer);
 		BufferChecks.checkBuffer(val, 2);
-		nglGetMultisamplefv(pname, index, val, val.position(), function_pointer);
+		nglGetMultisamplefv(pname, index, MemoryUtil.getAddress(val), function_pointer);
 	}
-	static native void nglGetMultisamplefv(int pname, int index, FloatBuffer val, int val_position, long function_pointer);
+	static native void nglGetMultisamplefv(int pname, int index, long val, long function_pointer);
 
 	public static void glSampleMaski(int index, int mask) {
 		ContextCapabilities caps = GLContext.getCapabilities();
@@ -412,17 +411,17 @@ public final class GL32 {
 		long function_pointer = caps.glGetInteger64v;
 		BufferChecks.checkFunctionAddress(function_pointer);
 		BufferChecks.checkBuffer(data, 1);
-		nglGetInteger64v(pname, data, data.position(), function_pointer);
+		nglGetInteger64v(pname, MemoryUtil.getAddress(data), function_pointer);
 	}
-	static native void nglGetInteger64v(int pname, LongBuffer data, int data_position, long function_pointer);
+	static native void nglGetInteger64v(int pname, long data, long function_pointer);
 
 	/** Overloads glGetInteger64v. */
 	public static long glGetInteger64(int pname) {
 		ContextCapabilities caps = GLContext.getCapabilities();
 		long function_pointer = caps.glGetInteger64v;
 		BufferChecks.checkFunctionAddress(function_pointer);
-		LongBuffer data = APIUtil.getBufferLong();
-		nglGetInteger64v(pname, data, data.position(), function_pointer);
+		LongBuffer data = APIUtil.getBufferLong(caps);
+		nglGetInteger64v(pname, MemoryUtil.getAddress(data), function_pointer);
 		return data.get(0);
 	}
 
@@ -431,17 +430,17 @@ public final class GL32 {
 		long function_pointer = caps.glGetInteger64i_v;
 		BufferChecks.checkFunctionAddress(function_pointer);
 		BufferChecks.checkBuffer(data, 4);
-		nglGetInteger64i_v(value, index, data, data.position(), function_pointer);
+		nglGetInteger64i_v(value, index, MemoryUtil.getAddress(data), function_pointer);
 	}
-	static native void nglGetInteger64i_v(int value, int index, LongBuffer data, int data_position, long function_pointer);
+	static native void nglGetInteger64i_v(int value, int index, long data, long function_pointer);
 
 	/** Overloads glGetInteger64i_v. */
 	public static long glGetInteger64(int value, int index) {
 		ContextCapabilities caps = GLContext.getCapabilities();
 		long function_pointer = caps.glGetInteger64i_v;
 		BufferChecks.checkFunctionAddress(function_pointer);
-		LongBuffer data = APIUtil.getBufferLong();
-		nglGetInteger64i_v(value, index, data, data.position(), function_pointer);
+		LongBuffer data = APIUtil.getBufferLong(caps);
+		nglGetInteger64i_v(value, index, MemoryUtil.getAddress(data), function_pointer);
 		return data.get(0);
 	}
 
@@ -452,17 +451,17 @@ public final class GL32 {
 		if (length != null)
 			BufferChecks.checkBuffer(length, 1);
 		BufferChecks.checkDirect(values);
-		nglGetSynciv(sync.getPointer(), pname, values.remaining(), length, length != null ? length.position() : 0, values, values.position(), function_pointer);
+		nglGetSynciv(sync.getPointer(), pname, values.remaining(), MemoryUtil.getAddressSafe(length), MemoryUtil.getAddress(values), function_pointer);
 	}
-	static native void nglGetSynciv(long sync, int pname, int values_bufSize, IntBuffer length, int length_position, IntBuffer values, int values_position, long function_pointer);
+	static native void nglGetSynciv(long sync, int pname, int values_bufSize, long length, long values, long function_pointer);
 
 	/** Overloads glGetSynciv. */
 	public static int glGetSync(GLSync sync, int pname) {
 		ContextCapabilities caps = GLContext.getCapabilities();
 		long function_pointer = caps.glGetSynciv;
 		BufferChecks.checkFunctionAddress(function_pointer);
-		IntBuffer values = APIUtil.getBufferInt();
-		nglGetSynciv(sync.getPointer(), pname, 1, null, 0, values, values.position(), function_pointer);
+		IntBuffer values = APIUtil.getBufferInt(caps);
+		nglGetSynciv(sync.getPointer(), pname, 1, 0L, MemoryUtil.getAddress(values), function_pointer);
 		return values.get(0);
 	}
 }

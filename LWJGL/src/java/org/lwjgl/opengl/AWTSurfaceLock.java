@@ -32,6 +32,8 @@
 package org.lwjgl.opengl;
 
 import java.awt.Canvas;
+import java.awt.Component;
+import java.applet.Applet;
 import java.nio.ByteBuffer;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
@@ -43,8 +45,8 @@ import org.lwjgl.LWJGLUtil;
 /**
  *
  * @author elias_naur <elias_naur@users.sourceforge.net>
- * @version $Revision: 3418 $
- * $Id: AWTSurfaceLock.java 3418 2010-09-28 21:11:35Z spasi $
+ * @version $Revision: 3692 $
+ * $Id: AWTSurfaceLock.java 3692 2011-11-12 20:45:35Z kappa1 $
  */
 final class AWTSurfaceLock {
 
@@ -78,14 +80,18 @@ final class AWTSurfaceLock {
 		// We need to elevate privileges because of an AWT bug. Please see
 		// http://192.18.37.44/forums/index.php?topic=10572 for a discussion.
 		// It is only needed on first call, so we avoid it on all subsequent calls
-		// due to performance.
+		// due to performance..
+        
+		// Allow the use of a Core Animation Layer only when using non fullscreen Display.setParent() or AWTGLCanvas
+		final boolean allowCALayer = ((Display.getParent() != null && !Display.isFullscreen()) || component instanceof AWTGLCanvas) && isApplet(component);
+		
 		if (firstLockSucceeded)
-			return lockAndInitHandle(lock_buffer, component);
+			return lockAndInitHandle(lock_buffer, component, allowCALayer);
 		else
 			try {
 				firstLockSucceeded = AccessController.doPrivileged(new PrivilegedExceptionAction<Boolean>() {
 					public Boolean run() throws LWJGLException {
-						return lockAndInitHandle(lock_buffer, component);
+						return lockAndInitHandle(lock_buffer, component, allowCALayer);
 					}
 				});
 				return firstLockSucceeded;
@@ -94,11 +100,29 @@ final class AWTSurfaceLock {
 			}
 	}
 
-	private static native boolean lockAndInitHandle(ByteBuffer lock_buffer, Canvas component) throws LWJGLException;
+	private static native boolean lockAndInitHandle(ByteBuffer lock_buffer, Canvas component, boolean allowCALayer) throws LWJGLException;
 
 	void unlock() throws LWJGLException {
 		nUnlock(lock_buffer);
 	}
 
 	private static native void nUnlock(ByteBuffer lock_buffer) throws LWJGLException;
+	
+	/**
+	 * This method will return true if the component is running in an applet
+	 */
+	public boolean isApplet(Canvas component) {
+		
+		Component parent = component.getParent();
+		
+		while (parent != null) {
+			if (parent instanceof Applet) {
+				return true;
+			}
+			parent = parent.getParent();
+		}
+		
+		// not an applet
+		return false;
+	}
 }

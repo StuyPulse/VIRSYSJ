@@ -3,13 +3,12 @@
 	<property name="lwjgl.src.generated" 	location="${lwjgl.src}/generated" />
 	<property name="lwjgl.maven"			location="maven" />
 	<property name="lwjgl.dstMaven"			location="${lwjgl.temp}/maven" />
-	
 	<property name="lwjgl.src.java" 		location="${lwjgl.src}/java" />
-
-	<property name="lwjgl-maven-version" value="2.7.0"/>
-
+	<property name="jinput.version"			value="2.0.5" />
+	
 	<fileset id="lwjgl-sources.manual.fileset" dir="${lwjgl.src.java}">
 		<patternset refid="lwjgl.package.pattern" />
+		<patternset refid="lwjgl.package.dependencies.pattern"/>
 	</fileset>
 
 	<fileset id="lwjgl-sources.generated.fileset" dir="${lwjgl.src.generated}">
@@ -23,6 +22,56 @@
 		<patternset refid="lwjgl_util.package.pattern" />
 	</fileset>
 
+	 <target name="-fixmavenversion">
+		<script language="javascript">
+			<![CDATA[
+				importPackage(java.lang);
+				var originalVersion = project.getProperty("lwjgl.version");
+				System.out.println("LWJGL Version: " + originalVersion);
+				var mavenVersion = originalVersion;
+				if(originalVersion.match(/^[0-9]+\.[0-9]+$/)){
+					System.out.println("Fixing LWJGL Maven version (Maven version should be x.y.z)");
+					mavenVersion = originalVersion + ".0";
+				}
+				if(!mavenVersion.match(/^.*-SNAPSHOT$/)){
+					var forceSnapshot = project.getProperty("snapshot")
+					if(forceSnapshot!=null && forceSnapshot!="false"){
+						System.out.println("Forcing Maven Version to Snapshot");
+						mavenVersion = mavenVersion + "-SNAPSHOT";
+					}
+			    }
+			
+				project.setNewProperty("lwjgl-maven-version",mavenVersion);
+				System.out.println("LWJGL Maven Version: " + project.getProperty("lwjgl-maven-version"));
+			]]>
+		</script>
+	</target>
+	
+	<target name="-checkjinputversion">
+			<script language="javascript" classpath="${lwjgl.lib}/jinput.jar">
+			<![CDATA[
+			importPackage(java.lang);
+			var version =  net.java.games.input.Version.getVersion()
+			project.setNewProperty("jinputversion",version);
+			var declaredJinputVersion = project.getProperty("jinput.version");
+			System.out.println("JINPUT Version: " + version + " - DeclaredVersion: " + declaredJinputVersion);
+				
+			if(declaredJinputVersion.equals(version)){
+				System.out.println("JINPUT Version Matches");
+				project.setNewProperty("jinputversionmatches", true);
+			} else {
+				System.out.println("JINPUT Version don't match");
+			}
+			]]>
+			</script>
+			<condition property="failjinputcheck">
+				<and>
+					<not><isset property="jinputversionmatches" /></not>
+					<not><isset property="overridejinput" /></not>
+				</and>
+			</condition>		
+			<fail  if="failjinputcheck" message="Jinput version in project (${jinputversion}) is different from the declared jinput version for maven (${jinput.version}) add -Doverridejinput=true as a command line option to avoid this check" />	
+	</target>
 
 	<target name="maven-full">
 		<antcall target="clean-java" />
@@ -34,7 +83,7 @@
         <antcall target="maven"/>
 	</target>
 	
-	<target name="maven">
+	<target name="maven" depends="-fixmavenversion, -checkjinputversion"> <!-- Added as dependency because using antcall creates a new project scope -->
 		<delete dir="${lwjgl.dstMaven}" quiet="true" failonerror="false" taskname="cleaning maven dist" />
 		<mkdir dir="${lwjgl.dstMaven}"   taskname="initialiazing temp maven folder" />
 		<antcall target="-copylwjgljars" />
@@ -45,6 +94,12 @@
 		<antcall target="-copymavendeploybuild"/>
 		<antcall target="-copymaventdist"/>
 	</target>
+	
+	
+		
+	
+	
+	
 
 
 	<target name="-copylwjgljars">
@@ -113,7 +168,7 @@
 	</target>
 	
 	<target name="-createmavennativejars">
-		<jar destfile="${lwjgl.dstMaven}/lwjgl-platform-natives-win.jar" taskname="lwjgl-platform-natives-win.jar">
+		<jar destfile="${lwjgl.dstMaven}/lwjgl-platform-natives-windows.jar" taskname="lwjgl-platform-natives-windows.jar">
 			<fileset dir="${lwjgl.lib}/windows">
 				<patternset refid="lwjgl-windows-lwjgl.fileset"/>
 			</fileset>
@@ -123,7 +178,7 @@
 				<patternset refid="lwjgl-linux-lwjgl.fileset"/>
 			</fileset>
 		</jar>
-		<jar destfile="${lwjgl.dstMaven}/lwjgl-platform-natives-mac.jar" taskname="lwjgl-platform-natives-mac.jar">
+		<jar destfile="${lwjgl.dstMaven}/lwjgl-platform-natives-osx.jar" taskname="lwjgl-platform-natives-osx.jar">
 			<fileset dir="${lwjgl.lib}/macosx">
 				<patternset refid="lwjgl-macosx-lwjgl.fileset"/>
 			</fileset>
@@ -137,6 +192,7 @@
 			</fileset>
 			<filterset>
       			<filter token="VERSION" value="${lwjgl-maven-version}"/>
+				<filter token="JINPUTVERSION" value="${jinput.version}"/>
     		</filterset>	
 		</copy>
 	</target>
@@ -148,7 +204,7 @@
 			</fileset>
 		</copy>
 	</target>
-
+	
 	<target name="-copymaventdist">
 		<zip destfile="${lwjgl.dist}/lwjgl-maven-${lwjgl.version}.zip" basedir="${lwjgl.temp}" includes="maven/**" />
 	</target>

@@ -31,10 +31,10 @@
  */
 
 /**
- * $Id: common_tools.c 3449 2010-10-14 19:58:32Z matzon $
+ * $Id: common_tools.c 3662 2011-10-12 17:58:04Z spasi $
  *
  * @author elias_naur <elias_naur@users.sourceforge.net>
- * @version $Revision: 3449 $
+ * @version $Revision: 3662 $
  */
 
 #include <jni.h>
@@ -120,7 +120,7 @@ void printfDebugJava(JNIEnv *env, const char *format, ...) {
 		org_lwjgl_LWJGLUtil_class = (*env)->FindClass(env, "org/lwjgl/LWJGLUtil");
 		if (org_lwjgl_LWJGLUtil_class == NULL)
 			return;
-		log_method = (*env)->GetStaticMethodID(env, org_lwjgl_LWJGLUtil_class, "log", "(Ljava/lang/String;)V");
+		log_method = (*env)->GetStaticMethodID(env, org_lwjgl_LWJGLUtil_class, "log", "(Ljava/lang/CharSequence;)V");
 		if (log_method == NULL)
 			return;
 		(*env)->CallStaticVoidMethod(env, org_lwjgl_LWJGLUtil_class, log_method, str);
@@ -297,7 +297,7 @@ void ext_InitializeClass(JNIEnv *env, jclass clazz, ExtGetProcAddressPROC gpa, i
 	void *ext_func_pointer;
 	void **ext_function_pointer_pointer;
 	JNINativeMethod *method;
-	int i;
+	int i, num_natives = 0;
 	if (clazz == NULL) {
 		throwException(env, "Null class");
 		return;
@@ -308,6 +308,9 @@ void ext_InitializeClass(JNIEnv *env, jclass clazz, ExtGetProcAddressPROC gpa, i
 		if (function->ext_function_name != NULL) {
 			ext_func_pointer = gpa(function->ext_function_name);
 			if (ext_func_pointer == NULL) {
+				if ( function->optional )
+					continue;
+
 				free(methods);
 				throwException(env, "Missing driver symbols");
 				return;
@@ -315,12 +318,14 @@ void ext_InitializeClass(JNIEnv *env, jclass clazz, ExtGetProcAddressPROC gpa, i
 			ext_function_pointer_pointer = function->ext_function_pointer;
 			*ext_function_pointer_pointer = ext_func_pointer;
 		}
-		method = methods + i;
+		method = methods + num_natives;
 		method->name = function->method_name;
 		method->signature = function->signature;
 		method->fnPtr = function->method_pointer;
+
+		num_natives++;
 	}
-	(*env)->RegisterNatives(env, clazz, methods, num_functions);
+	(*env)->RegisterNatives(env, clazz, methods, num_natives);
 	free(methods);
 }
 

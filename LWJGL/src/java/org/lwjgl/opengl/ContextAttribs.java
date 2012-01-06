@@ -51,6 +51,10 @@ import java.nio.IntBuffer;
  * If the forwardCompatible
  * attribute is used, LWJGL will not load the deprecated functionality (as defined in the OpenGL 3.0 specification). This
  * means that developers can start working on cleaning up their applications without an OpenGL 3.0 complaint driver.
+ * <p/>
+ * This extension is not supported on MacOS X. However, in order to enable the GL 3.2 context on MacOS X 10.7 or newer, an
+ * instance of this class must be passed to LWJGL. The only valid configuration is <code>new ContextAttribs(3, 2).withProfileCore()</code>,
+ * anything else will be ignored.
  *
  * @author spasi <spasi@users.sourceforge.net>
  */
@@ -87,7 +91,7 @@ public final class ContextAttribs {
 	public ContextAttribs(final int majorVersion, final int minorVersion) {
 		if ( majorVersion < 0 || 4 < majorVersion ||
 		     minorVersion < 0 ||
-		     (majorVersion == 4 && 0 < minorVersion) ||
+		     (majorVersion == 4 && 2 < minorVersion) ||
 		     (majorVersion == 3 && 3 < minorVersion) ||
 		     (majorVersion == 2 && 1 < minorVersion) ||
 		     (majorVersion == 1 && 5 < minorVersion) )
@@ -243,14 +247,15 @@ public final class ContextAttribs {
 				return new LinuxContextAttribs();
 			case LWJGLUtil.PLATFORM_WINDOWS:
 				return new WindowsContextAttribs();
-			case LWJGLUtil.PLATFORM_MACOSX:
-				return new MacOSXContextAttribs();
 			default:
 				throw new IllegalStateException("Unsupported platform");
 		}
 	}
 
 	IntBuffer getAttribList() {
+		if ( LWJGLUtil.getPlatform() == LWJGLUtil.PLATFORM_MACOSX )
+			return null;
+
 		ContextAttribsImplementation implementation = getImplementation();
 
 		int attribCount = 0;

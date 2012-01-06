@@ -12,11 +12,12 @@
 	<property name="lwjgl.docs" 				location="doc" />
 	<property name="lwjgl.temp" 				location="temp" />
 	<property name="lwjgl.res" 					location="res" />
-	<property name="lwjgl.version" 				value="2.7.1" />
+	<property name="lwjgl.version" 				value="2.8.2" />
 	<property name="lwjgl.web" 						location="www" />
 
 	<property name="opengl-template-pattern" value="org/lwjgl/opengl/GL*.java,org/lwjgl/opengl/ARB*.java,org/lwjgl/opengl/AMD*.java,org/lwjgl/opengl/APPLE*.java,org/lwjgl/opengl/ATI*.java,org/lwjgl/opengl/EXT*.java,org/lwjgl/opengl/NV*.java,org/lwjgl/opengl/NVX*.java,org/lwjgl/opengl/HP*.java,org/lwjgl/opengl/IBM*.java,org/lwjgl/opengl/SUN*.java,org/lwjgl/opengl/SGIS*.java,org/lwjgl/opengl/GREMEDY*.java"/>
-    <property name="opencl-template-pattern-extensions" value="org/lwjgl/opencl/KHR*.java,org/lwjgl/opencl/EXT*.java,org/lwjgl/opencl/APPLE*.java,org/lwjgl/opencl/AMD*.java,org/lwjgl/opencl/NV*.java"/>
+	<property name="opengles-template-pattern" value="org/lwjgl/opengles/GLES*.java,org/lwjgl/opengles/ARB*.java,org/lwjgl/opengles/EXT*.java,org/lwjgl/opengles/AMD*.java,org/lwjgl/opengles/ANGLE*.java,org/lwjgl/opengles/APPLE*.java,org/lwjgl/opengles/ARM*.java,org/lwjgl/opengles/DMP*.java,org/lwjgl/opengles/IMG*.java,org/lwjgl/opengles/NV*.java,org/lwjgl/opengles/OES*.java,org/lwjgl/opengles/QCOM*.java,org/lwjgl/opengles/VIV*.java"/>
+    <property name="opencl-template-pattern-extensions" value="org/lwjgl/opencl/KHR*.java,org/lwjgl/opencl/EXT*.java,org/lwjgl/opencl/APPLE*.java,org/lwjgl/opencl/AMD*.java,org/lwjgl/opencl/INTEL*.java,org/lwjgl/opencl/NV*.java"/>
     <property name="opencl-template-pattern" value="org/lwjgl/opencl/CL*.java,${opencl-template-pattern-extensions}"/>
 
 	<!-- ================================================================== -->
@@ -27,13 +28,19 @@
 	<fileset id="lwjgl.fileset" dir="${lwjgl.bin}">
 		<patternset id="lwjgl.package.pattern">
 			<include name="org/**/*" />
+			<exclude name="org/lwjgl/opengles/**"/>
 			<exclude name="org/lwjgl/d3d/**" />
 			<exclude name="org/lwjgl/test/**" />
 			<exclude name="org/lwjgl/util/**" />
 			<exclude name="org/lwjgl/examples/**" />
 		</patternset>
 	</fileset>
-	
+	<fileset id="lwjgl.fileset.dependencies" dir="${lwjgl.bin}">
+		<patternset id="lwjgl.package.dependencies.pattern">
+			<include name="org/lwjgl/opengles/ContextAttribs*.*"/>
+		</patternset>
+	</fileset>
+
 	<!-- Files to include in the lwjgl_util_applet.jar file -->
 	<fileset id="lwjgl_util_applet.fileset" dir="${lwjgl.bin}">
 		<patternset id="lwjgl_util_applet.package.pattern">
@@ -46,6 +53,7 @@
 	<fileset id="lwjgl_test.fileset" dir="${lwjgl.bin}">
 		<exclude name="**.*" />
 		<include name="org/lwjgl/test/**" />
+		<exclude name="org/lwjgl/test/opengles/**"/>
 		<include name="org/lwjgl/examples/**" />
 	</fileset>
 
@@ -59,6 +67,14 @@
         <include name="org/lwjgl/test/opencl/gl/*.cl" />
 	</fileset>
 
+	<!-- Files to include in the lwjgl_test.jar file for the ES build -->
+	<fileset id="lwjgl_test_es.fileset" dir="${lwjgl.bin}">
+		<exclude name="**.*"/>
+		<include name="org/lwjgl/test/**"/>
+		<exclude name="org/lwjgl/test/opengl/**"/>
+		<exclude name="org/lwjgl/test/*.*"/>
+	</fileset>
+
 	<!-- Files to include in the lwjgl_util.jar file -->
 	<fileset id="lwjgl_util.fileset" dir="${lwjgl.bin}">
 		<patternset id="lwjgl_util.package.pattern">
@@ -68,7 +84,7 @@
 			<include name="org/lwjgl/util/**" />
 		</patternset>
 	</fileset>
-		
+
 
 	<!-- Files to include in the lwjgl_applet.jar file -->
 	<fileset id="lwjgl_applet.fileset" dir="${lwjgl.bin}">
@@ -116,7 +132,7 @@
 			<include name="liblwjgl*.so" />
 			<include name="libopenal*.so" />
 		</patternset>
-		<patternset id="lwjgl-linux-jinput.fileset">	
+		<patternset id="lwjgl-linux-jinput.fileset">
 			<include name="libjinput-linux.so" />
 			<include name="libjinput-linux64.so" />
 		</patternset>
