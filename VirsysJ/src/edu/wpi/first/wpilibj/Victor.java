@@ -2,7 +2,7 @@ package edu.wpi.first.wpilibj;
 
 import cRIOhardware.CRIO;
 
-public class Victor implements Channels {
+public class Victor implements SpeedController, Channels {
 
     double prevspeed;
     int channel;
@@ -45,9 +45,17 @@ public class Victor implements Channels {
         pidWrite(speed);
     }
 
+    public void set(double speed, byte syncgroup) {
+        set(speed);
+    }
+
     double maxcurrenttorque() {
         double slope = -1 * motor_stall_torques[channel - 1] / motor_free_speeds[channel - 1];
         double currentspeed = Math.abs(c.getdata()[channel + 5]); // +5 to convert the channel number to the correct index of the receive data array
         return motor_stall_torques[channel - 1] + currentspeed * slope;
+    }
+
+    public void disable() {
+        
     }
 }

@@ -1,14 +1,526 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
+/*----------------------------------------------------------------------------*/
+/* Copyright (c) FIRST 2008-2012. All Rights Reserved.                        */
+/* Open Source Software - may be modified and shared by FRC teams. The code   */
+/* must be accompanied by the FIRST BSD license file in the root directory of */
+/* the project.                                                               */
+/*----------------------------------------------------------------------------*/
 package edu.wpi.first.wpilibj;
 
+import java.lang.Math;
+import cRIOhardware.DigitalSidecar;
+
 /**
- *
- * @author English
+ * Utility class for handling Robot drive based on a definition of the motor configuration.
+ * The robot drive class handles basic driving for a robot. Currently, 2 and 4 motor standard
+ * drive trains are supported. In the future other drive types like swerve and meccanum might
+ * be implemented. Motor channel numbers are passed supplied on creation of the class. Those are
+ * used for either the drive function (intended for hand created drive code, such as autonomous)
+ * or with the Tank/Arcade functions intended to be used for Operator Control driving.
  */
 public class RobotDrive {
 
+    /**
+     * The location of a motor on the robot for the purpose of driving
+     */
+    public static class MotorType {
+
+        /**
+         * The integer value representing this enumeration
+         */
+        public final int value;
+        static final int kFrontLeft_val = 0;
+        static final int kFrontRight_val = 1;
+        static final int kRearLeft_val = 2;
+        static final int kRearRight_val = 3;
+        /**
+         * motortype: front left
+         */
+        public static final MotorType kFrontLeft = new MotorType(kFrontLeft_val);
+        /**
+         * motortype: front right
+         */
+        public static final MotorType kFrontRight = new MotorType(kFrontRight_val);
+        /**
+         * motortype: rear left
+         */
+        public static final MotorType kRearLeft = new MotorType(kRearLeft_val);
+        /**
+         * motortype: rear right
+         */
+        public static final MotorType kRearRight = new MotorType(kRearRight_val);
+
+        private MotorType(int value) {
+            this.value = value;
+        }
+    }
+    public static final double kDefaultExpirationTime = 0.1;
+    public static final double kDefaultSensitivity = 0.5;
+    public static final double kDefaultMaxOutput = 1.0;
+    protected static final int kMaxNumberOfMotors = 4;
+    protected final int m_invertedMotors[] = new int[4];
+    protected double m_sensitivity;
+    protected double m_maxOutput;
+    protected Victor m_frontLeftMotor;
+    protected Victor m_frontRightMotor;
+    protected Victor m_rearLeftMotor;
+    protected Victor m_rearRightMotor;
+    protected boolean m_allocatedSpeedControllers;
+    protected boolean m_isCANInitialized = true;
+
+    /** Constructor for RobotDrive with 2 motors specified with channel numbers.
+     * Set up parameters for a two wheel drive system where the
+     * left and right motor pwm channels are specified in the call.
+     * This call assumes Victors for controlling the motors.
+     * @param leftMotorChannel The PWM channel number on the default digital module that drives the left motor.
+     * @param rightMotorChannel The PWM channel number on the default digital module that drives the right motor.
+     */
+    public RobotDrive(final int leftMotorChannel, final int rightMotorChannel) {
+        m_sensitivity = kDefaultSensitivity;
+        m_maxOutput = kDefaultMaxOutput;
+        m_frontLeftMotor = null;
+        m_rearLeftMotor = new Victor(leftMotorChannel);
+        m_frontRightMotor = null;
+        m_rearRightMotor = new Victor(rightMotorChannel);
+        for (int i = 0; i < kMaxNumberOfMotors; i++) {
+            m_invertedMotors[i] = 1;
+        }
+        m_allocatedSpeedControllers = true;
+        drive(0, 0);
+    }
+
+    /**
+     * Constructor for RobotDrive with 4 motors specified with channel numbers.
+     * Set up parameters for a four wheel drive system where all four motor
+     * pwm channels are specified in the call.
+     * This call assumes Victors for controlling the motors.
+     * @param frontLeftMotor Front left motor channel number on the default digital module
+     * @param rearLeftMotor Rear Left motor channel number on the default digital module
+     * @param frontRightMotor Front right motor channel number on the default digital module
+     * @param rearRightMotor Rear Right motor channel number on the default digital module
+     */
+    public RobotDrive(final int frontLeftMotor, final int rearLeftMotor,
+            final int frontRightMotor, final int rearRightMotor) {
+        m_sensitivity = kDefaultSensitivity;
+        m_maxOutput = kDefaultMaxOutput;
+        m_rearLeftMotor = new Victor(rearLeftMotor);
+        m_rearRightMotor = new Victor(rearRightMotor);
+        m_frontLeftMotor = new Victor(frontLeftMotor);
+        m_frontRightMotor = new Victor(frontRightMotor);
+        for (int i = 0; i < kMaxNumberOfMotors; i++) {
+            m_invertedMotors[i] = 1;
+        }
+        m_allocatedSpeedControllers = true;
+        drive(0, 0);
+    }
+
+    /**
+     * Constructor for RobotDrive with 2 motors specified as SpeedController objects.
+     * The SpeedController version of the constructor enables programs to use the RobotDrive classes with
+     * subclasses of the SpeedController objects, for example, versions with ramping or reshaping of
+     * the curve to suit motor bias or dead-band elimination.
+     * @param leftMotor The left SpeedController object used to drive the robot.
+     * @param rightMotor the right SpeedController object used to drive the robot.
+     */
+    public RobotDrive(Victor leftMotor, Victor rightMotor) {
+        if (leftMotor == null || rightMotor == null) {
+            m_rearLeftMotor = m_rearRightMotor = null;
+            throw new NullPointerException("Null motor provided");
+        }
+        m_frontLeftMotor = null;
+        m_rearLeftMotor = leftMotor;
+        m_frontRightMotor = null;
+        m_rearRightMotor = rightMotor;
+        m_sensitivity = kDefaultSensitivity;
+        m_maxOutput = kDefaultMaxOutput;
+        for (int i = 0; i < kMaxNumberOfMotors; i++) {
+            m_invertedMotors[i] = 1;
+        }
+        m_allocatedSpeedControllers = false;
+        drive(0, 0);
+    }
+
+    /**
+     * Constructor for RobotDrive with 4 motors specified as SpeedController objects.
+     * Speed controller input version of RobotDrive (see previous comments).
+     * @param rearLeftMotor The back left SpeedController object used to drive the robot.
+     * @param frontLeftMotor The front left SpeedController object used to drive the robot
+     * @param rearRightMotor The back right SpeedController object used to drive the robot.
+     * @param frontRightMotor The front right SpeedController object used to drive the robot.
+     */
+    public RobotDrive(Victor frontLeftMotor, Victor rearLeftMotor,
+            Victor frontRightMotor, Victor rearRightMotor) {
+        if (frontLeftMotor == null || rearLeftMotor == null || frontRightMotor == null || rearRightMotor == null) {
+            m_frontLeftMotor = m_rearLeftMotor = m_frontRightMotor = m_rearRightMotor = null;
+            throw new NullPointerException("Null motor provided");
+        }
+        m_frontLeftMotor = frontLeftMotor;
+        m_rearLeftMotor = rearLeftMotor;
+        m_frontRightMotor = frontRightMotor;
+        m_rearRightMotor = rearRightMotor;
+        m_sensitivity = kDefaultSensitivity;
+        m_maxOutput = kDefaultMaxOutput;
+        for (int i = 0; i < kMaxNumberOfMotors; i++) {
+            m_invertedMotors[i] = 1;
+        }
+        m_allocatedSpeedControllers = false;
+	drive(0, 0);
+    }
+
+    /**
+     * Drive the motors at "speed" and "curve".
+     *
+     * The speed and curve are -1.0 to +1.0 values where 0.0 represents stopped and
+     * not turning. The algorithm for adding in the direction attempts to provide a constant
+     * turn radius for differing speeds.
+     *
+     * This function will most likely be used in an autonomous routine.
+     *
+     * @param outputMagnitude The forward component of the output magnitude to send to the motors.
+     * @param curve The rate of turn, constant for different forward speeds.
+     */
+    public void drive(double outputMagnitude, double curve) {
+        double leftOutput, rightOutput;
+
+        if (curve < 0) {
+            double value = Math.log(-curve);
+            double ratio = (value - m_sensitivity) / (value + m_sensitivity);
+            if (ratio == 0) {
+                ratio = .0000000001;
+            }
+            leftOutput = outputMagnitude / ratio;
+            rightOutput = outputMagnitude;
+        } else if (curve > 0) {
+            double value = Math.log(curve);
+            double ratio = (value - m_sensitivity) / (value + m_sensitivity);
+            if (ratio == 0) {
+                ratio = .0000000001;
+            }
+            leftOutput = outputMagnitude;
+            rightOutput = outputMagnitude / ratio;
+        } else {
+            leftOutput = outputMagnitude;
+            rightOutput = outputMagnitude;
+        }
+        setLeftRightMotorOutputs(leftOutput, rightOutput);
+    }
+
+    /**
+     * Provide tank steering using the stored robot configuration.
+     * This function lets you directly provide joystick values from any source.
+     * @param leftValue The value of the left stick.
+     * @param rightValue The value of the right stick.
+     */
+    public void tankDrive(double leftValue, double rightValue) {
+        // square the inputs (while preserving the sign) to increase fine control while permitting full power
+        leftValue = limit(leftValue);
+        rightValue = limit(rightValue);
+        if (leftValue >= 0.0) {
+            leftValue = (leftValue * leftValue);
+        } else {
+            leftValue = -(leftValue * leftValue);
+        }
+        if (rightValue >= 0.0) {
+            rightValue = (rightValue * rightValue);
+        } else {
+            rightValue = -(rightValue * rightValue);
+        }
+
+        setLeftRightMotorOutputs(leftValue, rightValue);
+    }
+
+
+    /**
+     * Arcade drive implements single stick driving.
+     * This function lets you directly provide joystick values from any source.
+     * @param moveValue The value to use for forwards/backwards
+     * @param rotateValue The value to use for the rotate right/left
+     * @param squaredInputs If set, increases the sensitivity at low speeds
+     */
+    public void arcadeDrive(double moveValue, double rotateValue, boolean squaredInputs) {
+        // local variables to hold the computed PWM values for the motors
+        double leftMotorSpeed;
+        double rightMotorSpeed;
+
+        moveValue = limit(moveValue);
+        rotateValue = limit(rotateValue);
+
+        if (squaredInputs) {
+            // square the inputs (while preserving the sign) to increase fine control while permitting full power
+            if (moveValue >= 0.0) {
+                moveValue = (moveValue * moveValue);
+            } else {
+                moveValue = -(moveValue * moveValue);
+            }
+            if (rotateValue >= 0.0) {
+                rotateValue = (rotateValue * rotateValue);
+            } else {
+                rotateValue = -(rotateValue * rotateValue);
+            }
+        }
+
+        if (moveValue > 0.0) {
+            if (rotateValue > 0.0) {
+                leftMotorSpeed = moveValue - rotateValue;
+                rightMotorSpeed = Math.max(moveValue, rotateValue);
+            } else {
+                leftMotorSpeed = Math.max(moveValue, -rotateValue);
+                rightMotorSpeed = moveValue + rotateValue;
+            }
+        } else {
+            if (rotateValue > 0.0) {
+                leftMotorSpeed = -Math.max(-moveValue, rotateValue);
+                rightMotorSpeed = moveValue + rotateValue;
+            } else {
+                leftMotorSpeed = moveValue - rotateValue;
+                rightMotorSpeed = -Math.max(-moveValue, -rotateValue);
+            }
+        }
+
+        setLeftRightMotorOutputs(leftMotorSpeed, rightMotorSpeed);
+    }
+
+    /**
+     * Arcade drive implements single stick driving.
+     * This function lets you directly provide joystick values from any source.
+     * @param moveValue The value to use for fowards/backwards
+     * @param rotateValue The value to use for the rotate right/left
+     */
+    public void arcadeDrive(double moveValue, double rotateValue) {
+        this.arcadeDrive(moveValue, rotateValue, true);
+    }
+
+    /**
+     * Drive method for Mecanum wheeled robots.
+     *
+     * A method for driving with Mecanum wheeled robots. There are 4 wheels
+     * on the robot, arranged so that the front and back wheels are toed in 45 degrees.
+     * When looking at the wheels from the top, the roller axles should form an X across the robot.
+     *
+     * This is designed to be directly driven by joystick axes.
+     *
+     * @param x The speed that the robot should drive in the X direction. [-1.0..1.0]
+     * @param y The speed that the robot should drive in the Y direction.
+     * This input is inverted to match the forward == -1.0 that joysticks produce. [-1.0..1.0]
+     * @param rotation The rate of rotation for the robot that is completely independent of
+     * the translation. [-1.0..1.0]
+     * @param gyroAngle The current angle reading from the gyro.  Use this to implement field-oriented controls.
+     */
+    public void mecanumDrive_Cartesian(double x, double y, double rotation, double gyroAngle)
+    {
+        double xIn = x;
+        double yIn = y;
+        // Negate y for the joystick.
+        yIn = -yIn;
+        // Compenstate for gyro angle.
+        double rotated[] = rotateVector(xIn, yIn, gyroAngle);
+        xIn = rotated[0];
+        yIn = rotated[1];
+
+        double wheelSpeeds[] = new double[kMaxNumberOfMotors];
+        wheelSpeeds[MotorType.kFrontLeft_val] = xIn + yIn + rotation;
+        wheelSpeeds[MotorType.kFrontRight_val] = -xIn + yIn - rotation;
+        wheelSpeeds[MotorType.kRearLeft_val] = -xIn + yIn + rotation;
+        wheelSpeeds[MotorType.kRearRight_val] = xIn + yIn - rotation;
+
+        normalize(wheelSpeeds);
+
+        byte syncGroup = (byte)0x80;
+
+        m_frontLeftMotor.set(wheelSpeeds[MotorType.kFrontLeft_val] * m_invertedMotors[MotorType.kFrontLeft_val] * m_maxOutput, syncGroup);
+        m_frontRightMotor.set(wheelSpeeds[MotorType.kFrontRight_val] * m_invertedMotors[MotorType.kFrontRight_val] * m_maxOutput, syncGroup);
+        m_rearLeftMotor.set(wheelSpeeds[MotorType.kRearLeft_val] * m_invertedMotors[MotorType.kRearLeft_val] * m_maxOutput, syncGroup);
+        m_rearRightMotor.set(wheelSpeeds[MotorType.kRearRight_val] * m_invertedMotors[MotorType.kRearRight_val] * m_maxOutput, syncGroup);
+    }
+
+    /**
+     * Drive method for Mecanum wheeled robots.
+     *
+     * A method for driving with Mecanum wheeled robots. There are 4 wheels
+     * on the robot, arranged so that the front and back wheels are toed in 45 degrees.
+     * When looking at the wheels from the top, the roller axles should form an X across the robot.
+     *
+     * @param magnitude The speed that the robot should drive in a given direction.
+     * @param direction The direction the robot should drive in degrees. The direction and maginitute are
+     * independent of the rotation rate.
+     * @param rotation The rate of rotation for the robot that is completely independent of
+     * the magnitute or direction. [-1.0..1.0]
+     */
+    public void mecanumDrive_Polar(double magnitude, double direction, double rotation) {
+        double frontLeftSpeed, rearLeftSpeed, frontRightSpeed, rearRightSpeed;
+        // Normalized for full power along the Cartesian axes.
+        magnitude = limit(magnitude) * Math.sqrt(2.0);
+        // The rollers are at 45 degree angles.
+        double dirInRad = (direction + 45.0) * 3.14159 / 180.0;
+        double cosD = Math.cos(dirInRad);
+        double sinD = Math.sin(dirInRad);
+
+        double wheelSpeeds[] = new double[kMaxNumberOfMotors];
+        wheelSpeeds[MotorType.kFrontLeft_val] = (sinD * magnitude + rotation);
+        wheelSpeeds[MotorType.kFrontRight_val] = (cosD * magnitude - rotation);
+        wheelSpeeds[MotorType.kRearLeft_val] = (cosD * magnitude + rotation);
+        wheelSpeeds[MotorType.kRearRight_val] = (sinD * magnitude - rotation);
+
+        normalize(wheelSpeeds);
+
+        byte syncGroup = (byte)0x80;
+
+        m_frontLeftMotor.set(wheelSpeeds[MotorType.kFrontLeft_val] * m_invertedMotors[MotorType.kFrontLeft_val] * m_maxOutput, syncGroup);
+        m_frontRightMotor.set(wheelSpeeds[MotorType.kFrontRight_val] * m_invertedMotors[MotorType.kFrontRight_val] * m_maxOutput, syncGroup);
+        m_rearLeftMotor.set(wheelSpeeds[MotorType.kRearLeft_val] * m_invertedMotors[MotorType.kRearLeft_val] * m_maxOutput, syncGroup);
+        m_rearRightMotor.set(wheelSpeeds[MotorType.kRearRight_val] * m_invertedMotors[MotorType.kRearRight_val] * m_maxOutput, syncGroup);
+    }
+
+    /**
+     * Holonomic Drive method for Mecanum wheeled robots.
+     *
+     * This is an alias to mecanumDrive_Polar() for backward compatability
+     *
+     * @param magnitude The speed that the robot should drive in a given direction.  [-1.0..1.0]
+     * @param direction The direction the robot should drive. The direction and maginitute are
+     * independent of the rotation rate.
+     * @param rotation The rate of rotation for the robot that is completely independent of
+     * the magnitute or direction.  [-1.0..1.0]
+     */
+    void holonomicDrive(float magnitude, float direction, float rotation) {
+        mecanumDrive_Polar(magnitude, direction, rotation);
+    }
+
+    /** Set the speed of the right and left motors.
+     * This is used once an appropriate drive setup function is called such as
+     * twoWheelDrive(). The motors are set to "leftSpeed" and "rightSpeed"
+     * and includes flipping the direction of one side for opposing motors.
+     * @param leftOutput The speed to send to the left side of the robot.
+     * @param rightOutput The speed to send to the right side of the robot.
+     */
+    public void setLeftRightMotorOutputs(double leftOutput, double rightOutput) {
+        if (m_rearLeftMotor == null || m_rearRightMotor == null) {
+            throw new NullPointerException("Null motor provided");
+        }
+
+        byte syncGroup = (byte)0x80;
+
+        if (m_frontLeftMotor != null) {
+            m_frontLeftMotor.set(limit(leftOutput) * m_invertedMotors[MotorType.kFrontLeft_val] * m_maxOutput, syncGroup);
+        }
+        m_rearLeftMotor.set(limit(leftOutput) * m_invertedMotors[MotorType.kRearLeft_val] * m_maxOutput, syncGroup);
+
+        if (m_frontRightMotor != null) {
+            m_frontRightMotor.set(-limit(rightOutput) * m_invertedMotors[MotorType.kFrontRight_val] * m_maxOutput, syncGroup);
+        }
+        m_rearRightMotor.set(-limit(rightOutput) * m_invertedMotors[MotorType.kRearRight_val] * m_maxOutput, syncGroup);
+    }
+
+    /**
+     * Limit motor values to the -1.0 to +1.0 range.
+     */
+    protected static double limit(double num) {
+        if (num > 1.0) {
+            return 1.0;
+        }
+        if (num < -1.0) {
+            return -1.0;
+        }
+        return num;
+    }
+
+    /**
+     * Normalize all wheel speeds if the magnitude of any wheel is greater than 1.0.
+     */
+    protected static void normalize(double wheelSpeeds[]) {
+        double maxMagnitude = Math.abs(wheelSpeeds[0]);
+        int i;
+        for (i=1; i<kMaxNumberOfMotors; i++) {
+            double temp = Math.abs(wheelSpeeds[i]);
+            if (maxMagnitude < temp) maxMagnitude = temp;
+        }
+        if (maxMagnitude > 1.0) {
+            for (i=0; i<kMaxNumberOfMotors; i++) {
+                wheelSpeeds[i] = wheelSpeeds[i] / maxMagnitude;
+            }
+        }
+    }
+
+    /**
+     * Rotate a vector in Cartesian space.
+     */
+    protected static double[] rotateVector(double x, double y, double angle) {
+        double cosA = Math.cos(angle * (3.14159 / 180.0));
+        double sinA = Math.sin(angle * (3.14159 / 180.0));
+        double out[] = new double[2];
+        out[0] = x * cosA - y * sinA;
+        out[1] = x * sinA + y * cosA;
+        return out;
+    }
+
+    /**
+     * Invert a motor direction.
+     * This is used when a motor should run in the opposite direction as the drive
+     * code would normally run it. Motors that are direct drive would be inverted, the
+     * drive code assumes that the motors are geared with one reversal.
+     * @param motor The motor index to invert.
+     * @param isInverted True if the motor should be inverted when operated.
+     */
+    public void setInvertedMotor(MotorType motor, boolean isInverted) {
+        m_invertedMotors[motor.value] = isInverted ? -1 : 1;
+    }
+
+    /**
+     * Set the turning sensitivity.
+     *
+     * This only impacts the drive() entry-point.
+     * @param sensitivity Effectively sets the turning sensitivity (or turn radius for a given value)
+     */
+    public void setSensitivity(double sensitivity)
+    {
+            m_sensitivity = sensitivity;
+    }
+
+    /**
+     * Configure the scaling factor for using RobotDrive with motor controllers in a mode other than PercentVbus.
+     * @param maxOutput Multiplied with the output percentage computed by the drive functions.
+     */
+    public void setMaxOutput(double maxOutput)
+    {
+            m_maxOutput = maxOutput;
+    }
+
+
+    /**
+     * Free the speed controllers if they were allocated locally
+     */
+    public void free() {
+        if (m_allocatedSpeedControllers) {
+            if (m_frontLeftMotor != null) {
+                DigitalSidecar.allocated.free(m_frontLeftMotor.channel);
+            }
+            if (m_frontRightMotor != null) {
+                DigitalSidecar.allocated.free(m_frontRightMotor.channel);
+            }
+            if (m_rearLeftMotor != null) {
+                DigitalSidecar.allocated.free(m_rearLeftMotor.channel);
+            }
+            if (m_rearRightMotor != null) {
+                DigitalSidecar.allocated.free(m_rearRightMotor.channel);
+            }
+        }
+    }
+
+    public String getDescription() {
+        return "Robot Drive";
+    }
+
+    public void stopMotor() {
+        if (m_frontLeftMotor != null) {
+            m_frontLeftMotor.set(0.0);
+        }
+        if (m_frontRightMotor != null) {
+            m_frontRightMotor.set(0.0);
+        }
+        if (m_rearLeftMotor != null) {
+            m_rearLeftMotor.set(0.0);
+        }
+        if (m_rearRightMotor != null) {
+            m_rearRightMotor.set(0.0);
+        }
+    }
 }
