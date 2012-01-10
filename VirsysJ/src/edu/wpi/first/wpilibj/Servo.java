@@ -11,4 +11,23 @@ package edu.wpi.first.wpilibj;
  */
 public class Servo {
 
+    double position = 0;
+    double angle = 0;
+
+    public void set(double value) {
+        position = value;
+    }
+
+    public double get() {
+        return position;
+    }
+
+    public void setAngle(double degrees) {
+        angle = degrees;
+    }
+
+    public double getAngle() {
+        return angle;
+    }
+
 }
