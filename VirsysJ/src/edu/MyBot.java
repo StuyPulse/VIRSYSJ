@@ -7,6 +7,7 @@ public class MyBot extends SimpleRobot implements Channels {
     Victor rv,lv, arm;
     Encoder re,le;
     final int wheelradius = 3;
+    RobotDrive rd;
     Gyro g;
 
     public MyBot() {
@@ -14,6 +15,7 @@ public class MyBot extends SimpleRobot implements Channels {
         System.out.println("finised consntructing Client");
         lv = new Victor(LEFT_PWM);
         rv = new Victor(RIGHT_PWM);
+        rd = new RobotDrive(lv, rv);
 	arm = new Victor(ARM_PWM);
         System.out.println("done making victors");
         re = new Encoder(1,1,true,CounterBase.EncodingType.k2X);
@@ -29,8 +31,7 @@ public class MyBot extends SimpleRobot implements Channels {
     }
 
     public void autonomous() {
-        rv.set(-1);
-        lv.set(1);
+        rd.tankDrive(-1, 1);
 	arm.set(1);
         System.out.println("in auton");
         while (isEnabled() && isAutonomous()) {
