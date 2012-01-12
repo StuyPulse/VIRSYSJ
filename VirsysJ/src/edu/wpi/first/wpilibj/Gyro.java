@@ -58,7 +58,8 @@ public class Gyro implements Channels {
     }
 
     public double pidGet() {
-        return dist;
+        //return dist;
+        return _c.getdata()[0];
     }
 
     private class GyroThread implements Runnable {

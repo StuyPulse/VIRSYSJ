@@ -31,14 +31,9 @@ public class MyBot extends SimpleRobot implements Channels {
     }
 
     public void autonomous() {
-        rd.tankDrive(-1, 1);
 	arm.set(1);
-        System.out.println("in auton");
-        while (isEnabled() && isAutonomous()) {
-            //System.out.println("angle = " + g.getAngle());
-            Timer.delay(0.1);
-            //System.out.println("time: " + System.currentTimeMillis());
-        }
+        System.out.println(g.pidGet());
+        // p = new PIDController(1, 0, 0, , arm);
     }
 
     public void operatorControl() {
