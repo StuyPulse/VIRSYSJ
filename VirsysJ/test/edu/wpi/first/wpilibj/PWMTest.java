@@ -37,11 +37,37 @@ public class PWMTest {
     }
     
     @Test
-    public void PWM(int channel) {
+    public void PWMTest() {
+        PWM myPwm = new PWM();
+        assert(myPwm != null);
     }
 
-    public void PWM(int moduleNumber, int channel) {
+    @Test
+    public void freeTest() {
+        
     }
 
+    @Test
+    public void getPositionTest() {
+        PWM myPWM = new PWM();
+        assert(myPWM.getPosition() < 1.0 && myPWM.getPosition() > 0.0);
+    }
 
+    @Test
+    public void setPositionTest(){
+        double position;
+        position = myPWM.setPosition(0.5);
+    }
+
+    @Test
+    public void setRawTest(){
+        int raw;
+        raw = myPWN.setRaw(128);
+    }
+
+    @Test
+    public void getRawTest(){
+        PWM myPWM = new PWM();
+        assert(myPWM.getRaw() < 256 && myPWM.getRaw() > -1);
+    }
 }

@@ -37,7 +37,6 @@ public class Servo {
      */
     public Servo(final int slot, final int channel) {
         super(slot, channel);
-        initServo();
     }
 
     /**
