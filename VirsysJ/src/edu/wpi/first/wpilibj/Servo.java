@@ -9,7 +9,7 @@ package edu.wpi.first.wpilibj;
  *
  * @author English
  */
-public class Servo {
+public class Servo extends PWM {
 
     int m_maxPwm;
     int m_deadbandMaxPwm;
@@ -117,4 +117,4 @@ public class Servo {
         return angle;
     }*/
 
-}
+
