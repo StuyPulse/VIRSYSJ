@@ -42,6 +42,16 @@ public class Resource {
      * @return The index of the allocated block
      * @throws CheckedAllocationException If there are no resources available to be allocated.
      */
+        class CheckedAllocationException extends RuntimeException {
+
+        /**
+         * Create a new AllocationException
+         * @param msg the message to attach to the exception
+         */
+        public CheckedAllocationException(String msg) {
+            super(msg);
+        }
+
     public int allocate(final int index) throws CheckedAllocationException {
         if (index >= m_size || index < 0) {
             throw new CheckedAllocationException("Index " + index + " out of range");
@@ -66,17 +76,6 @@ public class Resource {
         m_numAllocated[index] = false;
     }
 
-    class CheckedAllocationException extends RuntimeException {
-
-        /**
-         * Create a new AllocationException
-         * @param msg the message to attach to the exception
-         */
-        public CheckedAllocationException(String msg) {
-            super(msg);
-        }
-    }
-
     class AllocationException extends RuntimeException {
 
         /**
@@ -86,5 +85,6 @@ public class Resource {
         public AllocationException(String msg) {
             super(msg);
         }
-    }
 }
+    }
+        }

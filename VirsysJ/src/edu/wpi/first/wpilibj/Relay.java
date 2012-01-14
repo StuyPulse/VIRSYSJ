@@ -1,11 +1,16 @@
 /*----------------------------------------------------------------------------*/
-/* Copyright (c) FIRST 2008-2011. All Rights Reserved.                             */
+/* Copyright (c) FIRST 2008-2012. All Rights Reserved.                        */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
 package edu.wpi.first.wpilibj;
+
+import edu.wpi.first.wpilibj.fpga.tDIO;
+import edu.wpi.first.wpilibj.parsing.IDeviceController;
+import edu.wpi.first.wpilibj.util.AllocationException;
+import edu.wpi.first.wpilibj.util.CheckedAllocationException;
 
 /**
  * Class for Spike style relay outputs.
@@ -14,12 +19,12 @@ package edu.wpi.first.wpilibj;
  * two spike outputs at 0v, one at 12v and one at 0v, one at 0v and the other at 12v, or two
  * spike outputs at 12V. This allows off, full forward, or full reverse control of motors without
  * variable speed.  It also allows the two channels (forward and reverse) to be used independently
- * for something that does not care about voltage polarity (like a solenoid).
+ * for something that does not care about voltage polatiry (like a solenoid).
  */
-public class Relay {
+public class Relay extends SensorBase implements IDeviceController{
 
     /**
-     * This class represents errors in trying to set relay values contradictory
+     * This class represents errors in trying to set realy values contradictory
      * to the direction to which the relay is set.
      */
     public class InvalidValueException extends RuntimeException {
@@ -99,15 +104,32 @@ public class Relay {
     }
     private int m_channel;
     private Direction m_direction;
-
+    private DigitalModule m_module;
+    private static Resource relayChannels = new Resource(tDIO.kNumSystems * kRelayChannels * 2);
 
     /**
-     * Common relay intitialization methode.
+     * Common relay initialization method.
      * This code is common to all Relay constructors and initializes the relay and reserves
      * all resources that need to be locked. Initially the relay is set to both lines at 0v.
      * @param moduleNumber The number of the digital module to use.
      */
-   
+    private void initRelay(final int moduleNumber) {
+        SensorBase.checkRelayModule(moduleNumber);
+        SensorBase.checkRelayChannel(m_channel);
+        try {
+            if (m_direction == Direction.kBoth || m_direction == Direction.kForward) {
+                relayChannels.allocate(((moduleNumber - 1) * kRelayChannels + m_channel - 1) * 2);
+            }
+            if (m_direction == Direction.kBoth || m_direction == Direction.kReverse) {
+                relayChannels.allocate(((moduleNumber - 1) * kRelayChannels + m_channel - 1) * 2 + 1);
+            }
+        } catch (CheckedAllocationException e) {
+            throw new AllocationException("Relay channel " + m_channel + " on module " + moduleNumber + " is already allocated");
+        }
+        m_module = DigitalModule.getInstance(moduleNumber);
+        m_module.setRelayForward(m_channel, false);
+        m_module.setRelayReverse(m_channel, false);
+    }
 
 
     /**
@@ -121,7 +143,7 @@ public class Relay {
             throw new NullPointerException("Null Direction was given");
         m_channel = channel;
         m_direction = direction;
-       
+        initRelay(moduileNumber);
     }
 
     /**
@@ -134,6 +156,7 @@ public class Relay {
             throw new NullPointerException("Null Direction was given");
         m_channel = channel;
         m_direction = direction;
+        initRelay(getDefaultDigitalModule());
     }
 
     /**
@@ -144,7 +167,7 @@ public class Relay {
     public Relay(final int moduleNumber, final int channel) {
         m_channel = channel;
         m_direction = Direction.kBoth;
-
+        initRelay(moduleNumber);
     }
 
     /**
@@ -155,18 +178,28 @@ public class Relay {
     public Relay(final int channel) {
         m_channel = channel;
         m_direction = Direction.kBoth;
-
+        initRelay(getDefaultDigitalModule());
     }
 
-    
+    public void free() {
+        m_module.setRelayForward(m_channel, false);
+        m_module.setRelayReverse(m_channel, false);
+
+        if (m_direction == Direction.kBoth || m_direction == Direction.kForward) {
+            relayChannels.free(((m_module.getModuleNumber() - 1) * kRelayChannels + m_channel - 1) * 2);
+        }
+        if (m_direction == Direction.kBoth || m_direction == Direction.kReverse) {
+            relayChannels.free(((m_module.getModuleNumber() - 1) * kRelayChannels + m_channel - 1) * 2 + 1);
+        }
+    }
 
     /**
      * Set the relay state.
      *
      * Valid values depend on which directions of the relay are controlled by the object.
      *
-     * When set to kBothDirections, the relay can only be one of the three reasonable
-     *    values, 0v-0v, 0v-12v, or 12v-0v.
+     * When set to kBothDirections, the relay can be set to any of the four states:
+	 *		0v-0v, 12v-0v, 0v-12v, 12v-12v
      *
      * When set to kForwardOnly or kReverseOnly, you can specify the constant for the
      *    direction or you can simply specify kOff_val and kOn_val.  Using only kOff_val and kOn_val is
@@ -185,11 +218,10 @@ public class Relay {
                 }
                 break;
             case Value.kOn_val:
-                if (m_direction == Direction.kBoth)
-                    throw new InvalidValueException("A relay configured to both directions cannot be set to on");
-                if (m_direction == Direction.kForward) {
+                if (m_direction == Direction.kBoth || m_direction == Direction.kForward) {
                     m_module.setRelayForward(m_channel, true);
-                } else if (m_direction == Direction.kReverse) {
+                }
+				if (m_direction == Direction.kBoth || m_direction == Direction.kReverse) {
                     m_module.setRelayReverse(m_channel, true);
                 }
                 break;
@@ -239,5 +271,6 @@ public class Relay {
 
         m_direction = direction;
 
+        initRelay(m_module.getModuleNumber());
     }
 }
