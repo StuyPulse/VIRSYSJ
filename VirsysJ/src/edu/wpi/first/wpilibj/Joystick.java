@@ -7,6 +7,7 @@
 package edu.wpi.first.wpilibj;
 
 import org.lwjgl.util.jinput.*;
+import edu.wpi.first.wpilibj.parsing.IInputOutput;
 
 /**
  * Handle input from standard Joysticks connected to the Driver Station.
@@ -14,15 +15,15 @@ import org.lwjgl.util.jinput.*;
  * the most recent value is returned. There is a single class instance for each joystick and the mapping
  * of ports to hardware buttons depends on the code in the driver station.
  */
-public class Joystick {
+public class Joystick extends GenericHID implements IInputOutput{
 
     static final byte kDefaultXAxis = 1;
     static final byte kDefaultYAxis = 2;
     static final byte kDefaultZAxis = 3;
     static final byte kDefaultTwistAxis = 3;
     static final byte kDefaultThrottleAxis = 4;
-    static final int kDefaultTriggerButton = 1;
-    static final int kDefaultTopButton = 2;
+    static final int  kDefaultTriggerButton = 1;
+    static final int  kDefaultTopButton = 2;
 
     /**
      * Represents an analog axis on a joystick.
