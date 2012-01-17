@@ -4,6 +4,8 @@
  */
 package edu.wpi.first.wpilibj;
 
+import cRIOhardware.*;
+
 /**
  *
  * @author 694
@@ -20,10 +22,6 @@ public class PWM {
     int deadbandMinPwm;
     int minPwm;
     double speedPwm;
-
-    public static class PeriodMultiplier {
-        public final int value;
-    }
 
     public PWM(int moduleNumber, int channel) {
         channelPwm = channel;
@@ -51,16 +49,9 @@ public class PWM {
         deadbandMinPwm = deadbandMin;
         minPwm = min;
     }
-    
-    public void setPeriodMultiplier(PWM.PeriodMultiplier mult) {
 
-    }
     public void setPosition(double position) {
-        positionPwm = position;
-    }
-
-    public void setRaw(int raw) {
-        rawPwm = raw;
+        DigitalSidecar.register[channelPwm - 1] = position;
     }
 
     public int getChannel() {
@@ -72,14 +63,6 @@ public class PWM {
     }
 
     public double getPosition() {
-        return positionPwm;
-    }
-
-    public int getRaw() {
-        return rawPwm;
-    }
-
-    public double getSpeed() {
-        return speedPwm;
+        return DigitalSidecar.register[channelPwm - 1];
     }
 }
