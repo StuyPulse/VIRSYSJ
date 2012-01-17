@@ -6,8 +6,7 @@
 /*----------------------------------------------------------------------------*/
 package edu.wpi.first.wpilibj;
 
-import org.lwjgl.util.jinput.*;
-import edu.wpi.first.wpilibj.parsing.IInputOutput;
+import org.lwjgl.input.*;
 
 /**
  * Handle input from standard Joysticks connected to the Driver Station.
@@ -15,7 +14,6 @@ import edu.wpi.first.wpilibj.parsing.IInputOutput;
  * the most recent value is returned. There is a single class instance for each joystick and the mapping
  * of ports to hardware buttons depends on the code in the driver station.
  */
-
 public class Joystick extends GenericHID {
 
     static final byte kDefaultXAxis = 1;
@@ -23,8 +21,9 @@ public class Joystick extends GenericHID {
     static final byte kDefaultZAxis = 3;
     static final byte kDefaultTwistAxis = 3;
     static final byte kDefaultThrottleAxis = 4;
-    static final int  kDefaultTriggerButton = 1;
-    static final int  kDefaultTopButton = 2;
+    static final int kDefaultTriggerButton = 1;
+    static final int kDefaultTopButton = 2;
+    Controller joystick;
 
     /**
      * Represents an analog axis on a joystick.
@@ -100,7 +99,6 @@ public class Joystick extends GenericHID {
             this.value = value;
         }
     }
-
     private final int m_port;
     private final byte[] m_axes;
     private final byte[] m_buttons;
@@ -138,6 +136,18 @@ public class Joystick extends GenericHID {
         m_axes = new byte[numAxisTypes];
         m_buttons = new byte[numButtonTypes];
         m_port = port;
+        Controllers controllers = new Controllers();
+        try {
+            controllers.create();
+            if (controllers.getControllerCount() > 0) {
+                joystick = controllers.getController(port);
+                System.out.println("Joystick has " + joystick.getButtonCount() + " buttons. Its name is " + joystick.getName());
+            } else {
+                joystick = null;
+            }
+        } catch (org.lwjgl.LWJGLException e) {
+            System.err.println("Couldn't initialize Controllers: " + e.getMessage());
+        }
     }
 
     /**
@@ -200,7 +210,7 @@ public class Joystick extends GenericHID {
      * @return The value of the axis.
      */
     public double getRawAxis(final int axis) {
-        return m_ds.getStickAxis(m_port, axis);
+        return joystick.getAxisValue(axis);
     }
 
     /**
