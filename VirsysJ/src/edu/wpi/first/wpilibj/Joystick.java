@@ -14,7 +14,11 @@ import org.lwjgl.util.jinput.*;
  * the most recent value is returned. There is a single class instance for each joystick and the mapping
  * of ports to hardware buttons depends on the code in the driver station.
  */
+<<<<<<< HEAD
+public class Joystick extends GenericHID {
+=======
 public class Joystick {
+>>>>>>> parent of 3e16165... included interfaces that JoyStick implements
 
     static final byte kDefaultXAxis = 1;
     static final byte kDefaultYAxis = 2;
