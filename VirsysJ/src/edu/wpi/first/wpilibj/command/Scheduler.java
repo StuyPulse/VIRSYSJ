@@ -8,8 +8,6 @@
 package edu.wpi.first.wpilibj.command;
 
 import edu.wpi.first.wpilibj.buttons.Button.ButtonScheduler;
-import edu.wpi.first.wpilibj.networktables.NetworkTable;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardNamedData;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -27,7 +25,7 @@ import java.util.Vector;
  * @author Joe Grinstead
  * @see Command
  */
-public class Scheduler implements SmartDashboardNamedData {
+public class Scheduler {
 
     /** The Singleton Instance */
     private static Scheduler instance;
@@ -178,19 +176,6 @@ public class Scheduler implements SmartDashboardNamedData {
             }
         }
 
-        // Send the value over the table
-        if (table != null) {
-            int count = 0;
-            synchronized (table) {
-                table.beginTransaction();
-                for (e = firstCommand; e != null; e = e.getNext()) {
-                    table.putSubTable(String.valueOf(++count), e.getData().getTable());
-                }
-                table.putInt("count", count);
-                table.endTransaction();
-            }
-        }
-
         // Add the new things
         for (int i = 0; i < additions.size(); i++) {
             _add((Command) additions.elementAt(i));
@@ -253,13 +238,5 @@ public class Scheduler implements SmartDashboardNamedData {
     public String getType() {
         return "Scheduler";
     }
-    private NetworkTable table;
 
-    public NetworkTable getTable() {
-        if (table == null) {
-            table = new NetworkTable();
-            table.putInt("count", 0);
-        }
-        return table;
-    }
 }

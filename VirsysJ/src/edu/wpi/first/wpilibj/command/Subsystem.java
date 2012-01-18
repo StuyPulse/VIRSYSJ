@@ -7,8 +7,6 @@
 
 package edu.wpi.first.wpilibj.command;
 
-import edu.wpi.first.wpilibj.networktables.NetworkTable;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardNamedData;
 import java.util.Enumeration;
 import java.util.Vector;
 
@@ -28,7 +26,7 @@ import java.util.Vector;
  * @author Joe Grinstead
  * @see Command
  */
-public abstract class Subsystem implements SmartDashboardNamedData {
+public abstract class Subsystem {
 
     /** Whether or not getDefaultCommand() was called */
     private boolean initializedDefaultCommand = false;
@@ -93,14 +91,6 @@ public abstract class Subsystem implements SmartDashboardNamedData {
                 throw new IllegalUseOfCommandException("A default command must require the subsystem");
             }
             defaultCommand = command;
-        }
-        if (table != null) {
-            if (defaultCommand != null) {
-                table.putBoolean("hasDefault", true);
-                table.putSubTable("default", defaultCommand.getTable());
-            } else {
-                table.putBoolean("hasDefault", false);
-            }
         }
     }
 
