@@ -284,7 +284,7 @@ public class Joystick extends GenericHID {
      * @return The state of the button.
      */
     public boolean getRawButton(final int button) {
-        return ((0x1 << (button - 1)) & m_ds.getStickButtons(m_port)) != 0;
+        return joystick.isButtonPressed(button);
     }
 
     /**
@@ -313,7 +313,7 @@ public class Joystick extends GenericHID {
      * @return The magnitude of the direction vector
      */
     public double getMagnitude() {
-        return Math.sqrt(MathUtils.pow(getX(), 2) + MathUtils.pow(getY(), 2));
+        return Math.sqrt( Math.pow(getX(),2) + Math.pow(getY(),2) );
     }
 
     /**
@@ -323,7 +323,7 @@ public class Joystick extends GenericHID {
      * @return The direction of the vector in radians
      */
     public double getDirectionRadians() {
-        return MathUtils.atan2(getX(), -getY());
+        return Math.atan2(getX(), -getY());
     }
 
     /**
