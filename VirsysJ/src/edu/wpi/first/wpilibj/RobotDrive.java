@@ -7,7 +7,7 @@
 package edu.wpi.first.wpilibj;
 
 import java.lang.Math;
-import cRIOhardware.DigitalSidecar;
+import crio.hardware.DigitalSidecar;
 
 /**
  * Utility class for handling Robot drive based on a definition of the motor configuration.
@@ -450,6 +450,10 @@ public class RobotDrive {
         out[0] = x * cosA - y * sinA;
         out[1] = x * sinA + y * cosA;
         return out;
+    }
+
+    public void setSafetyEnabled(boolean enabled) {
+
     }
 
     /**
