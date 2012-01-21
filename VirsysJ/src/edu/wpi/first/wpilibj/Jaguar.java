@@ -1,8 +1,9 @@
 package edu.wpi.first.wpilibj;
 
-import cRIOhardware.CRIO;
+import utilities.Channels;
+import crio.hardware.CRIO;
 
-public class Jaguar implements Channels {
+public class Jaguar {
 
     double prevspeed;
     int channel;

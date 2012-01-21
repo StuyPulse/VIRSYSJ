@@ -5,7 +5,7 @@
 
 package edu.wpi.first.wpilibj;
 
-import cRIOhardware.DigitalSidecar;
+import crio.hardware.DigitalSidecar;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

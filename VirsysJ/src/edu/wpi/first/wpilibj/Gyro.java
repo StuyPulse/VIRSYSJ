@@ -1,12 +1,13 @@
 package edu.wpi.first.wpilibj;
 
-import cRIOhardware.CRIO;
+import utilities.Channels;
+import crio.hardware.CRIO;
 
 /**
  *
  * @author Q
  */
-public class Gyro implements Channels {
+public class Gyro {
 
     private Runnable gyroThread;
     private Thread threadg;
@@ -27,25 +28,16 @@ public class Gyro implements Channels {
         gyroThread = new GyroThread();
         threadg = new Thread(gyroThread);
         threadg.start();
-        switch (channel) {
-            case (CHANNEL_FRONT_LEFT_ENC_A):
-            case (CHANNEL_FRONT_LEFT_ENC_B):
-                encodernumber = 1;
-                break;
-            case (CHANNEL_REAR_LEFT_ENC_A):
-            case (CHANNEL_REAR_LEFT_ENC_B):
-                encodernumber = 2;
-                break;
-            case (CHANNEL_FRONT_RIGHT_ENC_A):
-            case (CHANNEL_FRONT_RIGHT_ENC_B):
-                encodernumber = 3;
-                break;
-            case (CHANNEL_REAR_RIGHT_ENC_A):
-            case (CHANNEL_REAR_RIGHT_ENC_B):
-                encodernumber = 4;
-                break;
-            default:
-                encodernumber = 0;
+        if (channel == CRIO.channel.getChannelFrontLeftEncA() || channel == CRIO.channel.getChannelFrontLeftEncB()) {
+            encodernumber = 1;
+        } else if (channel == CRIO.channel.getChannelRearLeftEncA() || channel == CRIO.channel.getChannelRearLeftEncB()) {
+            encodernumber = 2;
+        } else if (channel == CRIO.channel.getChannelFrontRightEncA() || channel == CRIO.channel.getChannelFrontRightEncB()) {
+            encodernumber = 3;
+        } else if (channel == CRIO.channel.getChannelRearRightEncA() || channel == CRIO.channel.getChannelRearRightEncB()) {
+            encodernumber = 4;
+        } else {
+            encodernumber = 0;
         }
     }
 

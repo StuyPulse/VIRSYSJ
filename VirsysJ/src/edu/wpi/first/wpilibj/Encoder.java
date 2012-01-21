@@ -1,8 +1,9 @@
 package edu.wpi.first.wpilibj;
 
-import cRIOhardware.CRIO;
+import utilities.Channels;
+import crio.hardware.CRIO;
 
-public class Encoder implements Channels {
+public class Encoder {
 
     private boolean reverse;
     private int encodernumber;
@@ -17,25 +18,16 @@ public class Encoder implements Channels {
         if (encodingType == null) {
             throw new NullPointerException("Given encoding type was null");
         }
-        switch (aChannel) {
-            case (CHANNEL_FRONT_LEFT_ENC_A):
-            case (CHANNEL_FRONT_LEFT_ENC_B):
-                encodernumber = 1;
-                break;
-            case (CHANNEL_REAR_LEFT_ENC_A):
-            case (CHANNEL_REAR_LEFT_ENC_B):
-                encodernumber = 2;
-                break;
-            case (CHANNEL_FRONT_RIGHT_ENC_A):
-            case (CHANNEL_FRONT_RIGHT_ENC_B):
-                encodernumber = 3;
-                break;
-            case (CHANNEL_REAR_RIGHT_ENC_A):
-            case (CHANNEL_REAR_RIGHT_ENC_B):
-                encodernumber = 4;
-                break;
-            default:
-                encodernumber = 0;
+        if (aChannel == CRIO.channel.getChannelFrontLeftEncA() || aChannel == CRIO.channel.getChannelFrontLeftEncB()) {
+            encodernumber = 1;
+        } else if (aChannel == CRIO.channel.getChannelRearLeftEncA() || aChannel == CRIO.channel.getChannelRearLeftEncB()) {
+            encodernumber = 2;
+        } else if (aChannel == CRIO.channel.getChannelFrontRightEncA() || aChannel == CRIO.channel.getChannelFrontRightEncB()) {
+            encodernumber = 3;
+        } else if (aChannel == CRIO.channel.getChannelRearRightEncA() || aChannel == CRIO.channel.getChannelRearRightEncB()) {
+            encodernumber = 4;
+        } else {
+            encodernumber = 0;
         }
     }
 

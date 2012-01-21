@@ -1,4 +1,4 @@
-package cRIOhardware;
+package crio.hardware;
 
 import edu.wpi.first.wpilibj.Resource;
 
