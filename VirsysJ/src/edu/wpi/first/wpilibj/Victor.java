@@ -40,6 +40,9 @@ public class Victor implements SpeedController {
 
     public void pidWrite(double output) {
         prevspeed = output;
+        System.out.println("c is " + c);
+        System.out.println("c.threadS is " + c.threadS);
+        System.out.println("c.threadS.toSend is " + c.threadS.toSend);
 	c.threadS.toSend[channel-1] = (float)(output * maxcurrenttorque());
     }
 

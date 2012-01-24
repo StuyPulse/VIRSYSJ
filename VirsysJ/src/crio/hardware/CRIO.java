@@ -15,7 +15,7 @@ public class CRIO {
     public static Client client;
     public static Channels channel;
 
-    public static void run(SimpleRobot bot, Channels channel){
+    public static void run(RobotBase bot, Channels channel){
         CRIO.channel = channel;
 
         client = new Client();
