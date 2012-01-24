@@ -1,6 +1,6 @@
 package edu.wpi.first.wpilibj;
 
-import cRIOhardware.*;
+import crio.hardware.*;
 
 /**
  * Class to read a digital input.

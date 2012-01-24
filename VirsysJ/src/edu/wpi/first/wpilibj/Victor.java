@@ -1,8 +1,9 @@
 package edu.wpi.first.wpilibj;
 
-import cRIOhardware.CRIO;
+import utilities.Channels;
+import crio.hardware.CRIO;
 
-public class Victor implements SpeedController, Channels {
+public class Victor implements SpeedController {
 
     double prevspeed;
     int channel;
@@ -22,10 +23,11 @@ public class Victor implements SpeedController, Channels {
             100.0
     };
 
-    Client c = CRIO.client;
+    Client c;
 
     public Victor(int _channel) {
        channel = _channel;
+       c = CRIO.client;
     }
 
     public Victor(int slot, int channel) {
@@ -51,6 +53,8 @@ public class Victor implements SpeedController, Channels {
 
     double maxcurrenttorque() {
         double slope = -1 * motor_stall_torques[channel - 1] / motor_free_speeds[channel - 1];
+        System.out.println("c is " + c);
+        System.out.println("c.getdata() is " + c.getdata());
         double currentspeed = Math.abs(c.getdata()[channel + 5]); // +5 to convert the channel number to the correct index of the receive data array
         return motor_stall_torques[channel - 1] + currentspeed * slope;
     }

@@ -127,7 +127,11 @@ public abstract class GenericHID {
     /**
      * Is the top button pressed
      * @param hand which hand
+<<<<<<< HEAD
+     * @return true if the top button for the given hand is pressed
+=======
      * @return true if hte top button for the given hand is pressed
+>>>>>>> origin/master
      */
     public abstract boolean getTop(Hand hand);
 
