@@ -120,14 +120,6 @@ public abstract class Subsystem {
      * is going through the loop, only to be soon after given a new one.  This will avoid that situation.
      */
     void confirmCommand() {
-        if (table != null) {
-            if (currentCommand != null) {
-                table.putBoolean("hasCommand", true);
-                table.putSubTable("command", currentCommand.getTable());
-            } else {
-                table.putBoolean("hasCommand", false);
-            }
-        }
     }
 
     /**
@@ -152,29 +144,5 @@ public abstract class Subsystem {
 
     public String getType() {
         return "Subsystem";
-    }
-    private NetworkTable table;
-
-    NetworkTable grabTable() {
-        return new NetworkTable();
-    }
-
-    public NetworkTable getTable() {
-        if (table == null) {
-            table = grabTable();
-            if (defaultCommand != null) {
-                table.putBoolean("hasDefault", true);
-                table.putSubTable("default", defaultCommand.getTable());
-            } else {
-                table.putBoolean("hasDefault", false);
-            }
-            if (currentCommand != null) {
-                table.putBoolean("hasCommand", true);
-                table.putSubTable("command", currentCommand.getTable());
-            } else {
-                table.putBoolean("hasCommand", false);
-            }
-        }
-        return table;
     }
 }
