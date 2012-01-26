@@ -40,9 +40,6 @@ public class Victor implements SpeedController {
 
     public void pidWrite(double output) {
         prevspeed = output;
-        System.out.println("c is " + c);
-        System.out.println("c.threadS is " + c.threadS);
-        System.out.println("c.threadS.toSend is " + c.threadS.toSend);
 	c.threadS.toSend[channel-1] = (float)(output * maxcurrenttorque());
     }
 
@@ -56,8 +53,6 @@ public class Victor implements SpeedController {
 
     double maxcurrenttorque() {
         double slope = -1 * motor_stall_torques[channel - 1] / motor_free_speeds[channel - 1];
-        System.out.println("c is " + c);
-        System.out.println("c.getdata() is " + c.getdata());
         double currentspeed = Math.abs(c.getdata()[channel + 5]); // +5 to convert the channel number to the correct index of the receive data array
         return motor_stall_torques[channel - 1] + currentspeed * slope;
     }
