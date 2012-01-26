@@ -15,13 +15,22 @@ public class CRIO {
     public static Client client;
     public static Channels channel;
 
-    public static void run(RobotBase bot, Channels channel){
-        CRIO.channel = channel;
+    public static void init() {
         CRIO.client = new Client();
+    }
 
+    public static void end() {
+        CRIO.client.end();
+    }
+    
+    public static void setChannels(Channels channel) {
+        CRIO.channel = channel;
+    }
+    
+    public static void run(RobotBase bot, Channels channel){
+        CRIO.init();
+        setChannels(channel);
         bot.startCompetition();
-
-	//client.end();
-	//System.out.println("ended client");
+	client.end();
     }
 }
