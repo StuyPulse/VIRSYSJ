@@ -20,7 +20,7 @@ public class Joystick {
     public static double[][] stickAxes = new double[NUM_JOYSTICKS][3];
     public static boolean[][] stickButtons = new boolean[NUM_JOYSTICKS][12];
 
-    static {
+    /*static {
         for (int i = 0; i < NUM_JOYSTICKS; i++) {
             for (int j = 0; j <= stickAxes[0].length; j++) {
                 setStickAxis(i, j, 0);
@@ -29,7 +29,7 @@ public class Joystick {
                 setStickAxis(i, j, 0);
             }
         }
-    }
+    }*/
 
     public static void setStickAxis(int port, int axis, double value) {
         stickAxes[port][axis] = value;
