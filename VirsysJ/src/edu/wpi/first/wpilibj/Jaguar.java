@@ -2,6 +2,7 @@ package edu.wpi.first.wpilibj;
 
 import utilities.Channels;
 import crio.hardware.CRIO;
+import crio.hardware.DigitalSidecar;
 
 public class Jaguar {
 
@@ -43,6 +44,7 @@ public class Jaguar {
 
 
 	c.threadS.toSend[channel-1] = (float)(output * maxcurrenttorque());
+        DigitalSidecar.register[channel-1] = output;
     }
 
     public void set(double speed) {

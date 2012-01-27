@@ -2,6 +2,7 @@ package edu.wpi.first.wpilibj;
 
 import utilities.Channels;
 import crio.hardware.CRIO;
+import crio.hardware.DigitalSidecar;
 
 public class Victor implements SpeedController {
 
@@ -41,6 +42,7 @@ public class Victor implements SpeedController {
     public void pidWrite(double output) {
         prevspeed = output;
 	c.threadS.toSend[channel-1] = (float)(output * maxcurrenttorque());
+        DigitalSidecar.register[channel-1] = output;
     }
 
     public void set(double speed) {
