@@ -28,6 +28,7 @@ public class Gyro {
         gyroThread = new GyroThread();
         threadg = new Thread(gyroThread);
         threadg.start();
+        /*
         if (channel == CRIO.channel.getChannelFrontLeftEncA() || channel == CRIO.channel.getChannelFrontLeftEncB()) {
             encodernumber = 1;
         } else if (channel == CRIO.channel.getChannelRearLeftEncA() || channel == CRIO.channel.getChannelRearLeftEncB()) {
@@ -39,6 +40,7 @@ public class Gyro {
         } else {
             encodernumber = 0;
         }
+        */
     }
 
     public void reset() {

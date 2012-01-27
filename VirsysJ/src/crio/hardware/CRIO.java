@@ -13,23 +13,21 @@ import utilities.Channels;
  */
 public class CRIO {
     public static Client client;
-    public static Channels channel;
+    public static int[] virsysOutputMap;
+    public static int[] virsysInputMap;
 
-    public static void init() {
+    public static void init(int[] virsysOutputMap, int[] virsysInputMap) {
         CRIO.client = new Client();
+        CRIO.virsysOutputMap = virsysOutputMap;
+        CRIO.virsysInputMap = virsysInputMap;
     }
 
     public static void end() {
         CRIO.client.end();
     }
     
-    public static void setChannels(Channels channel) {
-        CRIO.channel = channel;
-    }
-    
-    public static void run(RobotBase bot, Channels channel){
-        CRIO.init();
-        setChannels(channel);
+    public static void run(RobotBase bot, int[] virsysOutputMap, int[] virsysInputMap){
+        CRIO.init(virsysOutputMap, virsysInputMap);
         bot.startCompetition();
 	client.end();
     }

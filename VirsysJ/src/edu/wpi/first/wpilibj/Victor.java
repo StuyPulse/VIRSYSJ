@@ -6,7 +6,7 @@ import crio.hardware.CRIO;
 public class Victor implements SpeedController {
 
     double prevspeed;
-    int channel;
+    int virsysPakcetIndex;
 
     double[] motor_stall_torques = {
             346.9, // OZ*in
@@ -25,8 +25,8 @@ public class Victor implements SpeedController {
 
     Client c;
 
-    public Victor(int _channel) {
-       channel = _channel;
+    public Victor(int channel) {
+       virsysPakcetIndex = CRIO.virsysOutputMap[channel-1];
        c = CRIO.client;
     }
 
@@ -40,7 +40,7 @@ public class Victor implements SpeedController {
 
     public void pidWrite(double output) {
         prevspeed = output;
-	c.threadS.toSend[channel-1] = (float)(output * maxcurrenttorque());
+	c.threadS.toSend[virsysPakcetIndex] = (float)(output * maxcurrenttorque());
     }
 
     public void set(double speed) {
@@ -52,9 +52,9 @@ public class Victor implements SpeedController {
     }
 
     double maxcurrenttorque() {
-        double slope = -1 * motor_stall_torques[channel - 1] / motor_free_speeds[channel - 1];
-        double currentspeed = Math.abs(c.getdata()[channel + 5]); // +5 to convert the channel number to the correct index of the receive data array
-        return motor_stall_torques[channel - 1] + currentspeed * slope;
+        double slope = -1 * motor_stall_torques[virsysPakcetIndex] / motor_free_speeds[virsysPakcetIndex];
+        double currentspeed = Math.abs(c.getdata()[virsysPakcetIndex + 5]); // +5 to convert the channel number to the correct index of the receive data array
+        return motor_stall_torques[virsysPakcetIndex] + currentspeed * slope;
     }
 
     public void disable() {

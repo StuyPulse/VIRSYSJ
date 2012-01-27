@@ -18,6 +18,7 @@ public class Encoder {
         if (encodingType == null) {
             throw new NullPointerException("Given encoding type was null");
         }
+        /*
         if (aChannel == CRIO.channel.getChannelFrontLeftEncA() || aChannel == CRIO.channel.getChannelFrontLeftEncB()) {
             encodernumber = 1;
         } else if (aChannel == CRIO.channel.getChannelRearLeftEncA() || aChannel == CRIO.channel.getChannelRearLeftEncB()) {
@@ -29,6 +30,8 @@ public class Encoder {
         } else {
             encodernumber = 0;
         }
+         *
+         */
     }
 
     //returns rate in inches/sec...0 if it can't connect to Virsys program
