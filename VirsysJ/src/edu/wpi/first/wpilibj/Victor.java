@@ -2,11 +2,13 @@ package edu.wpi.first.wpilibj;
 
 import utilities.Channels;
 import crio.hardware.CRIO;
+import crio.hardware.DigitalSidecar;
 
 public class Victor implements SpeedController {
 
     double prevspeed;
     int virsysPakcetIndex;
+    int digitalSidecarChannel;
 
     double[] motor_stall_torques = {
             346.9, // OZ*in
@@ -27,6 +29,7 @@ public class Victor implements SpeedController {
 
     public Victor(int channel) {
        virsysPakcetIndex = CRIO.virsysOutputMap[channel];
+       digitalSidecarChannel = channel;
        c = CRIO.client;
     }
 
@@ -41,6 +44,7 @@ public class Victor implements SpeedController {
     public void pidWrite(double output) {
         prevspeed = output;
 	c.threadS.toSend[virsysPakcetIndex] = (float)(output * maxcurrenttorque());
+        DigitalSidecar.register[digitalSidecarChannel-1] = output;
     }
 
     public void set(double speed) {
