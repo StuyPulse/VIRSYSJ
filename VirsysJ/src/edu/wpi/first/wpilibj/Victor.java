@@ -7,7 +7,7 @@ import crio.hardware.DigitalSidecar;
 public class Victor implements SpeedController {
 
     double prevspeed;
-    int virsysPakcetIndex;
+    int virsysPacketIndex;
     int digitalSidecarChannel;
 
     double[] motor_stall_torques = {
@@ -28,7 +28,7 @@ public class Victor implements SpeedController {
     Client c;
 
     public Victor(int channel) {
-       virsysPakcetIndex = CRIO.virsysOutputMap[channel];
+       virsysPacketIndex = CRIO.virsysOutputMap[channel];
        digitalSidecarChannel = channel;
        c = CRIO.client;
     }
@@ -43,7 +43,9 @@ public class Victor implements SpeedController {
 
     public void pidWrite(double output) {
         prevspeed = output;
-	c.threadS.toSend[virsysPakcetIndex] = (float)(output * maxcurrenttorque());
+        if(virsysPacketIndex > 0) {
+            c.threadS.toSend[virsysPacketIndex] = (float)(output * maxcurrenttorque());
+        }
         DigitalSidecar.register[digitalSidecarChannel-1] = output;
     }
 
@@ -56,9 +58,9 @@ public class Victor implements SpeedController {
     }
 
     double maxcurrenttorque() {
-        double slope = -1 * motor_stall_torques[virsysPakcetIndex] / motor_free_speeds[virsysPakcetIndex];
-        double currentspeed = Math.abs(c.getdata()[virsysPakcetIndex + 5]); // +5 to convert the channel number to the correct index of the receive data array
-        return motor_stall_torques[virsysPakcetIndex] + currentspeed * slope;
+        double slope = -1 * motor_stall_torques[virsysPacketIndex] / motor_free_speeds[virsysPacketIndex];
+        double currentspeed = Math.abs(c.getdata()[virsysPacketIndex + 5]); // +5 to convert the channel number to the correct index of the receive data array
+        return motor_stall_torques[virsysPacketIndex] + currentspeed * slope;
     }
 
     public void disable() {

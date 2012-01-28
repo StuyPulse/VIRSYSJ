@@ -495,16 +495,16 @@ public class RobotDrive {
     public void free() {
         if (m_allocatedSpeedControllers) {
             if (m_frontLeftMotor != null) {
-                DigitalSidecar.allocated.free(m_frontLeftMotor.virsysPakcetIndex);
+                DigitalSidecar.allocated.free(m_frontLeftMotor.virsysPacketIndex);
             }
             if (m_frontRightMotor != null) {
-                DigitalSidecar.allocated.free(m_frontRightMotor.virsysPakcetIndex);
+                DigitalSidecar.allocated.free(m_frontRightMotor.virsysPacketIndex);
             }
             if (m_rearLeftMotor != null) {
-                DigitalSidecar.allocated.free(m_rearLeftMotor.virsysPakcetIndex);
+                DigitalSidecar.allocated.free(m_rearLeftMotor.virsysPacketIndex);
             }
             if (m_rearRightMotor != null) {
-                DigitalSidecar.allocated.free(m_rearRightMotor.virsysPakcetIndex);
+                DigitalSidecar.allocated.free(m_rearRightMotor.virsysPacketIndex);
             }
         }
     }
