@@ -6,7 +6,7 @@ import crio.hardware.CRIO;
 public class Encoder {
 
     private boolean reverse;
-    private int encodernumber;
+    private int virsysPacketIndex;
     private double lastdis = 0;
     final int wheelradius = 3;
     boolean done = false;
@@ -15,29 +15,16 @@ public class Encoder {
 
     public Encoder(final int aChannel, final int bChannel, boolean reverseDirection, final CounterBase.EncodingType encodingType) {
         reverse = reverseDirection;
+        virsysPacketIndex = CRIO.virsysInputMap[aChannel];
         if (encodingType == null) {
             throw new NullPointerException("Given encoding type was null");
         }
-        /*
-        if (aChannel == CRIO.channel.getChannelFrontLeftEncA() || aChannel == CRIO.channel.getChannelFrontLeftEncB()) {
-            encodernumber = 1;
-        } else if (aChannel == CRIO.channel.getChannelRearLeftEncA() || aChannel == CRIO.channel.getChannelRearLeftEncB()) {
-            encodernumber = 2;
-        } else if (aChannel == CRIO.channel.getChannelFrontRightEncA() || aChannel == CRIO.channel.getChannelFrontRightEncB()) {
-            encodernumber = 3;
-        } else if (aChannel == CRIO.channel.getChannelRearRightEncA() || aChannel == CRIO.channel.getChannelRearRightEncB()) {
-            encodernumber = 4;
-        } else {
-            encodernumber = 0;
-        }
-         *
-         */
     }
 
     //returns rate in inches/sec...0 if it can't connect to Virsys program
     public double getRate() {
         try {
-            return encodernumber <= 2 ? _c.getdata()[6] * wheelradius : _c.getdata()[7] * wheelradius;
+            return _c.getdata()[CRIO.virsysInputMap[virsysPacketIndex] + 4] * wheelradius;
         } catch (Exception e) {
             System.err.println(e);
         }
@@ -47,7 +34,7 @@ public class Encoder {
     //returns distance in inches
     public double getDistance() {
          try {
-            return (encodernumber <= 2 ? _c.getdata()[2] * wheelradius : _c.getdata()[3] * wheelradius) - lastdis;
+            return _c.getdata()[CRIO.virsysInputMap[virsysPacketIndex]] * wheelradius - lastdis;
         } catch (Exception e) {
             System.err.println(e);
         }
@@ -56,7 +43,7 @@ public class Encoder {
 
     public void reset() {
         try {
-            lastdis = encodernumber <= 2 ? _c.getdata()[2] * wheelradius : _c.getdata()[3] * wheelradius;
+            lastdis = getDistance();
         } catch (Exception e) {
             System.err.println(e);
         }

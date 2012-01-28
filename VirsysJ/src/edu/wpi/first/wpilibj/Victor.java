@@ -26,7 +26,7 @@ public class Victor implements SpeedController {
     Client c;
 
     public Victor(int channel) {
-       virsysPakcetIndex = CRIO.virsysOutputMap[channel-1];
+       virsysPakcetIndex = CRIO.virsysOutputMap[channel];
        c = CRIO.client;
     }
 
