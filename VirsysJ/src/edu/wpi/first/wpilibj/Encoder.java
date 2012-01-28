@@ -24,7 +24,7 @@ public class Encoder {
     //returns rate in inches/sec...0 if it can't connect to Virsys program
     public double getRate() {
         try {
-            return _c.getdata()[CRIO.virsysInputMap[virsysPacketIndex] + 4] * wheelradius;
+            return _c.getdata()[virsysPacketIndex + 4] * wheelradius;
         } catch (Exception e) {
             System.err.println(e);
         }
@@ -34,7 +34,7 @@ public class Encoder {
     //returns distance in inches
     public double getDistance() {
          try {
-            return _c.getdata()[CRIO.virsysInputMap[virsysPacketIndex]] * wheelradius - lastdis;
+            return _c.getdata()[virsysPacketIndex] * wheelradius - lastdis;
         } catch (Exception e) {
             System.err.println(e);
         }
