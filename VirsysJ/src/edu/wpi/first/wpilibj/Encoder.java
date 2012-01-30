@@ -5,7 +5,7 @@ import crio.hardware.CRIO;
 
 public class Encoder {
 
-    private boolean reverse;
+    private boolean reverse = false;
     private int virsysPacketIndex;
     private double lastdis = 0;
     final int wheelradius = 3;
@@ -13,9 +13,13 @@ public class Encoder {
 
     Client _c = CRIO.client;
 
-    public Encoder(final int aChannel, final int bChannel, boolean reverseDirection, final CounterBase.EncodingType encodingType) {
-        reverse = reverseDirection;
+    public Encoder(int aChannel, int bChannel) {
         virsysPacketIndex = CRIO.virsysInputMap[aChannel];
+    }
+    
+    public Encoder(final int aChannel, final int bChannel, boolean reverseDirection, final CounterBase.EncodingType encodingType) {
+        this(aChannel, bChannel);
+        reverse = reverseDirection;
         if (encodingType == null) {
             throw new NullPointerException("Given encoding type was null");
         }
