@@ -15,15 +15,19 @@ public class CRIO {
     public static Client client;
     public static int[] virsysOutputMap;
     public static int[] virsysInputMap;
+    public static boolean runWithPhysics = false;
 
     public static void init(int[] virsysOutputMap, int[] virsysInputMap) {
+        runWithPhysics = true;
         CRIO.client = new Client();
         CRIO.virsysOutputMap = virsysOutputMap;
         CRIO.virsysInputMap = virsysInputMap;
     }
 
     public static void end() {
-        CRIO.client.end();
+        if (CRIO.client != null) {
+            CRIO.client.end();
+        }
     }
     
     public static void run(RobotBase bot, int[] virsysOutputMap, int[] virsysInputMap){

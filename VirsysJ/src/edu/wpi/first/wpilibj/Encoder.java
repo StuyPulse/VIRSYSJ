@@ -14,7 +14,9 @@ public class Encoder {
     Client _c = CRIO.client;
 
     public Encoder(int aChannel, int bChannel) {
-        virsysPacketIndex = CRIO.virsysInputMap[aChannel];
+        if (CRIO.runWithPhysics) {
+            virsysPacketIndex = CRIO.virsysInputMap[aChannel];
+        }
     }
     
     public Encoder(final int aChannel, final int bChannel, boolean reverseDirection, final CounterBase.EncodingType encodingType) {

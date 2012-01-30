@@ -28,9 +28,11 @@ public class Victor implements SpeedController {
     Client c;
 
     public Victor(int channel) {
-       virsysPacketIndex = CRIO.virsysOutputMap[channel];
-       digitalSidecarChannel = channel;
-       c = CRIO.client;
+        if (CRIO.runWithPhysics) {
+            virsysPacketIndex = CRIO.virsysOutputMap[channel];
+            c = CRIO.client;
+        }
+        digitalSidecarChannel = channel;
     }
 
     public Victor(int slot, int channel) {
@@ -43,7 +45,7 @@ public class Victor implements SpeedController {
 
     public void pidWrite(double output) {
         prevspeed = output;
-        if(virsysPacketIndex >= 0) {
+        if(CRIO.runWithPhysics && virsysPacketIndex >= 0) {
             c.threadS.toSend[virsysPacketIndex] = (float)(output * maxcurrenttorque());
         }
         DigitalSidecar.register[digitalSidecarChannel-1] = output;
