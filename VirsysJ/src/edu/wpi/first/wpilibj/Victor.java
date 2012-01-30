@@ -43,7 +43,7 @@ public class Victor implements SpeedController {
 
     public void pidWrite(double output) {
         prevspeed = output;
-        if(virsysPacketIndex > 0) {
+        if(virsysPacketIndex >= 0) {
             c.threadS.toSend[virsysPacketIndex] = (float)(output * maxcurrenttorque());
         }
         DigitalSidecar.register[digitalSidecarChannel-1] = output;

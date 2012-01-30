@@ -60,10 +60,10 @@ public class RobotDrive {
     protected final int m_invertedMotors[] = new int[4];
     protected double m_sensitivity;
     protected double m_maxOutput;
-    protected Victor m_frontLeftMotor;
-    protected Victor m_frontRightMotor;
-    protected Victor m_rearLeftMotor;
-    protected Victor m_rearRightMotor;
+    protected SpeedController m_frontLeftMotor;
+    protected SpeedController m_frontRightMotor;
+    protected SpeedController m_rearLeftMotor;
+    protected SpeedController m_rearRightMotor;
     protected boolean m_allocatedSpeedControllers;
     protected boolean m_isCANInitialized = true;
 
@@ -147,8 +147,8 @@ public class RobotDrive {
      * @param rearRightMotor The back right SpeedController object used to drive the robot.
      * @param frontRightMotor The front right SpeedController object used to drive the robot.
      */
-    public RobotDrive(Victor frontLeftMotor, Victor rearLeftMotor,
-            Victor frontRightMotor, Victor rearRightMotor) {
+    public RobotDrive(SpeedController frontLeftMotor, SpeedController rearLeftMotor,
+            SpeedController frontRightMotor, SpeedController rearRightMotor) {
         if (frontLeftMotor == null || rearLeftMotor == null || frontRightMotor == null || rearRightMotor == null) {
             m_frontLeftMotor = m_rearLeftMotor = m_frontRightMotor = m_rearRightMotor = null;
             throw new NullPointerException("Null motor provided");
@@ -493,20 +493,7 @@ public class RobotDrive {
      * Free the speed controllers if they were allocated locally
      */
     public void free() {
-        if (m_allocatedSpeedControllers) {
-            if (m_frontLeftMotor != null) {
-                DigitalSidecar.allocated.free(m_frontLeftMotor.virsysPacketIndex);
-            }
-            if (m_frontRightMotor != null) {
-                DigitalSidecar.allocated.free(m_frontRightMotor.virsysPacketIndex);
-            }
-            if (m_rearLeftMotor != null) {
-                DigitalSidecar.allocated.free(m_rearLeftMotor.virsysPacketIndex);
-            }
-            if (m_rearRightMotor != null) {
-                DigitalSidecar.allocated.free(m_rearRightMotor.virsysPacketIndex);
-            }
-        }
+
     }
 
     public String getDescription() {
