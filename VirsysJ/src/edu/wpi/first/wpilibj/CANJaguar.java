@@ -154,7 +154,7 @@ public class CANJaguar implements MotorSafety, PIDOutput, SpeedController {
     private byte m_deviceNumber;
     private ControlMode m_controlMode;
     private double m_maxOutputVoltage;
-    private double value;
+    public double value;
     private MotorSafetyHelper m_safetyHelper;
     private static final byte[] kNoData = new byte[0];
     private SpeedReference speedReference;

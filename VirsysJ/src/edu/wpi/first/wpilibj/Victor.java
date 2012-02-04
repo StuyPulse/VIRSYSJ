@@ -6,7 +6,7 @@ import crio.hardware.DigitalSidecar;
 
 public class Victor implements SpeedController {
 
-    double prevspeed;
+    public double value;
     int virsysPacketIndex;
     int digitalSidecarChannel;
 
@@ -40,15 +40,14 @@ public class Victor implements SpeedController {
     }
 
     public double get() {
-        return prevspeed;
+        return value;
     }
 
     public void pidWrite(double output) {
-        prevspeed = output;
+        value = output;
         if(CRIO.runWithPhysics && virsysPacketIndex >= 0) {
             c.threadS.toSend[virsysPacketIndex] = (float)(output * maxcurrenttorque());
         }
-        DigitalSidecar.register[digitalSidecarChannel-1] = output;
     }
 
     public void set(double speed) {

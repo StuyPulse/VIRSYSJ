@@ -13,6 +13,7 @@ public class DigitalInput {
 
     private int m_channel;
     int m_module;
+    public boolean value;
 
     /**
      * Create an instance of a Digital Input class.
@@ -39,6 +40,6 @@ public class DigitalInput {
      * @return the stats of the digital input
      */
     public boolean get() {
-        return DigitalSidecar.inputBits[m_channel];
+        return value;
     }
 }
