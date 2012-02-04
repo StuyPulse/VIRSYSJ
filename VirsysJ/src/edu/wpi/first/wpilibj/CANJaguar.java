@@ -715,7 +715,7 @@ public class CANJaguar implements MotorSafety, PIDOutput, SpeedController {
      * @param codesPerRev The number of counts per revolution in 1X mode.
      */
     public void configEncoderCodesPerRev(int codesPerRev) throws CANTimeoutException {
-        if (m_controlMode != ControlMode.kPosition || m_controlMode != ControlMode.kSpeed) {
+        if (m_controlMode != ControlMode.kPosition && m_controlMode != ControlMode.kSpeed) {
             throw new JaguarControlDisabledException("Setting encoder codes per rev when not in Position or Speed mode.");
         }
         else if (mEncoderCodesSet) {

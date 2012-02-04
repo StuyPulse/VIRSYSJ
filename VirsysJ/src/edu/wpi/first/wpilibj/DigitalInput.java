@@ -12,6 +12,7 @@ import crio.hardware.*;
 public class DigitalInput {
 
     private int m_channel;
+    int m_module;
 
     /**
      * Create an instance of a Digital Input class.
@@ -20,6 +21,16 @@ public class DigitalInput {
      */
     public DigitalInput(int channel) {
         m_channel = channel;
+    }
+
+    /**
+     * Create an instance of a DigitalInput.
+     * Creates a digital input given a digital module number and channel. Common creation routine
+     * for all constructors.
+     */
+    public DigitalInput(int moduleNumber, int channel) {
+        m_channel = channel;
+        m_module = moduleNumber;
     }
 
     /**
