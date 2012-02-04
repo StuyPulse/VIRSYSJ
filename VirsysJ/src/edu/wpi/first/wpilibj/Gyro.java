@@ -56,6 +56,10 @@ public class Gyro {
         return _c.getdata()[0];
     }
 
+    public void setSensitivity(double sensitivity) {
+
+    }
+
     private class GyroThread implements Runnable {
 
         public boolean done;

@@ -10,6 +10,16 @@ public class Encoder {
     private double lastdis = 0;
     final int wheelradius = 3;
     boolean done = false;
+    boolean distancePerPulseSet = false;
+    int aChannel, bChannel;
+
+    /**
+     * Keep track of whether the start() method was called, which is required
+     * for getting data.
+     *
+     * Throw an exception if someone tries to read before calling start()
+     */
+    boolean started = false;
 
     Client _c = CRIO.client;
 
@@ -17,6 +27,8 @@ public class Encoder {
         if (CRIO.runWithPhysics) {
             virsysPacketIndex = CRIO.virsysInputMap[aChannel];
         }
+        this.aChannel = aChannel;
+        this.bChannel = bChannel;
     }
     
     public Encoder(final int aChannel, final int bChannel, boolean reverseDirection, final CounterBase.EncodingType encodingType) {
@@ -27,8 +39,22 @@ public class Encoder {
         }
     }
 
+    public Encoder(final int aChannel, final int bChannel, boolean reverseDirection) {
+        this(aChannel, bChannel);
+        reverse = reverseDirection;
+    }
+
+    public class NotInitializedException extends Exception {
+        public NotInitializedException(int a, int b) {
+            super("Encoder on " + a + ", " + b + " not started");
+        }
+    }
+
     //returns rate in inches/sec...0 if it can't connect to Virsys program
-    public double getRate() {
+    public double getRate() throws NotInitializedException {
+        if (!started) {
+            throw new NotInitializedException(aChannel, bChannel);
+        }
         try {
             return _c.getdata()[virsysPacketIndex + 4] * wheelradius;
         } catch (Exception e) {
@@ -38,8 +64,11 @@ public class Encoder {
     }
 
     //returns distance in inches
-    public double getDistance() {
-         try {
+    public double getDistance() throws NotInitializedException {
+        if (!started) {
+            throw new NotInitializedException(aChannel, bChannel);
+        }
+        try {
             return _c.getdata()[virsysPacketIndex] * wheelradius - lastdis;
         } catch (Exception e) {
             System.err.println(e);
@@ -57,5 +86,9 @@ public class Encoder {
 
     public void start() {
         reset();
+    }
+
+    public void setDistancePerPulse(double distancePerPulse) {
+        distancePerPulseSet = true;
     }
 }
