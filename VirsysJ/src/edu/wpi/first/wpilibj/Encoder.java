@@ -85,8 +85,8 @@ public class Encoder {
     }
 
     public void start() {
-        reset();
         started = true;
+        reset();
     }
 
     public void setDistancePerPulse(double distancePerPulse) {

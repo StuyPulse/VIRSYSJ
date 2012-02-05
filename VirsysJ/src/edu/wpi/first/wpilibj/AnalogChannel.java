@@ -24,7 +24,9 @@ public class AnalogChannel implements PIDSource {
     private int m_channel;
     public int value;
     public int avgValue;
-
+    public int voltage;
+    public int avgVoltage;
+    
     /**
      * Construct an analog channel on the default module.
      *
@@ -56,6 +58,26 @@ public class AnalogChannel implements PIDSource {
     public int getAverageValue() {
         return avgValue;
 
+    }
+    
+    /**
+     * Get a scaled sample straight from this channel on the module.
+     * The value is scaled to units of Volts using the calibrated scaling data from getLSBWeight() and getOffset().
+     * @return A scaled sample straight from this channel on the module.
+     */
+    public double getVoltage() {
+        return voltage;
+    }
+
+    /**
+     * Get a scaled sample from the output of the oversample and average engine for this channel.
+     * The value is scaled to units of Volts using the calibrated scaling data from getLSBWeight() and getOffset().
+     * Using oversampling will cause this value to be higher resolution, but it will update more slowly.
+     * Using averaging will cause this value to be more stable, but it will update more slowly.
+     * @return A scaled sample from the output of the oversample and average engine for this channel.
+     */
+    public double getAverageVoltage() {
+        return avgVoltage;
     }
 
     /**

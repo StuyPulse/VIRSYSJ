@@ -31,7 +31,7 @@ public abstract class RobotBase {
     }
 
     public boolean isAutonomous() {
-        System.out.println(_gametimer.get());
+        //System.out.println(_gametimer.get());
         return _gametimer.get() < AUTON_TIME_SECONDS;
     }
 
