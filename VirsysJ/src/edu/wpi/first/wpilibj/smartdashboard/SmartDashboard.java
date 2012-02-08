@@ -6,17 +6,14 @@ import java.util.Hashtable;
 
 public class SmartDashboard {
 
-    private static final NetworkTable table;
-    private static final Hashtable tablesToData;
+    private static Hashtable<String, Object> data;
 
     public SmartDashboard() {
-        //compiled code
-        throw new RuntimeException("Compiled Code");
+        data = new Hashtable<String, Object>();
     }
 
     public static void putData(String key, SmartDashboardData value) {
-        //compiled code
-        throw new RuntimeException("Compiled Code");
+        data.put(key, value);
     }
 
     public static void putData(SmartDashboardNamedData value) {
@@ -25,18 +22,15 @@ public class SmartDashboard {
     }
 
     public static SmartDashboardData getData(String key) throws NetworkTableKeyNotDefined {
-        //compiled code
-        throw new RuntimeException("Compiled Code");
+        return (SmartDashboardData)(data.get(key));
     }
 
     public static void putBoolean(String key, boolean value) {
-        //compiled code
-        throw new RuntimeException("Compiled Code");
+        data.put(key, value);
     }
 
     public static boolean getBoolean(String key) throws NetworkTableKeyNotDefined {
-        //compiled code
-        throw new RuntimeException("Compiled Code");
+        return (Boolean)(data.get(key));
     }
 
     public static boolean getBoolean(String key, boolean defaultValue) {
@@ -45,13 +39,11 @@ public class SmartDashboard {
     }
 
     public static void putInt(String key, int value) {
-        //compiled code
-        throw new RuntimeException("Compiled Code");
+        data.put(key, value);
     }
 
     public static int getInt(String key) throws NetworkTableKeyNotDefined {
-        //compiled code
-        throw new RuntimeException("Compiled Code");
+        return (Integer)(data.get(key));
     }
 
     public static int getInt(String key, int defaultValue) {
@@ -60,13 +52,11 @@ public class SmartDashboard {
     }
 
     public static void putDouble(String key, double value) {
-        //compiled code
-        throw new RuntimeException("Compiled Code");
+        data.put(key, value);
     }
 
     public static double getDouble(String key) throws NetworkTableKeyNotDefined {
-        //compiled code
-        throw new RuntimeException("Compiled Code");
+        return (Double)(data.get(key));
     }
 
     public static double getDouble(String key, double defaultValue) {
@@ -75,13 +65,11 @@ public class SmartDashboard {
     }
 
     public static void putString(String key, String value) {
-        //compiled code
-        throw new RuntimeException("Compiled Code");
+        data.put(key, value);
     }
 
     public static String getString(String key) throws NetworkTableKeyNotDefined {
-        //compiled code
-        throw new RuntimeException("Compiled Code");
+        return (String)(data.get(key));
     }
 
     public static String getString(String key, String defaultValue) {
