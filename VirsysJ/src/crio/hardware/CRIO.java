@@ -27,7 +27,8 @@ public class CRIO {
                 proc = Runtime.getRuntime().exec("./virsys", null, f);
             }
             else if (osName.contains("windows")) {
-                proc = Runtime.getRuntime().exec("virsys.exe", null, f);
+                System.out.println(f.getAbsolutePath());
+                proc = Runtime.getRuntime().exec(f.getAbsolutePath() + "/virsys.exe", null, f);
             }
             CRIO.client = new Client();
             CRIO.virsysOutputMap = virsysOutputMap;
