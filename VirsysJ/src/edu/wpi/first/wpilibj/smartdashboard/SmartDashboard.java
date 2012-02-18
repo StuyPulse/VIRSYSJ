@@ -6,7 +6,7 @@ import java.util.Hashtable;
 
 public class SmartDashboard {
 
-    private static Hashtable<String, Object> data;
+    private static Hashtable<String, Object> data = new Hashtable<String, Object>();
 
     public SmartDashboard() {
         data = new Hashtable<String, Object>();
